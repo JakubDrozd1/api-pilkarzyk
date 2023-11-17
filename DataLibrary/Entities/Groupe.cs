@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataLibrary.Entities
 {
-    internal class Groupe
+    public class Groupe
     {
         public int IdGroup { get; set; }
         public string? Name { get; set; }

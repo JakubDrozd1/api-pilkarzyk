@@ -7,7 +7,7 @@ using DataLibrary.Entities;
 
 namespace DataLibrary.IRepository
 {
-    internal interface IMessagesRepository
+    public interface IMessagesRepository
     {
         List<Message> GetAllMessages();
         Message? GetMessageById(int messageId);

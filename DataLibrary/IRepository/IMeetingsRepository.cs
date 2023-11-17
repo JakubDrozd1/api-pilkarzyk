@@ -7,7 +7,7 @@ using DataLibrary.Entities;
 
 namespace DataLibrary.IRepository
 {
-    internal interface IMeetingsRepository
+    public interface IMeetingsRepository
     {
         List<Meeting> GetAllMeetings();
         Meeting? GetMeetingById(int meetingId);

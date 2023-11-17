@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataLibrary.Entities
 {
-    internal class Meeting
+    public class Meeting
     {
         public int IdMeeting {  get; set; }
         public DateTime DateMeeting { get; set; }

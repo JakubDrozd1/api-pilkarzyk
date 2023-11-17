@@ -7,64 +7,56 @@ using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using Dapper;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace DataLibrary.Repository
 {
-    internal class UsersRepository : IUsersRepository
+    public class UsersRepository(SqlConnection dbConnection) : IUsersRepository
     {
-        private readonly string connectionString;
-
-        public UsersRepository(string connectionString)
+        private readonly SqlConnection _dbConnection = dbConnection;
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            this.connectionString = connectionString;
+            using SqlConnection db = _dbConnection;
+            await db.OpenAsync();
+            return (await db.QueryAsync<User>("SELECT * FROM Users")).AsList();
         }
 
-        public List<User> GetAllUsers()
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
-            using (var connection = new SqlConnection(connectionString))
+            using SqlConnection db = _dbConnection;
+            await db.OpenAsync();
+            return await db.QueryFirstOrDefaultAsync<User>("SELECT * FROM Users WHERE IdUser = @UserId", new { UserId = userId });
+        }
+
+        public async Task AddUserAsync(User user)
+        {
+            try
             {
-                connection.Open();
-                return connection.Query<User>("SELECT * FROM Users").ToList();
+                using (SqlConnection db = _dbConnection)
+                {
+                    await db.OpenAsync();
+                    await db.ExecuteAsync("INSERT INTO Users (Login, Password, Email, FirstName, LastName, PhoneNumber) VALUES (@Login, @Password, @Email, @FirstName, @LastName, @PhoneNumber)", user);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Obsłuż wyjątek lub wyświetl komunikat o błędzie
+                Console.WriteLine($"Wystąpił błąd: {ex.Message}");
             }
         }
 
-        public User? GetUserById(int userId)
+        public async Task UpdateUserAsync(User user)
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                return connection.QueryFirstOrDefault<User>("SELECT * FROM Users WHERE IdUser = @UserId", new { UserId = userId });
-            }
+            using SqlConnection db = _dbConnection;
+            await db.OpenAsync();
+            await db.ExecuteAsync("UPDATE Users SET Login = @Login, Password = @Password, Email = @Email, FirstName = @FirstName, LastName = @LastName, PhoneNumber = @PhoneNumber WHERE IdUser = @IdUser", user);
         }
 
-        public void AddUser(User user)
+        public async Task DeleteUserAsync(int userId)
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                connection.Execute("INSERT INTO Users (Login, Password, Email, FirstName, LastName, PhoneNumber) " +
-                                   "VALUES (@Login, @Password, @Email, @FirstName, @LastName, @PhoneNumber)", user);
-            }
-        }
-
-        public void UpdateUser(User user)
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                connection.Execute("UPDATE Users SET Login = @Login, Password = @Password, Email = @Email, " +
-                                   "FirstName = @FirstName, LastName = @LastName, PhoneNumber = @PhoneNumber " +
-                                   "WHERE IdUser = @IdUser", user);
-            }
-        }
-
-        public void DeleteUser(int userId)
-        {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                connection.Execute("DELETE FROM Users WHERE IdUser = @UserId", new { UserId = userId });
-            }
+            using SqlConnection db = _dbConnection;
+            await db.OpenAsync();
+            await db.ExecuteAsync("DELETE FROM Users WHERE IdUser = @UserId", new { UserId = userId });
         }
     }
 }

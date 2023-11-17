@@ -8,7 +8,7 @@ using DataLibrary.Entities;
 
 namespace DataLibrary.IRepository
 {
-    internal interface IGroupsRepository
+    public interface IGroupsRepository
     {
         List<Groupe> GetAllGroups();
         Groupe? GetGroupById(int groupId);

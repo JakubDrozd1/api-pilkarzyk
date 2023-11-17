@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataLibrary.Entities
 {
-    internal class Message
+    public class Message
     {
         public int IdMessage { get; set; }
         public int IdMeeting { get; set; }

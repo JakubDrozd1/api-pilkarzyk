@@ -7,7 +7,7 @@ using DataLibrary.Entities;
 
 namespace DataLibrary.IRepository
 {
-    internal interface IRankingsRepository
+    public interface IRankingsRepository
     {
         List<Ranking> GetAllRankings();
         Ranking? GetRankingById(int rankingId);

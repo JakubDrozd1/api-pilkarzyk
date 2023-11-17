@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataLibrary.Entities
 {
-    public class Ranking
+    public class GroupsUsers
     {
-        public int IdRanking { get; set; }
-        public DateTime DateMeeting { get; set; }
+        public int IdGroupUser { get; set; }
         public int IdUser { get; set; }
-        public int IdGroup { get; set; }
-        public int Point {  get; set; }
+        public int IdGroup {  get; set; }
     }
 }
