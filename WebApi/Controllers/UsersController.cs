@@ -29,11 +29,12 @@ namespace WebApi.Controllers
             User user = new()
             {
                 Email = userRequest.Email,
-                FirstName = userRequest.FirstName,
-                LastName = userRequest.LastName,
+                Firstname = userRequest.FirstName,
+                Surname = userRequest.LastName,
                 Login = userRequest.Login,
                 Password = userRequest.Password,
                 PhoneNumber = userRequest.PhoneNumber,
+                AccountType = userRequest.AccountType,
             };
             _usersService.AddUserAsync(user);
             
@@ -50,8 +51,9 @@ namespace WebApi.Controllers
                 user.Password = userRequest.Password;
                 user.PhoneNumber = userRequest.PhoneNumber;
                 user.Email = userRequest.Email;
-                user.FirstName = userRequest.FirstName;
-                user.LastName = userRequest.LastName;
+                user.Firstname = userRequest.FirstName;
+                user.Surname = userRequest.LastName;
+                user.AccountType= userRequest.AccountType;  
                 if(_usersService.UpdateUserAsync(user).IsCompletedSuccessfully)
                 {
                     return true;

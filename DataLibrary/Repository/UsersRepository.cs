@@ -30,19 +30,21 @@ namespace DataLibrary.Repository
 
         public async Task AddUserAsync(User user)
         {
-            try
-            {
+            
                 using (SqlConnection db = _dbConnection)
                 {
+                try
+                {
                     await db.OpenAsync();
-                    await db.ExecuteAsync("INSERT INTO Users (Login, Password, Email, FirstName, LastName, PhoneNumber) VALUES (@Login, @Password, @Email, @FirstName, @LastName, @PhoneNumber)", user);
+                    await db.ExecuteAsync("INSERT INTO Users (id_user, Login, Password, Email, Firstname, surname, Phone_Number, Account_Type) VALUES (1,@Login, @Password, @Email, @Firstname, @Surname, @PhoneNumber, @AccountType)", user);
+                }
+                catch (Exception ex)
+                {
+                    // Obsłuż wyjątek lub wyświetl komunikat o błędzie
+                    Console.WriteLine($"Wystąpił błąd: {ex.Message}");
                 }
             }
-            catch (Exception ex)
-            {
-                // Obsłuż wyjątek lub wyświetl komunikat o błędzie
-                Console.WriteLine($"Wystąpił błąd: {ex.Message}");
-            }
+            
         }
 
         public async Task UpdateUserAsync(User user)
