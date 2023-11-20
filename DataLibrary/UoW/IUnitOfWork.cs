@@ -1,19 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLibrary.IRepository;
+﻿using DataLibrary.IRepository;
+using DataLibrary.IRepository.Groups;
+using DataLibrary.IRepository.Meetings;
+using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.Rankings;
+using DataLibrary.IRepository.Users;
 
 namespace DataLibrary.UoW
 {
     public interface IUnitOfWork : IDisposable
     {
-        IUsersRepository UsersRepository { get; }
-        IGroupsRepository GroupsRepository { get; }
-        IMeetingsRepository MeetingsRepository { get; }
-        IMessagesRepository MessagesRepository { get; }
-        IRankingsRepository RankingsRepository { get; }
+        ICreateGroupsRepository CreateGroupsRepository { get; }
+        ICreateMeetingsRepository CreateMeetingsRepository { get; }
+        ICreateMessagesRepository CreateMessagesRepository { get; }
+        ICreateRankingsRepository CreateRankingsRepository { get; }
+        ICreateUsersRepository CreateUsersRepository { get; }
+
+        IDeleteGroupsRepository DeleteGroupsRepository { get; }
+        IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
+        IDeleteMessagesRepository DeleteMessagesRepository { get; }
+        IDeleteRankingsRepository DeleteRankingsRepository { get; }
+        IDeleteUsersRepository DeleteUsersRepository { get; }
+
+        IReadGroupsRepository ReadGroupsRepository { get; }
+        IReadMeetingsRepository ReadMeetingsRepository { get; }
+        IReadMessagesRepository ReadMessagesRepository { get; }
+        IReadRankingsRepository ReadRankingsRepository { get; }
+        IReadUsersRepository ReadUsersRepository { get; }
+
+        IUpdateGroupsRepository UpdateGroupsRepository { get; }
+        IUpdateMeetingsRepository UpdateMeetingsRepository { get; }
+        IUpdateMessagesRepository UpdateMessagesRepository { get; }
+        IUpdateRankingsRepository UpdateRankingsRepository { get; }
+        IUpdateUsersRepository UpdateUsersRepository { get; }
 
         Task SaveChangesAsync();
     }

@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataLibrary.Entities;
 
 namespace BLLLibrary.IService
 {
     internal interface IMessagesService
     {
+        Task<List<Message>> GetAllMessagesAsync();
+        Task<Message?> GetMessageByIdAsync(int messageId);
+        Task AddMessageAsync(Message message);
+        Task UpdateMessageAsync(Message message);
+        Task DeleteMessageAsync(int messageId);
+        Task SaveChangesAsync();
     }
 }

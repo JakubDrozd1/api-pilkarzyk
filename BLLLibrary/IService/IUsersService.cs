@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLibrary.Entities;
+﻿using DataLibrary.Entities;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {
@@ -11,8 +7,8 @@ namespace BLLLibrary.IService
     {
         Task<List<User>> GetAllUsersAsync();
         Task<User?> GetUserByIdAsync(int userId);
-        Task AddUserAsync(User user);
-        Task UpdateUserAsync(User user);
+        Task AddUserAsync(UserRequest userRequest);
+        Task UpdateUserAsync(UserRequest userRequest);
         Task DeleteUserAsync(int userId);
         Task SaveChangesAsync();
     }

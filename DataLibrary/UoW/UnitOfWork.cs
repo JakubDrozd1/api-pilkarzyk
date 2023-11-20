@@ -1,36 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLibrary.IRepository;
+﻿using System.Data;
 using DataLibrary.Repository;
-using Microsoft.Extensions.Configuration;
 using DataLibrary.ConnectionProvider;
+using FirebirdSql.Data.FirebirdClient;
+using DataLibrary.IRepository.Users;
+using DataLibrary.IRepository.Groups;
+using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.Rankings;
+using DataLibrary.IRepository.Meetings;
+using DataLibrary.IRepository;
+using DataLibrary.Repository.Messages;
+using DataLibrary.Repository.Rankings;
+using DataLibrary.Repository.Users;
 
 namespace DataLibrary.UoW
 {
     public class UnitOfWork(IConnectionProvider _connectionProvider) : IUnitOfWork
     {
-        private readonly SqlConnection dbConnection = _connectionProvider.GetConnection();
-        private SqlTransaction? dbTransaction = null;
+        private readonly FbConnection dbConnection = _connectionProvider.GetConnection();
+        private FbTransaction? dbTransaction = null;
 
-        public IUsersRepository UsersRepository => new UsersRepository(dbConnection);
+        public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection);
+        public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection);
+        public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection);
+        public ICreateRankingsRepository CreateRankingsRepository => new CreateRankingsRepository(dbConnection);
+        public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection);
 
-        public IGroupsRepository GroupsRepository => throw new NotImplementedException();
+        public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection);
+        public IDeleteMeetingsRepository DeleteMeetingsRepository => new DeleteMeetingsRepository(dbConnection);
+        public IDeleteMessagesRepository DeleteMessagesRepository => new DeleteMessagesRepository(dbConnection);
+        public IDeleteRankingsRepository DeleteRankingsRepository => new DeleteRankingsRepository(dbConnection);
+        public IDeleteUsersRepository DeleteUsersRepository => new DeleteUsersRepository(dbConnection);
 
-        public IMeetingsRepository MeetingsRepository => throw new NotImplementedException();
+        public IReadGroupsRepository ReadGroupsRepository => new ReadGroupsRepository(dbConnection);
+        public IReadMeetingsRepository ReadMeetingsRepository => new ReadMeetingsRepository(dbConnection);
+        public IReadMessagesRepository ReadMessagesRepository => new ReadMessagesRepository(dbConnection);
+        public IReadRankingsRepository ReadRankingsRepository => new ReadRankingsRepository(dbConnection);
+        public IReadUsersRepository ReadUsersRepository => new ReadUsersRepository(dbConnection);
 
-        public IMessagesRepository MessagesRepository => throw new NotImplementedException();
-
-        public IRankingsRepository RankingsRepository => throw new NotImplementedException();
-
-        //public IGroupsRepository GroupsRepository => new GroupsRepository(dbConnection, dbTransaction);
-        //public IMeetingsRepository MeetingsRepository => new MeetingsRepository(dbConnection, dbTransaction);
-        //public IMessagesRepository MessagesRepository => new MessagesRepository(dbConnection, dbTransaction);
-        //public IRankingsRepository RankingsRepository => new RankingsRepository(dbConnection, dbTransaction);
+        public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection);
+        public IUpdateMeetingsRepository UpdateMeetingsRepository => new UpdateMeetingsRepository(dbConnection);
+        public IUpdateMessagesRepository UpdateMessagesRepository => new UpdateMessagesRepository(dbConnection);
+        public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection);
+        public IUpdateUsersRepository UpdateUsersRepository => new UpdateUsersRepository(dbConnection);
 
         public async Task SaveChangesAsync()
         {

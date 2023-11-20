@@ -12,62 +12,58 @@ namespace WebApi.Controllers
         private readonly IUsersService _usersService = usersService;
 
         [HttpGet]
-        public List<User> GetAllUsers()
+        public async Task<ActionResult<List<User>>> GetAllUsers()
         {
-            return _usersService.GetAllUsersAsync().Result;
+            var users = await _usersService.GetAllUsersAsync();
+            return Ok(users);
         }
 
-        [HttpGet("{id}")]
-        public User? GetUserById(int id)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<User>> GetUserById(int userId)
         {
-            return _usersService.GetUserByIdAsync(id).Result;
-        }
-
-        [HttpPost]
-        public bool AddUser([FromBody] UserRequest userRequest)
-        {
-            User user = new()
+            var user = await _usersService.GetUserByIdAsync(userId);
+            if (user == null)
             {
-                Email = userRequest.Email,
-                Firstname = userRequest.FirstName,
-                Surname = userRequest.LastName,
-                Login = userRequest.Login,
-                Password = userRequest.Password,
-                PhoneNumber = userRequest.PhoneNumber,
-                AccountType = userRequest.AccountType,
-            };
-            _usersService.AddUserAsync(user);
-            
-               return true;
-        }
-
-        [HttpPut("{id}")]
-        public bool UpdateUser(int id, [FromBody] UserRequest userRequest)
-        {
-            User? user = _usersService.GetUserByIdAsync(id).Result;
-            if (user != null)
-            {
-                user.Login = userRequest.Login;
-                user.Password = userRequest.Password;
-                user.PhoneNumber = userRequest.PhoneNumber;
-                user.Email = userRequest.Email;
-                user.Firstname = userRequest.FirstName;
-                user.Surname = userRequest.LastName;
-                user.AccountType= userRequest.AccountType;  
-                if(_usersService.UpdateUserAsync(user).IsCompletedSuccessfully)
-                {
-                    return true;
-                }
+                return NotFound();
             }
-            return false;
+            return Ok(user);
+        }
+        //TODO
+        [HttpPost]
+        public async Task<ActionResult> AddUser([FromBody] UserRequest userRequest)
+        {
+            await _usersService.AddUserAsync(userRequest);
+            await _usersService.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetUserById), userRequest);
         }
 
-        [HttpDelete("{id}")]
-        public bool DeleteUser(int id)
+        [HttpPut("{userId}")]
+        public async Task<ActionResult> UpdateUser(int userId, [FromBody] UserRequest userRequest)
         {
-            if(_usersService.DeleteUserAsync(id).IsCompletedSuccessfully)
-                return true;
-            return false;
+            var existingUser = await _usersService.GetUserByIdAsync(userId);
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+            await _usersService.UpdateUserAsync(userRequest);
+            await _usersService.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteUser(int userId)
+        {
+            var existingUser = await _usersService.GetUserByIdAsync(userId);
+
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+
+            await _usersService.DeleteUserAsync(userId);
+            await _usersService.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

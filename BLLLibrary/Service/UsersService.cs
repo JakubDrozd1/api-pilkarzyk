@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BLLLibrary.IService;
-using DataLibrary;
+﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
 using DataLibrary.UoW;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.Service
 {
@@ -17,27 +11,47 @@ namespace BLLLibrary.Service
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await unitOfWork.UsersRepository.GetAllUsersAsync();
+            return await unitOfWork.ReadUsersRepository.GetAllUsersAsync();
         }
 
         public async Task<User?> GetUserByIdAsync(int userId)
         {
-            return await unitOfWork.UsersRepository.GetUserByIdAsync(userId);
+            return await unitOfWork.ReadUsersRepository.GetUserByIdAsync(userId);
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task AddUserAsync(UserRequest userRequest)
         {
-            await unitOfWork.UsersRepository.AddUserAsync(user);
+            User user = new()
+            {
+                EMAIL = userRequest.Email,
+                FIRSTNAME = userRequest.Firstname,
+                SURNAME = userRequest.Surname,
+                LOGIN = userRequest.Login,
+                PASSWORD = userRequest.Password,
+                PHONE_NUMBER = userRequest.PhoneNumber,
+                ACCOUNT_TYPE = userRequest.AccountType,
+            };
+            await unitOfWork.CreateUsersRepository.AddUserAsync(user);
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(UserRequest userRequest)
         {
-            await unitOfWork.UsersRepository.UpdateUserAsync(user);
+            User user = new()
+            {
+                EMAIL = userRequest.Email,
+                FIRSTNAME = userRequest.Firstname,
+                SURNAME = userRequest.Surname,
+                LOGIN = userRequest.Login,
+                PASSWORD = userRequest.Password,
+                PHONE_NUMBER = userRequest.PhoneNumber,
+                ACCOUNT_TYPE = userRequest.AccountType,
+            };
+            await unitOfWork.UpdateUsersRepository.UpdateUserAsync(user);
         }
 
         public async Task DeleteUserAsync(int userId)
         {
-            await unitOfWork.UsersRepository.DeleteUserAsync(userId);
+            await unitOfWork.DeleteUsersRepository.DeleteUserAsync(userId);
         }
 
         public async Task SaveChangesAsync()

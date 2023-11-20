@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataLibrary.Entities
+﻿namespace DataLibrary.Entities
 {
     public class GroupsUsers
     {
-        public int IdGroupUser { get; set; }
-        public int IdUser { get; set; }
-        public int IdGroup {  get; set; }
+        public int? ID_GROUP_USER { get; set; }
+        public int? ID_USER { get; set; }
+        public int? ID_GROUP { get; set; }
     }
 }

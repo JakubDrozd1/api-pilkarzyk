@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.ConnectionProvider
 {
@@ -13,9 +7,9 @@ namespace DataLibrary.ConnectionProvider
     {
         private readonly IConfiguration _configuration = configuration;
 
-        public SqlConnection GetConnection()
+        public FbConnection GetConnection()
         {
-            return new SqlConnection(
+            return new FbConnection(
                 _configuration.GetConnectionString("DefaultConnection"));
         }
     }

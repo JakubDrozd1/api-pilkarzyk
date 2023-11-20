@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataLibrary.Entities
+﻿namespace DataLibrary.Entities
 {
     public class Message
     {
-        public int IdMessage { get; set; }
-        public int IdMeeting { get; set; }
-        public int IdUser { get; set; }
-        public string? Answer {  get; set; }
+        public int? ID_MESSAGE { get; set; }
+        public int? ID_MEETING { get; set; }
+        public int? ID_USER { get; set; }
+        public string? ANSWER { get; set; }
     }
 }
