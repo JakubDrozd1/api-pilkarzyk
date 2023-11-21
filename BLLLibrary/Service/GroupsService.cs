@@ -1,10 +1,11 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.UoW;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.Service
 {
-    internal class GroupsService(IUnitOfWork unitOfWork) : IGroupsService
+    public class GroupsService(IUnitOfWork unitOfWork) : IGroupsService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -18,13 +19,22 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(groupId);
         }
 
-        public async Task AddGroupAsync(Groupe group)
+        public async Task AddGroupAsync(GroupRequest groupRequest)
         {
+            Groupe group = new()
+            {
+                NAME = groupRequest.Name
+            };
             await _unitOfWork.CreateGroupsRepository.AddGroupAsync(group);
         }
 
-        public async Task UpdateGroupAsync(Groupe group)
+        public async Task UpdateGroupAsync(GroupRequest groupRequest, int groupId)
         {
+            Groupe group = new()
+            {
+                ID_GROUP = groupId,
+                NAME = groupRequest.Name
+            };
             await _unitOfWork.UpdateGroupsRepository.UpdateGroupAsync(group);
         }
 

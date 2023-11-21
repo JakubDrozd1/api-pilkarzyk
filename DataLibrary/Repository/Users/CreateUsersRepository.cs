@@ -1,7 +1,7 @@
-﻿using DataLibrary.IRepository;
-using Dapper;
-using FirebirdSql.Data.FirebirdClient;
+﻿using Dapper;
 using DataLibrary.Entities;
+using DataLibrary.IRepository;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository
 {

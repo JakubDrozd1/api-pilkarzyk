@@ -1,13 +1,14 @@
-﻿using DataLibrary.IRepository;
-using Dapper;
-using FirebirdSql.Data.FirebirdClient;
+﻿using Dapper;
 using DataLibrary.Entities;
+using DataLibrary.IRepository;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository
 {
     public class ReadUsersRepository(FbConnection dbConnection) : IReadUsersRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+
         public async Task<List<User>> GetAllUsersAsync()
         {
             using FbConnection db = _dbConnection;
@@ -20,7 +21,7 @@ namespace DataLibrary.Repository
 
         public async Task<User?> GetUserByIdAsync(int userId)
         {
-            using FbConnection db = _dbConnection;
+            await using FbConnection db = _dbConnection;
             await db.OpenAsync();
             var query = new QueryBuilder<User>()
                 .Select("*")

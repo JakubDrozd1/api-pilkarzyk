@@ -1,4 +1,4 @@
-﻿namespace DataLibrary.IRepository.Rankings
+﻿namespace DataLibrary.IRepository
 {
     public interface IDeleteRankingsRepository
     {

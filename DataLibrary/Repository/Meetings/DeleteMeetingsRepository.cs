@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository.Meetings;
+using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository

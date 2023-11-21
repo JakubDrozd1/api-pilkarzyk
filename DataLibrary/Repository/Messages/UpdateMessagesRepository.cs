@@ -3,7 +3,7 @@ using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Messages
+namespace DataLibrary.Repository
 {
     public class UpdateMessagesRepository(FbConnection dbConnection) : IUpdateMessagesRepository
     {
@@ -13,7 +13,7 @@ namespace DataLibrary.Repository.Messages
         {
             var updateBuilder = new QueryBuilder<Message>()
                .Update("MESSAGES", message)
-               .Where("ID_MESSAGE = @MessageId");
+               .Where("ID_MESSAGE = @ID_MESSAGE");
             string updateQuery = updateBuilder.Build();
             using FbConnection db = _dbConnection;
             await db.OpenAsync();

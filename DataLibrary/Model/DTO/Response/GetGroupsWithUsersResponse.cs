@@ -1,8 +1,8 @@
-﻿namespace WebApi.Model.DTO.Request
+﻿namespace BLLLibrary.Model.DTO.Response
 {
-    public class UserRequest
+    public class GetGroupsWithUsersResponse
     {
-        public int IdUser { get; set; }
+        public string? Name { get; set; }
         public string? Login { get; set; }
         public string? Password { get; set; }
         public string? Email { get; set; }

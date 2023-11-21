@@ -1,13 +1,14 @@
 ﻿using DataLibrary.Entities;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {
-    internal interface IMessagesService
+    public interface IMessagesService
     {
         Task<List<Message>> GetAllMessagesAsync();
         Task<Message?> GetMessageByIdAsync(int messageId);
-        Task AddMessageAsync(Message message);
-        Task UpdateMessageAsync(Message message);
+        Task AddMessageAsync(MessageRequest messageRequest);
+        Task UpdateMessageAsync(MessageRequest messageRequest, int messageId);
         Task DeleteMessageAsync(int messageId);
         Task SaveChangesAsync();
     }

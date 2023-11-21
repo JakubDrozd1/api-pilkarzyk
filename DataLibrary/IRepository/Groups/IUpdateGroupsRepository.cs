@@ -1,6 +1,6 @@
 ﻿using DataLibrary.Entities;
 
-namespace DataLibrary.IRepository.Groups
+namespace DataLibrary.IRepository
 {
     public interface IUpdateGroupsRepository
     {

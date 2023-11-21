@@ -1,9 +1,4 @@
 ﻿using DataLibrary.IRepository;
-using DataLibrary.IRepository.Groups;
-using DataLibrary.IRepository.Meetings;
-using DataLibrary.IRepository.Messages;
-using DataLibrary.IRepository.Rankings;
-using DataLibrary.IRepository.Users;
 
 namespace DataLibrary.UoW
 {
@@ -14,24 +9,28 @@ namespace DataLibrary.UoW
         ICreateMessagesRepository CreateMessagesRepository { get; }
         ICreateRankingsRepository CreateRankingsRepository { get; }
         ICreateUsersRepository CreateUsersRepository { get; }
+        ICreateGroupsUsersRepository CreateGroupsUsersRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
         IDeleteMessagesRepository DeleteMessagesRepository { get; }
         IDeleteRankingsRepository DeleteRankingsRepository { get; }
         IDeleteUsersRepository DeleteUsersRepository { get; }
+        IDeleteGroupsUsersRepository DeleteGroupsUsersRepository { get; }
 
         IReadGroupsRepository ReadGroupsRepository { get; }
         IReadMeetingsRepository ReadMeetingsRepository { get; }
         IReadMessagesRepository ReadMessagesRepository { get; }
         IReadRankingsRepository ReadRankingsRepository { get; }
         IReadUsersRepository ReadUsersRepository { get; }
+        IReadGroupsUsersRepository ReadGroupsUsersRepository { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }
         IUpdateMessagesRepository UpdateMessagesRepository { get; }
         IUpdateRankingsRepository UpdateRankingsRepository { get; }
         IUpdateUsersRepository UpdateUsersRepository { get; }
+        IUpdateGroupsUsersRepository UpdateGroupsUsersRepository { get; }
 
         Task SaveChangesAsync();
     }

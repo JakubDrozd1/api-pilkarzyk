@@ -3,7 +3,7 @@ using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Messages
+namespace DataLibrary.Repository
 {
     public class CreateMessagesRepository(FbConnection dbConnection) : ICreateMessagesRepository
     {

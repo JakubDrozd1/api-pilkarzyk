@@ -1,9 +1,9 @@
 ﻿using Dapper;
-using FirebirdSql.Data.FirebirdClient;
-using DataLibrary.IRepository.Users;
 using DataLibrary.Entities;
+using DataLibrary.IRepository;
+using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Users
+namespace DataLibrary.Repository
 {
     public class DeleteUsersRepository(FbConnection dbConnection) : IDeleteUsersRepository
     {

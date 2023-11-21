@@ -1,9 +1,9 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-using DataLibrary.IRepository.Rankings;
-using Dapper;
+﻿using Dapper;
 using DataLibrary.Entities;
+using DataLibrary.IRepository;
+using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Rankings
+namespace DataLibrary.Repository
 {
     public class DeleteRankingsRepository(FbConnection dbConnection) : IDeleteRankingsRepository
     {

@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository.Meetings;
+using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository
@@ -13,7 +13,7 @@ namespace DataLibrary.Repository
         {
             var updateBuilder = new QueryBuilder<Meeting>()
                 .Update("MEETINGS", meeting)
-                .Where("ID_MEETING = @MeetingId");
+                .Where("ID_MEETING = @ID_MEETING");
             string updateQuery = updateBuilder.Build();
             using FbConnection db = _dbConnection;
             await db.OpenAsync();

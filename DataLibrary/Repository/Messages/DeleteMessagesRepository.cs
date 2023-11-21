@@ -1,9 +1,9 @@
 ﻿using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Messages
+namespace DataLibrary.Repository
 {
     public class DeleteMessagesRepository(FbConnection dbConnection) : IDeleteMessagesRepository
     {

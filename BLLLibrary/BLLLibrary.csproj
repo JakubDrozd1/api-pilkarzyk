@@ -18,8 +18,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Model\DTO\Response\" />
-	</ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ namespace BLLLibrary.IService
         Task<List<User>> GetAllUsersAsync();
         Task<User?> GetUserByIdAsync(int userId);
         Task AddUserAsync(UserRequest userRequest);
-        Task UpdateUserAsync(UserRequest userRequest);
+        Task UpdateUserAsync(UserRequest userRequest, int userId);
         Task DeleteUserAsync(int userId);
         Task SaveChangesAsync();
     }

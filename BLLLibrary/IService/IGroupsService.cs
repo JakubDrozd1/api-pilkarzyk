@@ -1,14 +1,14 @@
-﻿using System.Text.RegularExpressions;
-using DataLibrary.Entities;
+﻿using DataLibrary.Entities;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {
-    internal interface IGroupsService
+    public interface IGroupsService
     {
         Task<List<Groupe>> GetAllGroupsAsync();
         Task<Groupe?> GetGroupByIdAsync(int groupId);
-        Task AddGroupAsync(Groupe group);
-        Task UpdateGroupAsync(Groupe group);
+        Task AddGroupAsync(GroupRequest groupRequest);
+        Task UpdateGroupAsync(GroupRequest groupRequest, int groupId);
         Task DeleteGroupAsync(int groupId);
         Task SaveChangesAsync();
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace DataLibrary
 {
@@ -83,7 +79,7 @@ namespace DataLibrary
         public QueryBuilder<T> Update(string tableName, object values)
         {
             var properties = values.GetType().GetProperties();
-            var setPairs = string.Join(", ", properties.Select(p => $"{p.Name} = @{p.Name}"));
+            var setPairs = string.Join(", ", properties.Select(p => $"{p.Name} = @{p.Name}").Skip(1));
 
             query.Append($"UPDATE {tableName} SET {setPairs}");
 

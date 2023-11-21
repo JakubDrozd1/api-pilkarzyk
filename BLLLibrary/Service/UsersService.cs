@@ -34,10 +34,11 @@ namespace BLLLibrary.Service
             await unitOfWork.CreateUsersRepository.AddUserAsync(user);
         }
 
-        public async Task UpdateUserAsync(UserRequest userRequest)
+        public async Task UpdateUserAsync(UserRequest userRequest, int userId)
         {
             User user = new()
             {
+                ID_USER = userId,
                 EMAIL = userRequest.Email,
                 FIRSTNAME = userRequest.Firstname,
                 SURNAME = userRequest.Surname,

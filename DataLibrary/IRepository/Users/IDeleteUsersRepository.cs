@@ -1,4 +1,4 @@
-﻿namespace DataLibrary.IRepository.Users
+﻿namespace DataLibrary.IRepository
 {
     public interface IDeleteUsersRepository
     {

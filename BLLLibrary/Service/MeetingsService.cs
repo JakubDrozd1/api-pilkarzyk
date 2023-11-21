@@ -1,10 +1,11 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.UoW;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.Service
 {
-    internal class MeetingsService(IUnitOfWork unitOfWork) : IMeetingsService
+    public class MeetingsService(IUnitOfWork unitOfWork) : IMeetingsService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -18,13 +19,28 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
         }
 
-        public async Task AddMeetingAsync(Meeting meeting)
+        public async Task AddMeetingAsync(MeetingRequest meetingRequest)
         {
+            Meeting meeting = new()
+            {
+                DESCIPTION = meetingRequest.Description,
+                QUANTITY = meetingRequest.Quantity,
+                ID_GROUP = meetingRequest.IdGroup,
+                ID_USER = meetingRequest.IdUser
+            };
             await _unitOfWork.CreateMeetingsRepository.AddMeetingAsync(meeting);
         }
 
-        public async Task UpdateMeetingAsync(Meeting meeting)
+        public async Task UpdateMeetingAsync(MeetingRequest meetingRequest, int meetingId)
         {
+            Meeting meeting = new()
+            {
+                ID_MEETING = meetingId,
+                DESCIPTION = meetingRequest.Description,
+                QUANTITY = meetingRequest.Quantity,
+                ID_GROUP = meetingRequest.IdGroup,
+                ID_USER = meetingRequest.IdUser
+            };
             await _unitOfWork.UpdateMeetingsRepository.UpdateMeetingAsync(meeting);
         }
 

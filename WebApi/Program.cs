@@ -9,6 +9,11 @@ builder.Services.AddSingleton<IConnectionProvider, ConnectionProvider>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IGroupsService, GroupsService>();
+builder.Services.AddScoped<IMeetingsService, MeetingsService>();
+builder.Services.AddScoped<IMessagesService, MessagesService>();
+builder.Services.AddScoped<IRankingsService, RankingsService>();
+builder.Services.AddScoped<IGroupsUsersService, GroupsUsersService>();
 // Add services to the container.
 
 builder.Services.AddControllers();

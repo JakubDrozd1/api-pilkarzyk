@@ -1,6 +1,6 @@
 ﻿using DataLibrary.Entities;
 
-namespace DataLibrary.IRepository.Meetings
+namespace DataLibrary.IRepository
 {
     public interface IReadMeetingsRepository
     {

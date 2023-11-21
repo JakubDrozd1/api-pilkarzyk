@@ -1,10 +1,11 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.UoW;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.Service
 {
-    internal class MessagesService(IUnitOfWork unitOfWork) : IMessagesService
+    public class MessagesService(IUnitOfWork unitOfWork) : IMessagesService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -18,13 +19,26 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMessagesRepository.GetMessageByIdAsync(messageId);
         }
 
-        public async Task AddMessageAsync(Message message)
+        public async Task AddMessageAsync(MessageRequest messageRequest)
         {
+            Message message = new()
+            {
+                ID_MEETING = messageRequest.IdMeeting,
+                ID_USER = messageRequest.IdUser,
+                ANSWER = messageRequest.Answer
+            };
             await _unitOfWork.CreateMessagesRepository.AddMessageAsync(message);
         }
 
-        public async Task UpdateMessageAsync(Message message)
+        public async Task UpdateMessageAsync(MessageRequest messageRequest, int messageId)
         {
+            Message message = new()
+            {
+                ID_MESSAGE = messageId,
+                ID_MEETING = messageRequest.IdMeeting,
+                ID_USER = messageRequest.IdUser,
+                ANSWER = messageRequest.Answer
+            };
             await _unitOfWork.UpdateMessagesRepository.UpdateMessageAsync(message);
         }
 

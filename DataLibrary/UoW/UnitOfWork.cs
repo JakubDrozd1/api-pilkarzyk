@@ -1,16 +1,8 @@
 ﻿using System.Data;
-using DataLibrary.Repository;
 using DataLibrary.ConnectionProvider;
-using FirebirdSql.Data.FirebirdClient;
-using DataLibrary.IRepository.Users;
-using DataLibrary.IRepository.Groups;
-using DataLibrary.IRepository.Messages;
-using DataLibrary.IRepository.Rankings;
-using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository;
-using DataLibrary.Repository.Messages;
-using DataLibrary.Repository.Rankings;
-using DataLibrary.Repository.Users;
+using DataLibrary.Repository;
+using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.UoW
 {
@@ -24,24 +16,31 @@ namespace DataLibrary.UoW
         public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection);
         public ICreateRankingsRepository CreateRankingsRepository => new CreateRankingsRepository(dbConnection);
         public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection);
+        public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection);
+
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection);
         public IDeleteMeetingsRepository DeleteMeetingsRepository => new DeleteMeetingsRepository(dbConnection);
         public IDeleteMessagesRepository DeleteMessagesRepository => new DeleteMessagesRepository(dbConnection);
         public IDeleteRankingsRepository DeleteRankingsRepository => new DeleteRankingsRepository(dbConnection);
         public IDeleteUsersRepository DeleteUsersRepository => new DeleteUsersRepository(dbConnection);
+        public IDeleteGroupsUsersRepository DeleteGroupsUsersRepository => new DeleteGroupsUsersRepository(dbConnection);
+
 
         public IReadGroupsRepository ReadGroupsRepository => new ReadGroupsRepository(dbConnection);
         public IReadMeetingsRepository ReadMeetingsRepository => new ReadMeetingsRepository(dbConnection);
         public IReadMessagesRepository ReadMessagesRepository => new ReadMessagesRepository(dbConnection);
         public IReadRankingsRepository ReadRankingsRepository => new ReadRankingsRepository(dbConnection);
         public IReadUsersRepository ReadUsersRepository => new ReadUsersRepository(dbConnection);
+        public IReadGroupsUsersRepository ReadGroupsUsersRepository => new ReadGroupsUsersRepository(dbConnection);
+
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection);
         public IUpdateMeetingsRepository UpdateMeetingsRepository => new UpdateMeetingsRepository(dbConnection);
         public IUpdateMessagesRepository UpdateMessagesRepository => new UpdateMessagesRepository(dbConnection);
         public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection);
         public IUpdateUsersRepository UpdateUsersRepository => new UpdateUsersRepository(dbConnection);
+        public IUpdateGroupsUsersRepository UpdateGroupsUsersRepository => new UpdateGroupsUsersRepository(dbConnection);
 
         public async Task SaveChangesAsync()
         {

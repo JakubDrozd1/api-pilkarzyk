@@ -1,13 +1,14 @@
 ﻿using DataLibrary.Entities;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {
-    internal interface IRankingsService
+    public interface IRankingsService
     {
         Task<List<Ranking>> GetAllRankingsAsync();
         Task<Ranking?> GetRankingByIdAsync(int rankingId);
-        Task AddRankingAsync(Ranking ranking);
-        Task UpdateRankingAsync(Ranking ranking);
+        Task AddRankingAsync(RankingRequest rankingRequest);
+        Task UpdateRankingAsync(RankingRequest rankingRequest, int rankingId);
         Task DeleteRankingAsync(int rankingId);
         Task SaveChangesAsync();
     }

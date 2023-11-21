@@ -1,4 +1,4 @@
-﻿namespace DataLibrary.IRepository.Meetings
+﻿namespace DataLibrary.IRepository
 {
     public interface IDeleteMeetingsRepository
     {

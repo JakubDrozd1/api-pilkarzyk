@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository.Groups;
+using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository
@@ -21,7 +21,7 @@ namespace DataLibrary.Repository
 
         public async Task<Groupe?> GetGroupByIdAsync(int groupId)
         {
-            using FbConnection db = _dbConnection;
+            await using FbConnection db = _dbConnection;
             await db.OpenAsync();
             var query = new QueryBuilder<Groupe>()
                 .Select("*")

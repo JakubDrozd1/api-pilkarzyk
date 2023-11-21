@@ -1,9 +1,9 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-using DataLibrary.IRepository;
-using Dapper;
+﻿using Dapper;
 using DataLibrary.Entities;
+using DataLibrary.IRepository;
+using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Rankings
+namespace DataLibrary.Repository
 {
     public class CreateRankingsRepository(FbConnection dbConnection) : ICreateRankingsRepository
     {

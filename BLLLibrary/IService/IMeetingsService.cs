@@ -1,13 +1,14 @@
 ﻿using DataLibrary.Entities;
+using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {
-    internal interface IMeetingsService
+    public interface IMeetingsService
     {
         Task<List<Meeting>> GetAllMeetingsAsync();
         Task<Meeting?> GetMeetingByIdAsync(int meetingId);
-        Task AddMeetingAsync(Meeting meeting);
-        Task UpdateMeetingAsync(Meeting meeting);
+        Task AddMeetingAsync(MeetingRequest meetingRequest);
+        Task UpdateMeetingAsync(MeetingRequest meetingRequest, int meetingId);
         Task DeleteMeetingAsync(int meetingId);
         Task SaveChangesAsync();
     }

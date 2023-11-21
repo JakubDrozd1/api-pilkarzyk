@@ -1,4 +1,4 @@
-﻿namespace DataLibrary.IRepository.Groups
+﻿namespace DataLibrary.IRepository
 {
     public interface IDeleteGroupsRepository
     {

@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository.Groups;
+using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository
@@ -13,7 +13,7 @@ namespace DataLibrary.Repository
         {
             var updateBuilder = new QueryBuilder<Groupe>()
                 .Update("GROUPS", group)
-                .Where("ID_GROUP = @GroupId");
+                .Where("ID_GROUP = @ID_GROUP");
             string updateQuery = updateBuilder.Build();
             using FbConnection db = _dbConnection;
             await db.OpenAsync();

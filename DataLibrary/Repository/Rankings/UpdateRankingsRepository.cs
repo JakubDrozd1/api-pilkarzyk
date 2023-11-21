@@ -1,9 +1,9 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-using DataLibrary.IRepository;
-using Dapper;
+﻿using Dapper;
 using DataLibrary.Entities;
+using DataLibrary.IRepository;
+using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Rankings
+namespace DataLibrary.Repository
 {
     public class UpdateRankingsRepository(FbConnection dbConnection) : IUpdateRankingsRepository
     {
@@ -13,7 +13,7 @@ namespace DataLibrary.Repository.Rankings
         {
             var updateBuilder = new QueryBuilder<Ranking>()
                .Update("RANKINGS", ranking)
-               .Where("ID_RANKING = @RankingId");
+               .Where("ID_RANKING = @ID_RANKING");
             string updateQuery = updateBuilder.Build();
             using FbConnection db = _dbConnection;
             await db.OpenAsync();

@@ -28,13 +28,22 @@ namespace WebApi.Controllers
             }
             return Ok(user);
         }
-        //TODO
+
         [HttpPost]
         public async Task<ActionResult> AddUser([FromBody] UserRequest userRequest)
         {
-            await _usersService.AddUserAsync(userRequest);
-            await _usersService.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUserById), userRequest);
+            try
+            {
+                await _usersService.AddUserAsync(userRequest);
+                await _usersService.SaveChangesAsync();
+                return Ok(userRequest);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+
+
         }
 
         [HttpPut("{userId}")]
@@ -45,9 +54,16 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
-            await _usersService.UpdateUserAsync(userRequest);
-            await _usersService.SaveChangesAsync();
-            return NoContent();
+            try
+            {
+                await _usersService.UpdateUserAsync(userRequest, userId);
+                await _usersService.SaveChangesAsync();
+                return Ok(userRequest);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
         [HttpDelete("{userId}")]
@@ -59,11 +75,16 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
-
-            await _usersService.DeleteUserAsync(userId);
-            await _usersService.SaveChangesAsync();
-
-            return NoContent();
+            try
+            {
+                await _usersService.DeleteUserAsync(userId);
+                await _usersService.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
         }
     }
 }
