@@ -23,8 +23,8 @@ namespace BLLLibrary.Service
         {
             Message message = new()
             {
-                ID_MEETING = messageRequest.IdMeeting,
-                ID_USER = messageRequest.IdUser,
+                IDMEETING = messageRequest.IdMeeting,
+                IDUSER = messageRequest.IdUser,
                 ANSWER = messageRequest.Answer
             };
             await _unitOfWork.CreateMessagesRepository.AddMessageAsync(message);
@@ -35,8 +35,8 @@ namespace BLLLibrary.Service
             Message message = new()
             {
                 ID_MESSAGE = messageId,
-                ID_MEETING = messageRequest.IdMeeting,
-                ID_USER = messageRequest.IdUser,
+                IDMEETING = messageRequest.IdMeeting,
+                IDUSER = messageRequest.IdUser,
                 ANSWER = messageRequest.Answer
             };
             await _unitOfWork.UpdateMessagesRepository.UpdateMessageAsync(message);

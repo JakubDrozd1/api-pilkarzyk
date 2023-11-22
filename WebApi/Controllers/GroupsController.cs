@@ -42,8 +42,6 @@ namespace WebApi.Controllers
             {
                 return StatusCode(500, "Internal Server Error");
             }
-
-
         }
 
         [HttpPut("{groupId}")]

@@ -24,8 +24,8 @@ namespace BLLLibrary.Service
             Ranking ranking = new()
             {
                 DATE_MEETING = rankingRequest.DateMeeting,
-                ID_GROUP = rankingRequest.IdGroup,
-                ID_USER = rankingRequest.IdUser,
+                IDGROUP = rankingRequest.IdGroup,
+                IDUSER = rankingRequest.IdUser,
                 POINT = rankingRequest.Point
             };
             await _unitOfWork.CreateRankingsRepository.AddRankingAsync(ranking);
@@ -37,8 +37,8 @@ namespace BLLLibrary.Service
             {
                 ID_RANKING = rankingId,
                 DATE_MEETING = rankingRequest.DateMeeting,
-                ID_GROUP = rankingRequest.IdGroup,
-                ID_USER = rankingRequest.IdUser,
+                IDGROUP = rankingRequest.IdGroup,
+                IDUSER = rankingRequest.IdUser,
                 POINT = rankingRequest.Point
             };
             await _unitOfWork.UpdateRankingsRepository.UpdateRankingAsync(ranking);

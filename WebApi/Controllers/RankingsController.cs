@@ -42,8 +42,6 @@ namespace WebApi.Controllers
             {
                 return StatusCode(500, "Internal Server Error");
             }
-
-
         }
 
         [HttpPut("{rankingId}")]
@@ -70,7 +68,6 @@ namespace WebApi.Controllers
         public async Task<ActionResult> DeleteRanking(int rankingId)
         {
             var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);
-
             if (existingRanking == null)
             {
                 return NotFound();

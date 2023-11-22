@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
@@ -12,22 +13,26 @@ namespace DataLibrary.Repository
         public async Task<List<Ranking>> GetAllRankingsAsync()
         {
             using FbConnection db = _dbConnection;
-            await db.OpenAsync();
+            if (db.State != ConnectionState.Open)
+                await db.OpenAsync();
             var query = new QueryBuilder<Ranking>()
                 .Select("*")
                 .From("RANKINGS");
             return (await db.QueryAsync<Ranking>(query.Build())).AsList();
         }
 
-        public async Task<Ranking?> GetRankingByIdAsync(int rankingId)
+        public async Task<Ranking?> GetRankingByIdAsync(int rankingId, FbTransaction? transaction = null)
         {
-            using FbConnection db = _dbConnection;
-            await db.OpenAsync();
             var query = new QueryBuilder<Ranking>()
                 .Select("*")
                 .From("RANKINGS")
                 .Where("ID_RANKING = @RankingId");
-            return await db.QueryFirstOrDefaultAsync<Ranking>(query.Build(), new { RankingId = rankingId });
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+            return await db.QuerySingleOrDefaultAsync<Ranking>(query.Build(), new { RankingId = rankingId }, transaction);
         }
     }
 }

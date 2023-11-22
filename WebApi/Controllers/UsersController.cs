@@ -70,7 +70,6 @@ namespace WebApi.Controllers
         public async Task<ActionResult> DeleteUser(int userId)
         {
             var existingUser = await _usersService.GetUserByIdAsync(userId);
-
             if (existingUser == null)
             {
                 return NotFound();

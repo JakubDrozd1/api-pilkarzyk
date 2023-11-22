@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
@@ -12,22 +13,26 @@ namespace DataLibrary.Repository
         public async Task<List<User>> GetAllUsersAsync()
         {
             using FbConnection db = _dbConnection;
-            await db.OpenAsync();
+            if (db.State != ConnectionState.Open)
+                await db.OpenAsync();
             var query = new QueryBuilder<User>()
                 .Select("*")
                 .From("USERS");
             return (await db.QueryAsync<User>(query.Build())).AsList();
         }
 
-        public async Task<User?> GetUserByIdAsync(int userId)
+        public async Task<User?> GetUserByIdAsync(int userId, FbTransaction? transaction = null)
         {
-            await using FbConnection db = _dbConnection;
-            await db.OpenAsync();
             var query = new QueryBuilder<User>()
                 .Select("*")
                 .From("USERS")
                 .Where("ID_USER = @UserId");
-            return await db.QueryFirstOrDefaultAsync<User>(query.Build(), new { UserId = userId });
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+            return await db.QuerySingleOrDefaultAsync<User>(query.Build(), new { UserId = userId }, transaction);
         }
     }
 }

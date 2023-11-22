@@ -1,9 +1,11 @@
-﻿namespace DataLibrary.IRepository
+﻿using FirebirdSql.Data.FirebirdClient;
+
+namespace DataLibrary.IRepository
 {
     public interface IDeleteGroupsUsersRepository
     {
-        Task DeleteUsersFromGroupAsync(int[] usersId, int groupId);
-        Task DeleteAllUsersFromGroupAsync(int groupId);
-        Task DeleteAllGroupsFromUser(int userId);
+        Task DeleteUsersFromGroupAsync(int[] usersId, int groupId, FbTransaction? transaction = null);
+        Task DeleteAllUsersFromGroupAsync(int groupId, FbTransaction? transaction = null);
+        Task DeleteAllGroupsFromUser(int userId, FbTransaction? transaction = null);
     }
 }

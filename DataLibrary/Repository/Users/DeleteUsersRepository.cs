@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
@@ -9,15 +10,18 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-        public async Task DeleteUserAsync(int userId)
+        public async Task DeleteUserAsync(int userId, FbTransaction? transaction = null)
         {
             var deleteBuilder = new QueryBuilder<User>()
                 .Delete("USERS")
                 .Where("ID_USER = @UserId");
             string deleteQuery = deleteBuilder.Build();
-            using FbConnection db = _dbConnection;
-            await db.OpenAsync();
-            await db.ExecuteAsync(deleteQuery, new { UserId = userId });
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+            await db.ExecuteAsync(deleteQuery, new { UserId = userId }, transaction);
         }
     }
 }

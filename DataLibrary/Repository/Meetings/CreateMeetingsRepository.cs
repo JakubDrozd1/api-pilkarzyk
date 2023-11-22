@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
@@ -9,14 +10,17 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-        public async Task AddMeetingAsync(Meeting meeting)
+        public async Task AddMeetingAsync(Meeting meeting, FbTransaction? transaction = null)
         {
             var insertBuilder = new QueryBuilder<Meeting>()
                 .Insert("MEETINGS", meeting);
             string insertQuery = insertBuilder.Build();
-            using FbConnection db = _dbConnection;
-            await db.OpenAsync();
-            await db.ExecuteAsync(insertQuery, meeting);
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+            await db.ExecuteAsync(insertQuery, meeting, transaction);
         }
     }
 }

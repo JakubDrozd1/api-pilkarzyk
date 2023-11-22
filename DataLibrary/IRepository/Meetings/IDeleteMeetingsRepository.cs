@@ -1,7 +1,9 @@
-﻿namespace DataLibrary.IRepository
+﻿using FirebirdSql.Data.FirebirdClient;
+
+namespace DataLibrary.IRepository
 {
     public interface IDeleteMeetingsRepository
     {
-        Task DeleteMeetingAsync(int meetingId);
+        Task DeleteMeetingAsync(int meetingId, FbTransaction? transaction = null);
     }
 }

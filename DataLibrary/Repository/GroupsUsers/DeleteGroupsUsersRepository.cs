@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
@@ -9,38 +10,47 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-
-        public async Task DeleteUsersFromGroupAsync(int[] usersId, int groupId)
+        public async Task DeleteUsersFromGroupAsync(int[] usersId, int groupId, FbTransaction? transaction = null)
         {
             var deleteBuilder = new QueryBuilder<GroupsUsers>()
                 .Delete("GROUPS_USERS")
-                .Where("IDGROUP = @GroupId AND IDUSER IN (@UsersId)");
+                .Where("IDGROUP = @GroupId AND IDUSER IN @UsersId");
             string deleteQuery = deleteBuilder.Build();
-            using FbConnection db = _dbConnection;
-            await db.OpenAsync();
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (db.State != ConnectionState.Open && transaction == null)
+            {
+                await db.OpenAsync();
+            }
             await db.ExecuteAsync(deleteQuery, new { GroupId = groupId, UsersId = usersId });
+
         }
 
-        public async Task DeleteAllUsersFromGroupAsync(int groupId)
+        public async Task DeleteAllUsersFromGroupAsync(int groupId, FbTransaction? transaction = null)
         {
             var deleteBuilder = new QueryBuilder<GroupsUsers>()
                 .Delete("GROUPS_USERS")
                 .Where("IDGROUP = @GroupId");
             string deleteQuery = deleteBuilder.Build();
-            using FbConnection db = _dbConnection;
-            await db.OpenAsync();
-            await db.ExecuteAsync(deleteQuery, new { GroupId = groupId });
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (db.State != ConnectionState.Open && transaction == null)
+            {
+                await db.OpenAsync();
+            }
+            await db.ExecuteAsync(deleteQuery, new { GroupId = groupId }, transaction);
         }
 
-        public async Task DeleteAllGroupsFromUser(int userId)
+        public async Task DeleteAllGroupsFromUser(int userId, FbTransaction? transaction = null)
         {
             var deleteBuilder = new QueryBuilder<GroupsUsers>()
                 .Delete("GROUPS_USERS")
                 .Where("IDUSER = @UserId");
             string deleteQuery = deleteBuilder.Build();
-            using FbConnection db = _dbConnection;
-            await db.OpenAsync();
-            await db.ExecuteAsync(deleteQuery, new { UserId = userId });
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (db.State != ConnectionState.Open && transaction == null)
+            {
+                await db.OpenAsync();
+            }
+            await db.ExecuteAsync(deleteQuery, new { UserId = userId }, transaction);
         }
     }
 }

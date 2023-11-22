@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
@@ -9,23 +10,30 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-        public async Task AddUserToGroupAsync(int userId, int groupId)
+        public async Task AddUserToGroupAsync(int userId, int groupId, FbTransaction? transaction = null)
         {
-            ReadUsersRepository readUsersRepository = new(_dbConnection);
-            ReadGroupsRepository readGroupsRepository = new(_dbConnection);
-            _ = await readGroupsRepository.GetGroupByIdAsync(groupId) ?? throw new Exception("Group is null");
-            _ = await readUsersRepository.GetUserByIdAsync(userId) ?? throw new Exception("User is null");
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+            var readGroupsRepository = new ReadGroupsRepository(db);
+            var readUsersRepository = new ReadUsersRepository(db);
+            var readGroupsUsersRepository = new ReadGroupsUsersRepository(db);
+            _ = await readGroupsRepository.GetGroupByIdAsync(groupId, transaction) ?? throw new Exception("Group is null");
+            _ = await readUsersRepository.GetUserByIdAsync(userId, transaction) ?? throw new Exception("User is null");
+            if (await readGroupsUsersRepository.GetUserWithGroup(groupId, userId, transaction) != null)
+            {
+                throw new Exception("User is exist in this group");
+            }
             GroupsUsers groupsUsers = new()
             {
                 IDGROUP = groupId,
                 IDUSER = userId,
             };
-            var insertBuilder = new QueryBuilder<GroupsUsers>()
-                    .Insert("GROUPS_USERS", groupsUsers);
+            var insertBuilder = new QueryBuilder<GroupsUsers>().Insert("GROUPS_USERS", groupsUsers);
             string insertQuery = insertBuilder.Build();
-            await using FbConnection db = _dbConnection;
-            await db.OpenAsync();
-            await db.ExecuteAsync(insertQuery, groupsUsers);
+            await db.ExecuteAsync(insertQuery, groupsUsers, transaction);
         }
     }
 }

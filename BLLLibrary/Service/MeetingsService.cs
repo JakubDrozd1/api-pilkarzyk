@@ -23,10 +23,12 @@ namespace BLLLibrary.Service
         {
             Meeting meeting = new()
             {
-                DESCIPTION = meetingRequest.Description,
+                DESCRIPTION = meetingRequest.Description,
                 QUANTITY = meetingRequest.Quantity,
-                ID_GROUP = meetingRequest.IdGroup,
-                ID_USER = meetingRequest.IdUser
+                DATE_MEETING = meetingRequest.DateMeeting,
+                PLACE = meetingRequest.Place,
+                IDGROUP = meetingRequest.IdGroup,
+                IDUSER = meetingRequest.IdUser
             };
             await _unitOfWork.CreateMeetingsRepository.AddMeetingAsync(meeting);
         }
@@ -36,10 +38,12 @@ namespace BLLLibrary.Service
             Meeting meeting = new()
             {
                 ID_MEETING = meetingId,
-                DESCIPTION = meetingRequest.Description,
+                DESCRIPTION = meetingRequest.Description,
                 QUANTITY = meetingRequest.Quantity,
-                ID_GROUP = meetingRequest.IdGroup,
-                ID_USER = meetingRequest.IdUser
+                DATE_MEETING = meetingRequest.DateMeeting,
+                PLACE = meetingRequest.Place,
+                IDGROUP = meetingRequest.IdGroup,
+                IDUSER = meetingRequest.IdUser
             };
             await _unitOfWork.UpdateMeetingsRepository.UpdateMeetingAsync(meeting);
         }

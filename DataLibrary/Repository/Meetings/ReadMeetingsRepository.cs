@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
@@ -12,22 +13,26 @@ namespace DataLibrary.Repository
         public async Task<List<Meeting>> GetAllMeetingsAsync()
         {
             using FbConnection db = _dbConnection;
-            await db.OpenAsync();
+            if (db.State != ConnectionState.Open)
+                await db.OpenAsync();
             var query = new QueryBuilder<Meeting>()
                 .Select("*")
                 .From("MEETINGS");
             return (await db.QueryAsync<Meeting>(query.Build())).AsList();
         }
 
-        public async Task<Meeting?> GetMeetingByIdAsync(int meetingId)
+        public async Task<Meeting?> GetMeetingByIdAsync(int meetingId, FbTransaction? transaction = null)
         {
-            using FbConnection db = _dbConnection;
-            await db.OpenAsync();
             var query = new QueryBuilder<Meeting>()
                 .Select("*")
                 .From("MEETINGS")
                 .Where("ID_MEETING = @MeetingId");
-            return await db.QueryFirstOrDefaultAsync<Meeting>(query.Build(), new { MeetingId = meetingId });
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+            return await db.QuerySingleOrDefaultAsync<Meeting>(query.Build(), new { MeetingId = meetingId }, transaction);
         }
     }
 }
