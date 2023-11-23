@@ -12,9 +12,9 @@ namespace DataLibrary.Repository
 
         public async Task DeleteRankingAsync(int rankingId, FbTransaction? transaction = null)
         {
-            var deleteBuilder = new QueryBuilder<Ranking>()
-                .Delete("RANKINGS")
-                .Where("ID_RANKING = @RankingId");
+            var deleteBuilder = new QueryBuilder<RANKINGS>()
+                .Delete("RANKINGS ")
+                .Where("ID_RANKING = @RankingId ");
             string deleteQuery = deleteBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (transaction == null && db.State != ConnectionState.Open)

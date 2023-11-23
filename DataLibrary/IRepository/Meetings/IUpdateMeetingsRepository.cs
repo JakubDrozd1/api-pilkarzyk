@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface IUpdateMeetingsRepository
     {
-        Task UpdateMeetingAsync(Meeting meeting, FbTransaction? transaction = null);
+        Task UpdateMeetingAsync(MEETINGS meeting, FbTransaction? transaction = null);
     }
 }

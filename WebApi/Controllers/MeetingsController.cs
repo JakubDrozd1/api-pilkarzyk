@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -12,14 +13,14 @@ namespace WebApi.Controllers
         private readonly IMeetingsService _meetingsService = meetingsService;
 
         [HttpGet]
-        public async Task<ActionResult<List<Meeting>>> GetAllMeetings()
+        public async Task<ActionResult<List<MEETINGS>>> GetAllMeetings([FromQuery] GetMeetingsUsersGroupsPaginationRequest getMeetingsUsersGroupsPaginationRequest)
         {
-            var meetings = await _meetingsService.GetAllMeetingsAsync();
+            var meetings = await _meetingsService.GetAllMeetingsAsync(getMeetingsUsersGroupsPaginationRequest);
             return Ok(meetings);
         }
 
         [HttpGet("{meetingId}")]
-        public async Task<ActionResult<Meeting>> GetMeetingById(int meetingId)
+        public async Task<ActionResult<MEETINGS>> GetMeetingById(int meetingId)
         {
             var meeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
             if (meeting == null)
@@ -30,7 +31,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddMeeting([FromBody] MeetingRequest meetingRequest)
+        public async Task<ActionResult> AddMeeting([FromBody] GetMeetingRequest meetingRequest)
         {
             try
             {
@@ -47,7 +48,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{meetingId}")]
-        public async Task<ActionResult> UpdateMeeting(int meetingId, [FromBody] MeetingRequest meetingRequest)
+        public async Task<ActionResult> UpdateMeeting(int meetingId, [FromBody] GetMeetingRequest meetingRequest)
         {
             var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
             if (existingMeeting == null)

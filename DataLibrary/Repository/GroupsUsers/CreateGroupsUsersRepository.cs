@@ -26,12 +26,12 @@ namespace DataLibrary.Repository
             {
                 throw new Exception("User is exist in this group");
             }
-            GroupsUsers groupsUsers = new()
+            GROUPS_USERS groupsUsers = new()
             {
                 IDGROUP = groupId,
                 IDUSER = userId,
             };
-            var insertBuilder = new QueryBuilder<GroupsUsers>().Insert("GROUPS_USERS", groupsUsers);
+            var insertBuilder = new QueryBuilder<GROUPS_USERS>().Insert("GROUPS_USERS ", groupsUsers);
             string insertQuery = insertBuilder.Build();
             await db.ExecuteAsync(insertQuery, groupsUsers, transaction);
         }

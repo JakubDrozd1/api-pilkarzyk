@@ -1,6 +1,6 @@
 ﻿namespace WebApi.Model.DTO.Request
 {
-    public class GroupRequest
+    public class GetGroupRequest
     {
         public string? Name { get; set; }
     }

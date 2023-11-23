@@ -12,9 +12,9 @@ namespace DataLibrary.Repository
 
         public async Task DeleteMessageAsync(int messageId, FbTransaction? transaction = null)
         {
-            var deleteBuilder = new QueryBuilder<Message>()
-                .Delete("MESSAGES")
-                .Where("ID_MESSAGE = @MessageId");
+            var deleteBuilder = new QueryBuilder<MESSAGES>()
+                .Delete("MESSAGES ")
+                .Where("ID_MESSAGE = @MessageId ");
             string deleteQuery = deleteBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (transaction == null && db.State != ConnectionState.Open)

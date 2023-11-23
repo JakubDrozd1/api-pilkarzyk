@@ -1,6 +1,6 @@
 ﻿namespace DataLibrary.Entities
 {
-    public class Message
+    public class MESSAGES
     {
         public int? ID_MESSAGE { get; set; }
         public int? IDMEETING { get; set; }

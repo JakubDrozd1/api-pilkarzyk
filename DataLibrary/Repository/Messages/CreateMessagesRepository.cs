@@ -10,10 +10,10 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-        public async Task AddMessageAsync(Message message, FbTransaction? transaction = null)
+        public async Task AddMessageAsync(MESSAGES message, FbTransaction? transaction = null)
         {
-            var insertBuilder = new QueryBuilder<Message>()
-                            .Insert("MESSAGES", message);
+            var insertBuilder = new QueryBuilder<MESSAGES>()
+                .Insert("MESSAGES ", message);
             string insertQuery = insertBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (transaction == null && db.State != ConnectionState.Open)

@@ -1,12 +1,12 @@
 ﻿using BLLLibrary.Model.DTO.Response;
+using DataLibrary.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {
     public interface IGroupsUsersService
     {
-        Task<List<GetGroupsWithUsersResponse>> GetAllGroupsFromUserAsync(int userId);
-        Task<List<GetGroupsWithUsersResponse>> GetAllUsersFromGroupAsync(int groupId);
-        Task<GetGroupsWithUsersResponse?> GetUserWithGroup(int groupId, int userId);
+        Task<List<GetGroupsUsersResponse>> GetListGroupsUserAsync(GetUsersGroupsPaginationRequest getUsersGroupsPaginationRequest);
+        Task<GetGroupsUsersResponse?> GetUserWithGroup(int groupId, int userId);
         Task DeleteUsersFromGroupAsync(int[] usersId, int groupId);
         Task DeleteAllUsersFromGroupAsync(int groupId);
         Task DeleteAllGroupsFromUser(int userId);

@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using DataLibrary.Model.DTO;
+using static Dapper.SqlMapper;
 
 namespace DataLibrary
 {
@@ -21,7 +23,7 @@ namespace DataLibrary
 
         public QueryBuilder<T> From(string from)
         {
-            query.Append($" FROM {from}");
+            query.Append($"FROM {from}");
             return this;
         }
 
@@ -29,39 +31,36 @@ namespace DataLibrary
         {
             if (!hasWhere)
             {
-                query.Append($" WHERE {condition}");
+                query.Append($"WHERE {condition}");
                 hasWhere = true;
             }
             else
             {
-                query.Append($" AND {condition}");
+                query.Append($"{condition}");
             }
             return this;
         }
 
-        public QueryBuilder<T> OrWhere(string condition)
+        public QueryBuilder<T> Limit(IPagination Limit)
         {
-            if (!hasWhere)
+            if (Limit.OnPage != -1)
             {
-                query.Append($" WHERE {condition}");
-                hasWhere = true;
+                query.Append($"ROWS {(Limit.Page * Limit.OnPage) + 1} TO {(Limit.Page * Limit.OnPage) + Limit.OnPage} ");
             }
-            else
+            return this;
+        }
+
+        public QueryBuilder<T> OrderBy(ISortable OrderBy)
+        {
+            if (OrderBy.SortColumn != null)
             {
-                query.Append($" OR {condition}");
+                if (OrderBy.SortMode == null || (!OrderBy.SortMode.Equals("asc", StringComparison.CurrentCultureIgnoreCase) && !OrderBy.SortMode.Equals("desc", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    OrderBy.SortMode = "ASC";
+                }
+                query.Append($"ORDER BY {OrderBy.SortColumn} {OrderBy.SortMode} ");
             }
-            return this;
-        }
 
-        public QueryBuilder<T> OrderBy(string orderBy)
-        {
-            query.Append($" ORDER BY {orderBy}");
-            return this;
-        }
-
-        public QueryBuilder<T> Limit(int limit)
-        {
-            query.Append($" LIMIT {limit}");
             return this;
         }
 

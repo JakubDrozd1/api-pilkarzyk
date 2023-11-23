@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface IUpdateMessagesRepository
     {
-        Task UpdateMessageAsync(Message message, FbTransaction? transaction = null);
+        Task UpdateMessageAsync(MESSAGES message, FbTransaction? transaction = null);
     }
 }

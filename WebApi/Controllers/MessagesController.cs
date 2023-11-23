@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -12,14 +13,14 @@ namespace WebApi.Controllers
         private readonly IMessagesService _messagesService = messagesService;
 
         [HttpGet]
-        public async Task<ActionResult<List<Message>>> GetAllMessages()
+        public async Task<ActionResult<List<MESSAGES>>> GetAllMessages([FromQuery] GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest)
         {
-            var messages = await _messagesService.GetAllMessagesAsync();
+            var messages = await _messagesService.GetAllMessagesAsync(getMessagesUsersPaginationRequest);
             return Ok(messages);
         }
         
         [HttpGet("{messageId}")]
-        public async Task<ActionResult<Message>> GetMessageById(int messageId)
+        public async Task<ActionResult<MESSAGES>> GetMessageById(int messageId)
         {
             var message = await _messagesService.GetMessageByIdAsync(messageId);
             if (message == null)
@@ -30,7 +31,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddMessage([FromBody] MessageRequest messageRequest)
+        public async Task<ActionResult> AddMessage([FromBody] GetMessageRequest messageRequest)
         {
             try
             {
@@ -45,7 +46,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{messageId}")]
-        public async Task<ActionResult> UpdateMessage(int messageId, [FromBody] MessageRequest messageRequest)
+        public async Task<ActionResult> UpdateMessage(int messageId, [FromBody] GetMessageRequest messageRequest)
         {
             var existingMessage = await _messagesService.GetMessageByIdAsync(messageId);
             if (existingMessage == null)

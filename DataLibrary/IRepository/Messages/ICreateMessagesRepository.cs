@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface ICreateMessagesRepository
     {
-        Task AddMessageAsync(Message message, FbTransaction? transaction = null);
+        Task AddMessageAsync(MESSAGES message, FbTransaction? transaction = null);
     }
 }

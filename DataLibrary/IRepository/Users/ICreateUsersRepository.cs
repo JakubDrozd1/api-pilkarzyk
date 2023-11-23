@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface ICreateUsersRepository
     {
-        Task AddUserAsync(User user, FbTransaction? transaction = null);
+        Task AddUserAsync(USERS user, FbTransaction? transaction = null);
     }
 }

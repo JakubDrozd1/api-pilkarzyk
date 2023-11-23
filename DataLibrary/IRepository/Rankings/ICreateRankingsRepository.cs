@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface ICreateRankingsRepository
     { 
-        Task AddRankingAsync(Ranking ranking, FbTransaction? transaction = null); 
+        Task AddRankingAsync(RANKINGS ranking, FbTransaction? transaction = null); 
     }
 }

@@ -1,14 +1,15 @@
 ﻿using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {
     public interface IGroupsService
     {
-        Task<List<Groupe>> GetAllGroupsAsync();
-        Task<Groupe?> GetGroupByIdAsync(int groupId);
-        Task AddGroupAsync(GroupRequest groupRequest);
-        Task UpdateGroupAsync(GroupRequest groupRequest, int groupId);
+        Task<List<GROUPS>> GetAllGroupsAsync(GetGroupsPaginationRequest getGroupsPaginationRequest);
+        Task<GROUPS?> GetGroupByIdAsync(int groupId);
+        Task AddGroupAsync(GetGroupRequest groupRequest);
+        Task UpdateGroupAsync(GetGroupRequest groupRequest, int groupId);
         Task DeleteGroupAsync(int groupId);
         Task SaveChangesAsync();
     }

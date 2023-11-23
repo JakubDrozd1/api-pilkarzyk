@@ -1,6 +1,6 @@
 ﻿namespace DataLibrary.Entities
 {
-    public class GroupsUsers
+    public class GROUPS_USERS
     {
         public int? ID_GROUP_USER { get; set; }
         public int? IDUSER { get; set; }

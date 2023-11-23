@@ -1,5 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 using WebApi.Model.DTO.Request;
 
@@ -9,19 +11,19 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<List<Ranking>> GetAllRankingsAsync()
+        public async Task<List<GetRankingsUsersGroupsResponse>> GetAllRankingsAsync(GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest)
         {
-            return await _unitOfWork.ReadRankingsRepository.GetAllRankingsAsync();
+            return await _unitOfWork.ReadRankingsRepository.GetAllRankingsAsync(getRankingsUsersGroupsPaginationRequest);
         }
 
-        public async Task<Ranking?> GetRankingByIdAsync(int rankingId)
+        public async Task<RANKINGS?> GetRankingByIdAsync(int rankingId)
         {
             return await _unitOfWork.ReadRankingsRepository.GetRankingByIdAsync(rankingId);
         }
 
-        public async Task AddRankingAsync(RankingRequest rankingRequest)
+        public async Task AddRankingAsync(GetRankingRequest rankingRequest)
         {
-            Ranking ranking = new()
+            RANKINGS ranking = new()
             {
                 DATE_MEETING = rankingRequest.DateMeeting,
                 IDGROUP = rankingRequest.IdGroup,
@@ -31,9 +33,9 @@ namespace BLLLibrary.Service
             await _unitOfWork.CreateRankingsRepository.AddRankingAsync(ranking);
         }
 
-        public async Task UpdateRankingAsync(RankingRequest rankingRequest, int rankingId)
+        public async Task UpdateRankingAsync(GetRankingRequest rankingRequest, int rankingId)
         {
-            Ranking ranking = new()
+            RANKINGS ranking = new()
             {
                 ID_RANKING = rankingId,
                 DATE_MEETING = rankingRequest.DateMeeting,

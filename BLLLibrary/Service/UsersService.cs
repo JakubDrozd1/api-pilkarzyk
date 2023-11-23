@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using DataLibrary.UoW;
 using WebApi.Model.DTO.Request;
 
@@ -9,19 +10,19 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork unitOfWork = unitOfWork;
 
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest)
         {
-            return await unitOfWork.ReadUsersRepository.GetAllUsersAsync();
+            return await unitOfWork.ReadUsersRepository.GetAllUsersAsync(getUsersPaginationRequest);
         }
 
-        public async Task<User?> GetUserByIdAsync(int userId)
+        public async Task<USERS?> GetUserByIdAsync(int userId)
         {
             return await unitOfWork.ReadUsersRepository.GetUserByIdAsync(userId);
         }
 
-        public async Task AddUserAsync(UserRequest userRequest)
+        public async Task AddUserAsync(GetUserRequest userRequest)
         {
-            User user = new()
+            USERS user = new()
             {
                 EMAIL = userRequest.Email,
                 FIRSTNAME = userRequest.Firstname,
@@ -34,9 +35,9 @@ namespace BLLLibrary.Service
             await unitOfWork.CreateUsersRepository.AddUserAsync(user);
         }
 
-        public async Task UpdateUserAsync(UserRequest userRequest, int userId)
+        public async Task UpdateUserAsync(GetUserRequest userRequest, int userId)
         {
-            User user = new()
+            USERS user = new()
             {
                 ID_USER = userId,
                 EMAIL = userRequest.Email,

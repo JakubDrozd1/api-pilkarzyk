@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface IUpdateGroupsRepository
     {
-        Task UpdateGroupAsync(Groupe group, FbTransaction? transaction = null);
+        Task UpdateGroupAsync(GROUPS group, FbTransaction? transaction = null);
     }
 }

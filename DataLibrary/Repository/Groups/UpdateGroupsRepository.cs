@@ -10,18 +10,22 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-        public async Task UpdateGroupAsync(Groupe group, FbTransaction? transaction = null)
+        public async Task UpdateGroupAsync(GROUPS group, FbTransaction? transaction = null)
         {
-            var updateBuilder = new QueryBuilder<Groupe>()
-                .Update("GROUPS", group)
-                .Where("ID_GROUP = @ID_GROUP");
+
+            var updateBuilder = new QueryBuilder<GROUPS>()
+                .Update("GROUPS ", group)
+                .Where("ID_GROUP = @ID_GROUP ");
             string updateQuery = updateBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
+
             if (transaction == null && db.State != ConnectionState.Open)
             {
                 await db.OpenAsync();
             }
+
             await db.ExecuteAsync(updateQuery, group, transaction);
+
         }
     }
 }

@@ -10,11 +10,11 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-        public async Task UpdateRankingAsync(Ranking ranking, FbTransaction? transaction = null)
+        public async Task UpdateRankingAsync(RANKINGS ranking, FbTransaction? transaction = null)
         {
-            var updateBuilder = new QueryBuilder<Ranking>()
-               .Update("RANKINGS", ranking)
-               .Where("ID_RANKING = @ID_RANKING");
+            var updateBuilder = new QueryBuilder<RANKINGS>()
+               .Update("RANKINGS ", ranking)
+               .Where("ID_RANKING = @ID_RANKING ");
             string updateQuery = updateBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (transaction == null && db.State != ConnectionState.Open)

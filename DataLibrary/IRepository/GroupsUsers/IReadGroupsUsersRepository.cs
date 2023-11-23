@@ -1,12 +1,12 @@
 ﻿using BLLLibrary.Model.DTO.Response;
+using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.IRepository
 {
     public interface IReadGroupsUsersRepository
     {
-        Task<List<GetGroupsWithUsersResponse>> GetAllUsersFromGroupAsync(int groupId, FbTransaction? transaction = null);
-        Task<List<GetGroupsWithUsersResponse>> GetAllGroupsFromUserAsync(int userId, FbTransaction? transaction = null);
-        Task<GetGroupsWithUsersResponse?> GetUserWithGroup(int groupId, int userId, FbTransaction? transaction = null);
+        Task<List<GetGroupsUsersResponse>> GetListGroupsUserAsync(GetUsersGroupsPaginationRequest getUsersGroupsRequest, FbTransaction? transaction = null);
+        Task<GetGroupsUsersResponse?> GetUserWithGroup(int groupId, int userId, FbTransaction? transaction = null);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using DataLibrary.UoW;
 using WebApi.Model.DTO.Request;
 
@@ -9,28 +10,28 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<List<Groupe>> GetAllGroupsAsync()
+        public async Task<List<GROUPS>> GetAllGroupsAsync(GetGroupsPaginationRequest getGroupsPaginationRequest)
         {
-            return await _unitOfWork.ReadGroupsRepository.GetAllGroupsAsync();
+            return await _unitOfWork.ReadGroupsRepository.GetAllGroupsAsync(getGroupsPaginationRequest);
         }
 
-        public async Task<Groupe?> GetGroupByIdAsync(int groupId)
+        public async Task<GROUPS?> GetGroupByIdAsync(int groupId)
         {
             return await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(groupId);
         }
 
-        public async Task AddGroupAsync(GroupRequest groupRequest)
+        public async Task AddGroupAsync(GetGroupRequest groupRequest)
         {
-            Groupe group = new()
+            GROUPS group = new()
             {
                 NAME = groupRequest.Name
             };
             await _unitOfWork.CreateGroupsRepository.AddGroupAsync(group);
         }
 
-        public async Task UpdateGroupAsync(GroupRequest groupRequest, int groupId)
+        public async Task UpdateGroupAsync(GetGroupRequest groupRequest, int groupId)
         {
-            Groupe group = new()
+            GROUPS group = new()
             {
                 ID_GROUP = groupId,
                 NAME = groupRequest.Name

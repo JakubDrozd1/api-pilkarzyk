@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using BLLLibrary.Model.DTO.Response;
+using DataLibrary.Model.DTO.Request;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service
@@ -28,17 +29,12 @@ namespace BLLLibrary.Service
             await _unitOfWork.DeleteGroupsUsersRepository.DeleteUsersFromGroupAsync(usersId, groupId);
         }
 
-        public async Task<List<GetGroupsWithUsersResponse>> GetAllGroupsFromUserAsync(int userId)
+        public async Task<List<GetGroupsUsersResponse>> GetListGroupsUserAsync(GetUsersGroupsPaginationRequest getUsersGroupsPaginationRequest)
         {
-            return await _unitOfWork.ReadGroupsUsersRepository.GetAllGroupsFromUserAsync(userId);
+            return await _unitOfWork.ReadGroupsUsersRepository.GetListGroupsUserAsync(getUsersGroupsPaginationRequest);
         }
 
-        public async Task<List<GetGroupsWithUsersResponse>> GetAllUsersFromGroupAsync(int groupId)
-        {
-            return await _unitOfWork.ReadGroupsUsersRepository.GetAllUsersFromGroupAsync(groupId);
-        }
-
-        public async Task<GetGroupsWithUsersResponse?> GetUserWithGroup(int groupId, int userId)
+        public async Task<GetGroupsUsersResponse?> GetUserWithGroup(int groupId, int userId)
         {
            return await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(userId, groupId);
         }

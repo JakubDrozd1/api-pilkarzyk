@@ -1,11 +1,12 @@
 ﻿using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.IRepository
 {
     public interface IReadUsersRepository
     {
-        Task<List<User>> GetAllUsersAsync();
-        Task<User?> GetUserByIdAsync(int userId, FbTransaction? transaction = null);
+        Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest, FbTransaction? transaction = null);
+        Task<USERS?> GetUserByIdAsync(int userId, FbTransaction? transaction = null);
     }
 }

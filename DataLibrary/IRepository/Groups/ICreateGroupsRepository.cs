@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface ICreateGroupsRepository
     {
-        Task AddGroupAsync(Groupe group, FbTransaction? transaction = null);
+        Task AddGroupAsync(GROUPS group, FbTransaction? transaction = null);
     }
 }

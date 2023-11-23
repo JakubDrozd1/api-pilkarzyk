@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -12,14 +13,14 @@ namespace WebApi.Controllers
         private readonly IRankingsService _rankingsService = rankingsService;
 
         [HttpGet]
-        public async Task<ActionResult<List<Ranking>>> GetAllRankings()
+        public async Task<ActionResult<List<RANKINGS>>> GetAllRankings([FromQuery] GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest)
         {
-            var rankings = await _rankingsService.GetAllRankingsAsync();
+            var rankings = await _rankingsService.GetAllRankingsAsync(getRankingsUsersGroupsPaginationRequest);
             return Ok(rankings);
         }
 
         [HttpGet("{rankingId}")]
-        public async Task<ActionResult<Ranking>> GetRankingById(int rankingId)
+        public async Task<ActionResult<RANKINGS>> GetRankingById(int rankingId)
         {
             var ranking = await _rankingsService.GetRankingByIdAsync(rankingId);
             if (ranking == null)
@@ -30,7 +31,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddRanking([FromBody] RankingRequest rankingRequest)
+        public async Task<ActionResult> AddRanking([FromBody] GetRankingRequest rankingRequest)
         {
             try
             {
@@ -45,7 +46,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{rankingId}")]
-        public async Task<ActionResult> UpdateRanking(int rankingId, [FromBody] RankingRequest rankingRequest)
+        public async Task<ActionResult> UpdateRanking(int rankingId, [FromBody] GetRankingRequest rankingRequest)
         {
             var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);
             if (existingRanking == null)

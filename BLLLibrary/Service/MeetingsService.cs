@@ -1,5 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 using WebApi.Model.DTO.Request;
 
@@ -9,19 +11,19 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<List<Meeting>> GetAllMeetingsAsync()
+        public async Task<List<GetMeetingUsersGroupsResponse>> GetAllMeetingsAsync(GetMeetingsUsersGroupsPaginationRequest getMeetingsPaginationRequest)
         {
-            return await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsAsync();
+            return await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsAsync(getMeetingsPaginationRequest);
         }
 
-        public async Task<Meeting?> GetMeetingByIdAsync(int meetingId)
+        public async Task<MEETINGS?> GetMeetingByIdAsync(int meetingId)
         {
             return await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
         }
 
-        public async Task AddMeetingAsync(MeetingRequest meetingRequest)
+        public async Task AddMeetingAsync(GetMeetingRequest meetingRequest)
         {
-            Meeting meeting = new()
+            MEETINGS meeting = new()
             {
                 DESCRIPTION = meetingRequest.Description,
                 QUANTITY = meetingRequest.Quantity,
@@ -33,9 +35,9 @@ namespace BLLLibrary.Service
             await _unitOfWork.CreateMeetingsRepository.AddMeetingAsync(meeting);
         }
 
-        public async Task UpdateMeetingAsync(MeetingRequest meetingRequest, int meetingId)
+        public async Task UpdateMeetingAsync(GetMeetingRequest meetingRequest, int meetingId)
         {
-            Meeting meeting = new()
+            MEETINGS meeting = new()
             {
                 ID_MEETING = meetingId,
                 DESCRIPTION = meetingRequest.Description,

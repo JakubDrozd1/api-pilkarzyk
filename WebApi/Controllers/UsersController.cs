@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -12,14 +13,14 @@ namespace WebApi.Controllers
         private readonly IUsersService _usersService = usersService;
 
         [HttpGet]
-        public async Task<ActionResult<List<User>>> GetAllUsers()
+        public async Task<ActionResult<List<USERS>>> GetAllUsers([FromQuery] GetUsersPaginationRequest getUsersPaginationRequest)
         {
-            var users = await _usersService.GetAllUsersAsync();
+            var users = await _usersService.GetAllUsersAsync(getUsersPaginationRequest);
             return Ok(users);
         }
 
         [HttpGet("{userId}")]
-        public async Task<ActionResult<User>> GetUserById(int userId)
+        public async Task<ActionResult<USERS>> GetUserById(int userId)
         {
             var user = await _usersService.GetUserByIdAsync(userId);
             if (user == null)
@@ -30,7 +31,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddUser([FromBody] UserRequest userRequest)
+        public async Task<ActionResult> AddUser([FromBody] GetUserRequest userRequest)
         {
             try
             {
@@ -47,7 +48,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{userId}")]
-        public async Task<ActionResult> UpdateUser(int userId, [FromBody] UserRequest userRequest)
+        public async Task<ActionResult> UpdateUser(int userId, [FromBody] GetUserRequest userRequest)
         {
             var existingUser = await _usersService.GetUserByIdAsync(userId);
             if (existingUser == null)

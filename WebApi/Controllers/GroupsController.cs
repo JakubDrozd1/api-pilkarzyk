@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -12,14 +13,14 @@ namespace WebApi.Controllers
         private readonly IGroupsService _groupsService = groupsService;
 
         [HttpGet]
-        public async Task<ActionResult<List<Groupe>>> GetAllGroups()
+        public async Task<ActionResult<List<GROUPS>>> GetAllGroups([FromQuery] GetGroupsPaginationRequest getGroupsPaginationRequest)
         {
-            var group = await _groupsService.GetAllGroupsAsync();
+            var group = await _groupsService.GetAllGroupsAsync(getGroupsPaginationRequest);
             return Ok(group);
         }
 
         [HttpGet("{groupId}")]
-        public async Task<ActionResult<Groupe>> GetGroupById(int groupId)
+        public async Task<ActionResult<GROUPS>> GetGroupById(int groupId)
         {
             var group = await _groupsService.GetGroupByIdAsync(groupId);
             if (group == null)
@@ -30,7 +31,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddGroup([FromBody] GroupRequest groupRequest)
+        public async Task<ActionResult> AddGroup([FromBody] GetGroupRequest groupRequest)
         {
             try
             {
@@ -45,7 +46,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{groupId}")]
-        public async Task<ActionResult> UpdateGroup(int groupId, [FromBody] GroupRequest groupRequest)
+        public async Task<ActionResult> UpdateGroup(int groupId, [FromBody] GetGroupRequest groupRequest)
         {
             var existingGroup = await _groupsService.GetGroupByIdAsync(groupId);
             if (existingGroup == null)

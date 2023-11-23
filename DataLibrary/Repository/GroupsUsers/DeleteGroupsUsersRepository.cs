@@ -12,24 +12,24 @@ namespace DataLibrary.Repository
 
         public async Task DeleteUsersFromGroupAsync(int[] usersId, int groupId, FbTransaction? transaction = null)
         {
-            var deleteBuilder = new QueryBuilder<GroupsUsers>()
-                .Delete("GROUPS_USERS")
-                .Where("IDGROUP = @GroupId AND IDUSER IN @UsersId");
+            var deleteBuilder = new QueryBuilder<GROUPS_USERS>()
+                .Delete("GROUPS_USERS ")
+                .Where("IDGROUP = @GroupId AND IDUSER IN @UsersId ");
             string deleteQuery = deleteBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (db.State != ConnectionState.Open && transaction == null)
             {
                 await db.OpenAsync();
             }
-            await db.ExecuteAsync(deleteQuery, new { GroupId = groupId, UsersId = usersId });
+            await db.ExecuteAsync(deleteQuery, new { GroupId = groupId, UsersId = usersId }, transaction);
 
         }
 
         public async Task DeleteAllUsersFromGroupAsync(int groupId, FbTransaction? transaction = null)
         {
-            var deleteBuilder = new QueryBuilder<GroupsUsers>()
-                .Delete("GROUPS_USERS")
-                .Where("IDGROUP = @GroupId");
+            var deleteBuilder = new QueryBuilder<GROUPS_USERS>()
+                .Delete("GROUPS_USERS ")
+                .Where("IDGROUP = @GroupId ");
             string deleteQuery = deleteBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (db.State != ConnectionState.Open && transaction == null)
@@ -41,9 +41,9 @@ namespace DataLibrary.Repository
 
         public async Task DeleteAllGroupsFromUser(int userId, FbTransaction? transaction = null)
         {
-            var deleteBuilder = new QueryBuilder<GroupsUsers>()
-                .Delete("GROUPS_USERS")
-                .Where("IDUSER = @UserId");
+            var deleteBuilder = new QueryBuilder<GROUPS_USERS>()
+                .Delete("GROUPS_USERS ")
+                .Where("IDUSER = @UserId ");
             string deleteQuery = deleteBuilder.Build();
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (db.State != ConnectionState.Open && transaction == null)

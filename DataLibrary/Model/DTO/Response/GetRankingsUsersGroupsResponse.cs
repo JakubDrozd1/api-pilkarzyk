@@ -1,7 +1,10 @@
-﻿namespace WebApi.Model.DTO.Request
+﻿namespace DataLibrary.Model.DTO.Response
 {
-    public class UserRequest
+    public class GetRankingsUsersGroupsResponse
     {
+        public DateTime? DateMeeting { get; set; }
+        public int? Point {  get; set; }
+        public string? Name { get; set; }
         public string? Login { get; set; }
         public string? Password { get; set; }
         public string? Email { get; set; }

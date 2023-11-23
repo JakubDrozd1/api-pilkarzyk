@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface IUpdateRankingsRepository
     {
-        Task UpdateRankingAsync(Ranking ranking, FbTransaction? transaction = null);
+        Task UpdateRankingAsync(RANKINGS ranking, FbTransaction? transaction = null);
     }
 }

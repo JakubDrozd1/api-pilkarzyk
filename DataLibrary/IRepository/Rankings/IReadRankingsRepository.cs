@@ -1,11 +1,13 @@
 ﻿using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.IRepository
 {
     public interface IReadRankingsRepository
     {
-        Task<List<Ranking>> GetAllRankingsAsync();
-        Task<Ranking?> GetRankingByIdAsync(int rankingId, FbTransaction? transaction = null);
+        Task<List<GetRankingsUsersGroupsResponse>> GetAllRankingsAsync(GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest, FbTransaction? transaction = null);
+        Task<RANKINGS?> GetRankingByIdAsync(int rankingId, FbTransaction? transaction = null);
     }
 }
