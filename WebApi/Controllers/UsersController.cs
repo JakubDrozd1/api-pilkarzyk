@@ -30,6 +30,18 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
+        [HttpGet("login")]
+        public async Task<ActionResult<USERS>> GetUserByLoginAndPassword([FromQuery] GetUsersByLoginAndPassword getUsersByLoginAndPassword)
+        {
+            var user = await _usersService.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
+            await _usersService.SaveChangesAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
         [HttpPost]
         public async Task<ActionResult> AddUser([FromBody] GetUserRequest userRequest)
         {

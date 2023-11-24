@@ -9,6 +9,7 @@
         public string? FIRSTNAME { get; set; }
         public string? SURNAME { get; set; }
         public int? PHONE_NUMBER { get; set; }
-        public int? ACCOUNT_TYPE { get; set; }
+        public bool? IS_ADMIN { get; set; }
+        public string? SALT {  get; set; }
     }
 }

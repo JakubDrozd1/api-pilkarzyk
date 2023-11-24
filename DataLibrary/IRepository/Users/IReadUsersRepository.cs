@@ -8,5 +8,7 @@ namespace DataLibrary.IRepository
     {
         Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest, FbTransaction? transaction = null);
         Task<USERS?> GetUserByIdAsync(int userId, FbTransaction? transaction = null);
+        Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword, FbTransaction? transaction = null);
+        Task<USERS?> GetUserByLoginAsync(string? login, FbTransaction? transaction = null);
     }
 }

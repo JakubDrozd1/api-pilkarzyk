@@ -13,13 +13,13 @@ namespace DataLibrary.Repository
         private readonly FbConnection _dbConnection = dbConnection;
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
+                $"gu.{nameof(GROUPS_USERS.ACCOUNT_TYPE)} AS AccountType, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
-                $"u.{nameof(USERS.PASSWORD)}, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
-                $"u.{nameof(USERS.ACCOUNT_TYPE)} AS AccountType ";
+                $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin ";
         private static readonly string FROM
               = $"{nameof(GROUPS_USERS)} gu " +
                 $"JOIN {nameof(GROUPS)} g ON gu.{nameof(GROUPS_USERS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +

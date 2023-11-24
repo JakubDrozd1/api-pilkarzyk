@@ -17,23 +17,38 @@ namespace DataLibrary.Repository
             {
                 await db.OpenAsync();
             }
-            var readGroupsRepository = new ReadGroupsRepository(db);
-            var readUsersRepository = new ReadUsersRepository(db);
-            var readGroupsUsersRepository = new ReadGroupsUsersRepository(db);
-            _ = await readGroupsRepository.GetGroupByIdAsync(groupId, transaction) ?? throw new Exception("Group is null");
-            _ = await readUsersRepository.GetUserByIdAsync(userId, transaction) ?? throw new Exception("User is null");
-            if (await readGroupsUsersRepository.GetUserWithGroup(groupId, userId, transaction) != null)
+            var localTransaction = transaction ?? await db.BeginTransactionAsync();
+            try
             {
-                throw new Exception("User is exist in this group");
+                var readGroupsRepository = new ReadGroupsRepository(db);
+                var readUsersRepository = new ReadUsersRepository(db);
+                var readGroupsUsersRepository = new ReadGroupsUsersRepository(db);
+                var group = await readGroupsRepository.GetGroupByIdAsync(groupId, localTransaction) ?? throw new Exception("Group is null");
+                var user = await readUsersRepository.GetUserByIdAsync(userId, localTransaction) ?? throw new Exception("User is null");
+                if (await readGroupsUsersRepository.GetUserWithGroup(groupId, userId, localTransaction) != null)
+                {
+                    throw new Exception("User is already in this group");
+                }
+                GROUPS_USERS groupsUsers = new()
+                {
+                    IDGROUP = groupId,
+                    IDUSER = userId,
+                    ACCOUNT_TYPE = 0
+                };
+                var insertBuilder = new QueryBuilder<GROUPS_USERS>().Insert("GROUPS_USERS ", groupsUsers);
+                string insertQuery = insertBuilder.Build();
+                await db.ExecuteAsync(insertQuery, groupsUsers, localTransaction);
+                if (transaction == null)
+                {
+                    localTransaction.Commit();
+                }
             }
-            GROUPS_USERS groupsUsers = new()
+            catch (Exception ex)
             {
-                IDGROUP = groupId,
-                IDUSER = userId,
-            };
-            var insertBuilder = new QueryBuilder<GROUPS_USERS>().Insert("GROUPS_USERS ", groupsUsers);
-            string insertQuery = insertBuilder.Build();
-            await db.ExecuteAsync(insertQuery, groupsUsers, transaction);
+                if (transaction == null)
+                    localTransaction?.Rollback();
+                throw new Exception($"Error while executing query: {ex.Message}");
+            }
         }
     }
 }

@@ -14,10 +14,9 @@ namespace DataLibrary.Repository
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " + 
                 $"u.{nameof(USERS.LOGIN)}, " +
-                $"u.{nameof(USERS.PASSWORD)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +
-                $"u.{nameof(USERS.ACCOUNT_TYPE)} AS AccountType, " +
+                $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
                 $"r.{nameof(RANKINGS.DATE_MEETING)} AS DateMeeting, " +

@@ -5,5 +5,7 @@
         public int? ID_GROUP_USER { get; set; }
         public int? IDUSER { get; set; }
         public int? IDGROUP { get; set; }
+        public int? ACCOUNT_TYPE { get; set; }
+
     }
 }

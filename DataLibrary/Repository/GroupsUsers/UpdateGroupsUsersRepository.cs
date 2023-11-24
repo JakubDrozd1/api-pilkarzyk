@@ -27,10 +27,11 @@ namespace DataLibrary.Repository
                 }
                 localTransaction.Commit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                localTransaction.Rollback();
-                throw;
+                if (localTransaction != null)
+                    localTransaction?.Rollback();
+                throw new Exception($"Error while executing query: {ex.Message}");
             }
         }
 
@@ -55,7 +56,7 @@ namespace DataLibrary.Repository
             }
             catch (Exception)
             {
-                localTransaction.Rollback();
+                localTransaction?.Rollback();
                 throw;
             }
         }

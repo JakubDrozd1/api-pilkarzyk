@@ -13,11 +13,11 @@ namespace DataLibrary.Repository
         private readonly FbConnection _dbConnection = dbConnection;
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
+                $"gu.{nameof(GROUPS_USERS.ACCOUNT_TYPE)} AS AccountType, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
-                $"u.{nameof(USERS.PASSWORD)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +
-                $"u.{nameof(USERS.ACCOUNT_TYPE)} AS AccountType, " +
+                $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
@@ -27,7 +27,8 @@ namespace DataLibrary.Repository
         private static readonly string FROM
               = $"{nameof(MEETINGS)} m " +
                 $"LEFT JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
-                $"LEFT JOIN {nameof(USERS)} u ON m.{nameof(MEETINGS.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
+                $"LEFT JOIN {nameof(USERS)} u ON m.{nameof(MEETINGS.IDUSER)} = u.{nameof(USERS.ID_USER)} " +
+                $"LEFT JOIN {nameof(GROUPS_USERS)} gu ON gu.{nameof(GROUPS_USERS.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
 
         public async Task<List<GetMeetingUsersGroupsResponse>> GetAllMeetingsAsync(GetMeetingsUsersGroupsPaginationRequest getMeetingsRequest, FbTransaction? transaction = null)
         {

@@ -31,7 +31,7 @@ namespace DataLibrary
         {
             if (!hasWhere)
             {
-                query.Append($"WHERE {condition}");
+                query.Append($" WHERE {condition}");
                 hasWhere = true;
             }
             else
@@ -70,7 +70,7 @@ namespace DataLibrary
             var columns = string.Join(", ", properties.Select(p => p.Name).Skip(1));
             var valueParams = string.Join(", ", properties.Select(p => $"@{p.Name}").Skip(1));
 
-            query.Append($"INSERT INTO {tableName} ({columns}) VALUES ({valueParams})");
+            query.Append($"INSERT INTO {tableName} ({columns}) VALUES ({valueParams}) ");
 
             return this;
         }
