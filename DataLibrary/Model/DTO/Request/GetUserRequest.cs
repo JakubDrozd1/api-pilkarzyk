@@ -2,12 +2,12 @@
 {
     public class GetUserRequest
     {
-        public string? Login { get; set; }
-        public string? Password { get; set; }
-        public string? Email { get; set; }
-        public string? Firstname { get; set; }
-        public string? Surname { get; set; }
-        public int? PhoneNumber { get; set; }
-        public bool? IsAdmin { get; set; }
+        public required string Login { get; set; }
+        public required string Password { get; set; }
+        public required string Email { get; set; }
+        public required string Firstname { get; set; }
+        public required string Surname { get; set; }
+        public int PhoneNumber { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }
