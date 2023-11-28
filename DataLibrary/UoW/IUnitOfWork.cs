@@ -10,6 +10,7 @@ namespace DataLibrary.UoW
         ICreateRankingsRepository CreateRankingsRepository { get; }
         ICreateUsersRepository CreateUsersRepository { get; }
         ICreateGroupsUsersRepository CreateGroupsUsersRepository { get; }
+        ICreateTokensRepository CreateTokensRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }

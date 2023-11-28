@@ -3,12 +3,14 @@ using DataLibrary.ConnectionProvider;
 using DataLibrary.IRepository;
 using DataLibrary.Repository;
 using FirebirdSql.Data.FirebirdClient;
+using Microsoft.Extensions.Configuration;
 
 namespace DataLibrary.UoW
 {
-    public class UnitOfWork(IConnectionProvider _connectionProvider) : IUnitOfWork
+    public class UnitOfWork(IConnectionProvider _connectionProvider, IConfiguration configuration) : IUnitOfWork
     {
         private readonly FbConnection dbConnection = _connectionProvider.GetConnection();
+        private readonly IConfiguration configuration = configuration;
         private FbTransaction? dbTransaction = null;
 
         public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection);
@@ -17,6 +19,7 @@ namespace DataLibrary.UoW
         public ICreateRankingsRepository CreateRankingsRepository => new CreateRankingsRepository(dbConnection);
         public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection);
         public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection);
+        public ICreateTokensRepository CreateTokensRepository => new CreateTokensRepository(configuration, dbConnection);
 
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection);

@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository
 {
     public interface IReadTokensRepository
     {
-        Task<TOKENS?> GetTokenByUserAsync(int userId, FbTransaction? transaction = null);
+        Task<ACCESS_TOKENS?> GetTokenByUserAsync(int userId, FbTransaction? transaction = null);
     }
 }

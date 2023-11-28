@@ -9,13 +9,13 @@ namespace DataLibrary.Repository
     public class ReadTokensRepository(FbConnection dbConnection) : IReadTokensRepository
     {
         private readonly FbConnection dbConnection = dbConnection;
-        public async Task<TOKENS?> GetTokenByUserAsync(int userId, FbTransaction? transaction = null)
+        public async Task<ACCESS_TOKENS?> GetTokenByUserAsync(int userId, FbTransaction? transaction = null)
         {
 
-            var query = new QueryBuilder<TOKENS>()
+            var query = new QueryBuilder<ACCESS_TOKENS>()
                 .Select("* ")
-                .From("TOKENS ")
-                .Where("IDUser = @UserId ");
+                .From("ACCESS_TOKENS ")
+                .Where("IDUSER = @UserId ");
             FbConnection db = transaction?.Connection ?? dbConnection;
 
             if (transaction == null && db.State != ConnectionState.Open)
@@ -23,7 +23,7 @@ namespace DataLibrary.Repository
                 await db.OpenAsync();
             }
 
-            return await db.QuerySingleOrDefaultAsync<TOKENS>(query.Build(), new { UserId = userId }, transaction);
+            return await db.QuerySingleOrDefaultAsync<ACCESS_TOKENS>(query.Build(), new { UserId = userId }, transaction);
         }
     }
 }

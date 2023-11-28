@@ -1,7 +1,10 @@
+using BLLLibrary;
 using BLLLibrary.IService;
 using BLLLibrary.Service;
 using DataLibrary.ConnectionProvider;
 using DataLibrary.UoW;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,7 @@ builder.Services.AddScoped<IMeetingsService, MeetingsService>();
 builder.Services.AddScoped<IMessagesService, MessagesService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<IGroupsUsersService, GroupsUsersService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -22,31 +26,27 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     options =>
     {
-        options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Aimer API", Version = "v1" });
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "Aimer API", Version = "v1" });
         options.DocInclusionPredicate((docName, description) => true);
-        options.AddSecurityDefinition("bearerAuth", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+        options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme()
         {
             Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
             Name = "Authorization",
-            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-            Type = Microsoft.OpenApi.Models.SecuritySchemeType.OAuth2,
-            Flows = new Microsoft.OpenApi.Models.OpenApiOAuthFlows()
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.OAuth2,
+            Flows = new OpenApiOAuthFlows()
             {
-                Password = new Microsoft.OpenApi.Models.OpenApiOAuthFlow()
+                Password = new OpenApiOAuthFlow()
                 {
-                    TokenUrl = new Uri("/api/Token", UriKind.Relative),
-                    Scopes = new Dictionary<string, string>()
-                    {
-                        { "api", "Access Aimer API" }
-                    }
-                }
+                    TokenUrl = new Uri("/api/token/generate", UriKind.Relative),
+                    Scopes = { }
+                },
             }
+
         });
     }
     );
-
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

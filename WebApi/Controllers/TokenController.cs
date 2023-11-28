@@ -1,49 +1,50 @@
-﻿using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Request;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using BLLLibrary;
+using DataLibrary.Model.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+
 
 namespace WebApi.Controllers
 {
     [Route("api/token")]
     [ApiController]
-    public class TokenController : ControllerBase
+    public class TokenController(ITokenService tokenService) : ControllerBase
     {
+        private readonly ITokenService _tokenService = tokenService;
 
-        //[HttpPost]
-        //public async Task<IActionResult> GetToken([FromBody] GetUsersByLoginAndPassword model)
-        //{
-        //    var user = await _userManager.FindByNameAsync(model.Username);
+        [HttpPost]
+        public async Task<IActionResult> GenerateJwtTokenAsync([FromBody] GetTokenRequest getTokenRequest)
+        {
+            try
+            {
+                var tokenResponse = await _tokenService.GenerateJwtTokenAsync(getTokenRequest);
+                return Ok(tokenResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
-        //    if (user == null)
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-
-        //    if (result.Succeeded)
-        //    {
-        //        // Tutaj możesz sprawdzić, czy użytkownik jest administratorem
-        //        var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-
-        //        // Generuj token JWT
-        //        var token = GenerateJwtToken(user, isAdmin);
-
-        //        return Ok(new { Token = token });
-        //    }
-
-        //    return Unauthorized();
-        //}
-
-        //private string GenerateJwtToken(ApplicationUser user, bool isAdmin)
-        //{
-        //    // Tu implementuj logikę generowania JWT tokena
-        //    // Możesz skorzystać z System.IdentityModel.Tokens.Jwt lub Microsoft.IdentityModel.Tokens
-        //    // Na przykład, utworzenie SecurityTokenDescriptor, który opisuje, jak ma być zbudowany token
-        //    // i użyć JwtSecurityTokenHandler do jego utworzenia.
-        //    // Zwróć gotowy token jako string.
-        //}
+        [HttpPost]
+        [Route("generate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetTokenResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "Generowanie tokenu JWT", Description = "Generuje token JWT na podstawie danych autoryzacyjnych.")]
+        public async Task<IActionResult> GenerateToken([FromForm] GetTokenRequest tokenRequest)
+        {
+            try
+            {
+                tokenRequest.Client_secret = "@%7fMQSMMmhc5x40M8S4Y%A%h7l7!5Zcfkm!uXKL8nzvYO%ITc4P!hm14ENP08GD*Nh8XWumaL*yEur8";
+                tokenRequest.Client_id = "api.pilkarzyk";
+                var tokenResponse = await _tokenService.GenerateJwtTokenAsync(tokenRequest);
+                await _tokenService.SaveChangesAsync();
+                return Ok(tokenResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

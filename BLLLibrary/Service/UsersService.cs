@@ -9,16 +9,16 @@ namespace BLLLibrary.Service
 {
     public class UsersService(IUnitOfWork unitOfWork) : IUsersService
     {
-        private readonly IUnitOfWork unitOfWork = unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest)
         {
-            return await unitOfWork.ReadUsersRepository.GetAllUsersAsync(getUsersPaginationRequest);
+            return await _unitOfWork.ReadUsersRepository.GetAllUsersAsync(getUsersPaginationRequest);
         }
 
         public async Task<USERS?> GetUserByIdAsync(int userId)
         {
-            return await unitOfWork.ReadUsersRepository.GetUserByIdAsync(userId);
+            return await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(userId);
         }
 
         public async Task AddUserAsync(GetUserRequest userRequest)
@@ -36,7 +36,7 @@ namespace BLLLibrary.Service
                 IS_ADMIN = userRequest.IsAdmin,
                 SALT = salt
             };
-            await unitOfWork.CreateUsersRepository.AddUserAsync(user);
+            await _unitOfWork.CreateUsersRepository.AddUserAsync(user);
         }
 
         public async Task UpdateUserAsync(GetUserRequest userRequest, int userId)
@@ -55,22 +55,22 @@ namespace BLLLibrary.Service
                 IS_ADMIN = userRequest.IsAdmin,
                 SALT = salt
             };
-            await unitOfWork.UpdateUsersRepository.UpdateUserAsync(user);
+            await _unitOfWork.UpdateUsersRepository.UpdateUserAsync(user);
         }
 
         public async Task DeleteUserAsync(int userId)
         {
-            await unitOfWork.DeleteUsersRepository.DeleteUserAsync(userId);
+            await _unitOfWork.DeleteUsersRepository.DeleteUserAsync(userId);
         }
 
         public async Task SaveChangesAsync()
         {
-            await unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword, FbTransaction? transaction = null)
         {
-            return await unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
+            return await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
         }
     }
 }
