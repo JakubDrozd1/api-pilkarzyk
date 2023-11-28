@@ -3,7 +3,6 @@ using BLLLibrary.IService;
 using BLLLibrary.Service;
 using DataLibrary.ConnectionProvider;
 using DataLibrary.UoW;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,17 +19,22 @@ builder.Services.AddScoped<IGroupsUsersService, GroupsUsersService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().
+                AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     options =>
     {
-        options.SwaggerDoc("v1", new OpenApiInfo { Title = "Aimer API", Version = "v1" });
+        options.SwaggerDoc("v1", new OpenApiInfo { Title = "api.pilkarzyk", Version = "v1" });
         options.DocInclusionPredicate((docName, description) => true);
         options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme()
         {
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Description = "JWT Authorization header using the Bearer scheme.",
             Name = "Authorization",
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.OAuth2,

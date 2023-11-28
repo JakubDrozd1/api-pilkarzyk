@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     {
         private readonly ITokenService _tokenService = tokenService;
 
-        [HttpPost]
+        [HttpPost(Name = "GenerateJwtTokenAsync")]
         public async Task<IActionResult> GenerateJwtTokenAsync([FromBody] GetTokenRequest getTokenRequest)
         {
             try
@@ -26,11 +26,10 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("generate")]
+        [HttpPost("generate", Name = "GenerateToken")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetTokenResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation(Summary = "Generowanie tokenu JWT", Description = "Generuje token JWT na podstawie danych autoryzacyjnych.")]
+        [SwaggerOperation(Summary = "Generowanie tokenu JWT", Description = "Generuje token JWT na podstawie danych autoryzacyjnych.", OperationId = "GenerateToken")]
         public async Task<IActionResult> GenerateToken([FromForm] GetTokenRequest tokenRequest)
         {
             try

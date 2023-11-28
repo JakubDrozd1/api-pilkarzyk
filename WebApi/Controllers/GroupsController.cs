@@ -12,14 +12,14 @@ namespace WebApi.Controllers
     {
         private readonly IGroupsService _groupsService = groupsService;
 
-        [HttpGet]
+        [HttpGet(Name = "GetAllGroups")]
         public async Task<ActionResult<List<GROUPS>>> GetAllGroups([FromQuery] GetGroupsPaginationRequest getGroupsPaginationRequest)
         {
             var group = await _groupsService.GetAllGroupsAsync(getGroupsPaginationRequest);
             return Ok(group);
         }
 
-        [HttpGet("{groupId}")]
+        [HttpGet("{groupId}", Name = "GetGroupById")]
         public async Task<ActionResult<GROUPS>> GetGroupById(int groupId)
         {
             var group = await _groupsService.GetGroupByIdAsync(groupId);
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
             return Ok(group);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "AddGroup")]
         public async Task<ActionResult> AddGroup([FromBody] GetGroupRequest groupRequest)
         {
             try
@@ -45,7 +45,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("{groupId}")]
+        [HttpPut("{groupId}", Name = "UpdateGroup")]
         public async Task<ActionResult> UpdateGroup(int groupId, [FromBody] GetGroupRequest groupRequest)
         {
             var existingGroup = await _groupsService.GetGroupByIdAsync(groupId);
@@ -65,7 +65,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("{groupId}")]
+        [HttpDelete("{groupId}", Name = "DeleteGroup")]
         public async Task<ActionResult> DeleteGroup(int groupId)
         {
             var existingGroup = await _groupsService.GetGroupByIdAsync(groupId);

@@ -12,14 +12,14 @@ namespace WebApi.Controllers
     {
         private readonly IRankingsService _rankingsService = rankingsService;
 
-        [HttpGet]
+        [HttpGet(Name = "GetAllRankings")]
         public async Task<ActionResult<List<RANKINGS>>> GetAllRankings([FromQuery] GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest)
         {
             var rankings = await _rankingsService.GetAllRankingsAsync(getRankingsUsersGroupsPaginationRequest);
             return Ok(rankings);
         }
 
-        [HttpGet("{rankingId}")]
+        [HttpGet("{rankingId}", Name = "GetRankingById")]
         public async Task<ActionResult<RANKINGS>> GetRankingById(int rankingId)
         {
             var ranking = await _rankingsService.GetRankingByIdAsync(rankingId);
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
             return Ok(ranking);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "AddRanking")]
         public async Task<ActionResult> AddRanking([FromBody] GetRankingRequest rankingRequest)
         {
             try
@@ -45,7 +45,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("{rankingId}")]
+        [HttpPut("{rankingId}", Name = "UpdateRanking")]
         public async Task<ActionResult> UpdateRanking(int rankingId, [FromBody] GetRankingRequest rankingRequest)
         {
             var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);
@@ -65,7 +65,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("{rankingId}")]
+        [HttpDelete("{rankingId}", Name = "DeleteRanking")]
         public async Task<ActionResult> DeleteRanking(int rankingId)
         {
             var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);

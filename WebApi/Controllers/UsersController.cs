@@ -12,14 +12,14 @@ namespace WebApi.Controllers
     {
         private readonly IUsersService _usersService = usersService;
 
-        [HttpGet]
+        [HttpGet(Name = "GetAllUsers")]
         public async Task<ActionResult<List<USERS>>> GetAllUsers([FromQuery] GetUsersPaginationRequest getUsersPaginationRequest)
         {
             var users = await _usersService.GetAllUsersAsync(getUsersPaginationRequest);
             return Ok(users);
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}", Name = "GetUserById")]
         public async Task<ActionResult<USERS>> GetUserById(int userId)
         {
             var user = await _usersService.GetUserByIdAsync(userId);
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
-        [HttpGet("login")]
+        [HttpGet("login", Name = "GetUserByLoginAndPassword")]
         public async Task<ActionResult<USERS>> GetUserByLoginAndPassword([FromQuery] GetUsersByLoginAndPassword getUsersByLoginAndPassword)
         {
             var user = await _usersService.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
@@ -42,7 +42,7 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "AddUser")]
         public async Task<ActionResult> AddUser([FromBody] GetUserRequest userRequest)
         {
             try
@@ -59,7 +59,7 @@ namespace WebApi.Controllers
 
         }
 
-        [HttpPut("{userId}")]
+        [HttpPut("{userId}", Name = "UpdateUser")]
         public async Task<ActionResult> UpdateUser(int userId, [FromBody] GetUserRequest userRequest)
         {
             var existingUser = await _usersService.GetUserByIdAsync(userId);
@@ -79,7 +79,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("{userId}")]
+        [HttpDelete("{userId}", Name = "DeleteUser")]
         public async Task<ActionResult> DeleteUser(int userId)
         {
             var existingUser = await _usersService.GetUserByIdAsync(userId);

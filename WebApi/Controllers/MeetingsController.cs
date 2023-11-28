@@ -12,14 +12,14 @@ namespace WebApi.Controllers
     {
         private readonly IMeetingsService _meetingsService = meetingsService;
 
-        [HttpGet]
+        [HttpGet(Name = "GetAllMeetings")]
         public async Task<ActionResult<List<MEETINGS>>> GetAllMeetings([FromQuery] GetMeetingsUsersGroupsPaginationRequest getMeetingsUsersGroupsPaginationRequest)
         {
             var meetings = await _meetingsService.GetAllMeetingsAsync(getMeetingsUsersGroupsPaginationRequest);
             return Ok(meetings);
         }
 
-        [HttpGet("{meetingId}")]
+        [HttpGet("{meetingId}", Name = "GetMeetingById")]
         public async Task<ActionResult<MEETINGS>> GetMeetingById(int meetingId)
         {
             var meeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
             return Ok(meeting);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "AddMeeting")]
         public async Task<ActionResult> AddMeeting([FromBody] GetMeetingRequest meetingRequest)
         {
             try
@@ -47,7 +47,7 @@ namespace WebApi.Controllers
 
         }
 
-        [HttpPut("{meetingId}")]
+        [HttpPut("{meetingId}", Name = "UpdateMeeting")]
         public async Task<ActionResult> UpdateMeeting(int meetingId, [FromBody] GetMeetingRequest meetingRequest)
         {
             var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
@@ -67,7 +67,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("{meetingId}")]
+        [HttpDelete("{meetingId}", Name = "DeleteMeeting")]
         public async Task<ActionResult> DeleteMeeting(int meetingId)
         {
             var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);

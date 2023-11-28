@@ -12,14 +12,14 @@ namespace WebApi.Controllers
     {
         private readonly IMessagesService _messagesService = messagesService;
 
-        [HttpGet]
+        [HttpGet(Name = "GetAllMessages")]
         public async Task<ActionResult<List<MESSAGES>>> GetAllMessages([FromQuery] GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest)
         {
             var messages = await _messagesService.GetAllMessagesAsync(getMessagesUsersPaginationRequest);
             return Ok(messages);
         }
-        
-        [HttpGet("{messageId}")]
+
+        [HttpGet("{messageId}", Name = "GetMessageById")]
         public async Task<ActionResult<MESSAGES>> GetMessageById(int messageId)
         {
             var message = await _messagesService.GetMessageByIdAsync(messageId);
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
             return Ok(message);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "GetMessageRequest")]
         public async Task<ActionResult> AddMessage([FromBody] GetMessageRequest messageRequest)
         {
             try
@@ -45,7 +45,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("{messageId}")]
+        [HttpPut("{messageId}", Name = "UpdateMessage")]
         public async Task<ActionResult> UpdateMessage(int messageId, [FromBody] GetMessageRequest messageRequest)
         {
             var existingMessage = await _messagesService.GetMessageByIdAsync(messageId);
@@ -65,7 +65,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("{messageId}")]
+        [HttpDelete("{messageId}", Name = "DeleteMessage")]
         public async Task<ActionResult> DeleteMessage(int messageId)
         {
             var existingMessage = await _messagesService.GetMessageByIdAsync(messageId);
