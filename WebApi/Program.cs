@@ -48,6 +48,10 @@ builder.Services.AddSwaggerGen(
             }
 
         });
+        options.AddServer(new OpenApiServer()
+        {
+            Url = "http://localhost:27884"
+        });
     }
     );
 var app = builder.Build();
@@ -61,8 +65,8 @@ app.UseCors(x => x
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader()
-    .WithExposedHeaders(["Content-Disposition", "x-current-count", "x-current-page", "x-total-count", "x-page-count"]));
-app.UseAuthentication();
+    /*.WithExposedHeaders(["Content-Disposition", "x-current-count", "x-current-page", "x-total-count", "x-page-count"])*/);
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

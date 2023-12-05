@@ -10,5 +10,6 @@
         public int? PhoneNumber { get; set; }
         public bool? IsAdmin { get; set; }
         public int? AccountType { get; set; }
+        public int? IdGroups { get; set; }
     }
 }
