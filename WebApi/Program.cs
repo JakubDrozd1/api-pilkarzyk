@@ -3,7 +3,9 @@ using BLLLibrary.IService;
 using BLLLibrary.Service;
 using DataLibrary.ConnectionProvider;
 using DataLibrary.UoW;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,17 @@ builder.Services.AddScoped<IMessagesService, MessagesService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<IGroupsUsersService, GroupsUsersService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        //Configuration.Bind("JwtSettings", options);
+    })
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        //Configuration.Bind("CookieSettings", options);
+    });
 // Add services to the container.
 
 builder.Services.AddControllers().
@@ -52,6 +65,7 @@ builder.Services.AddSwaggerGen(
         {
             Url = "http://localhost:27884"
         });
+
     }
     );
 var app = builder.Build();
@@ -64,9 +78,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors(x => x
     .AllowAnyOrigin()
     .AllowAnyMethod()
-    .AllowAnyHeader()
-    /*.WithExposedHeaders(["Content-Disposition", "x-current-count", "x-current-page", "x-total-count", "x-page-count"])*/);
-//app.UseAuthentication();
+    .AllowAnyHeader());
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

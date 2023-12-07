@@ -57,7 +57,7 @@ namespace DataLibrary.Repository
 
                     var refreshToken = await db.QuerySingleOrDefaultAsync<REFRESH_TOKENS>(query.Build(), parameters, localTransaction) ?? throw new Exception("Invalid refresh token");
                     var clientRefreshParams = await CheckClient(refreshToken.IDCLIENT, localTransaction) ?? throw new Exception($"Invalid client: {refreshToken.IDCLIENT}");
-                    var userRefreshParams = await readUsersRepository.GetUserByIdAsync(refreshToken.IDUSER) ?? throw new Exception($"Invalid client: {refreshToken.IDUSER}");
+                    var userRefreshParams = await readUsersRepository.GetUserByIdAsync(refreshToken.IDUSER, localTransaction) ?? throw new Exception($"Invalid client: {refreshToken.IDUSER}");
                     var tokenExpired = refreshToken.DATE_EXPIRE < DateTime.Now;
                     if (tokenRequest.Client_id == null)
                     {
@@ -82,6 +82,8 @@ namespace DataLibrary.Repository
                     {
                         throw new Exception("Invalid client secret");
                     }
+                    if (tokenRequest.Password == null) throw new Exception("Password is null");
+                    if (tokenRequest.Username == null) throw new Exception("Username is null");
                     var user = await readUsersRepository.GetUserByLoginAndPasswordAsync(new GetUsersByLoginAndPassword()
                     {
                         Login = tokenRequest.Username,
@@ -107,6 +109,7 @@ namespace DataLibrary.Repository
 
             List<Claim> claims =
             [
+                new Claim("idUser", user.ID_USER.ToString()),
                 new Claim(ClaimTypes.Role, user.IS_ADMIN ? "Admin" : "User"),
                 new Claim(ClaimTypes.Email, user.EMAIL),
                 new Claim(ClaimTypes.Name, user.FIRSTNAME),
@@ -167,10 +170,9 @@ namespace DataLibrary.Repository
 
         private async Task<CLIENT_TOKENS?> CheckClient(string clientId, FbTransaction? transaction = null)
         {
-            var section = _configuration.GetSection($"Apps:{clientId}");
+            string? section = _configuration["client_id"];
             FbConnection db = transaction?.Connection ?? dbConnection;
-
-            if (!section.Exists())
+            if (section == null || !section.Equals(clientId))
             {
                 throw new Exception($"Invalid client: {clientId}");
             }

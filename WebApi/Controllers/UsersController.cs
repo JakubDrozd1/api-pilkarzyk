@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -8,6 +9,7 @@ namespace WebApi.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize]
     public class UsersController(IUsersService usersService) : ControllerBase
     {
         private readonly IUsersService _usersService = usersService;

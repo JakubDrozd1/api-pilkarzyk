@@ -2,6 +2,7 @@
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -9,6 +10,7 @@ namespace WebApi.Controllers
 {
     [Route("api/rankings")]
     [ApiController]
+    [Authorize]
     public class RankingsController(IRankingsService rankingsService) : ControllerBase
     {
         private readonly IRankingsService _rankingsService = rankingsService;

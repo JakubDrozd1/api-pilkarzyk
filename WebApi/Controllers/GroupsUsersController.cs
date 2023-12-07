@@ -2,12 +2,14 @@
 using BLLLibrary.IService;
 using BLLLibrary.Model.DTO.Response;
 using DataLibrary.Model.DTO.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
     [Route("api/groups-users")]
     [ApiController]
+    [Authorize]
     public class GroupsUsersController(IGroupsUsersService groupsUsersService) : ControllerBase
     {
         private readonly IGroupsUsersService _groupsUsersService = groupsUsersService;

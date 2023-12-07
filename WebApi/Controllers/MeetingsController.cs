@@ -2,6 +2,7 @@
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -9,6 +10,7 @@ namespace WebApi.Controllers
 {
     [Route("api/meetings")]
     [ApiController]
+    [Authorize]
     public class MeetingsController(IMeetingsService meetingsService) : ControllerBase
     {
         private readonly IMeetingsService _meetingsService = meetingsService;

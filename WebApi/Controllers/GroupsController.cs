@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -8,6 +9,7 @@ namespace WebApi.Controllers
 {
     [Route("api/groups")]
     [ApiController]
+    [Authorize]
     public class GroupsController(IGroupsService groupsService) : ControllerBase
     {
         private readonly IGroupsService _groupsService = groupsService;
