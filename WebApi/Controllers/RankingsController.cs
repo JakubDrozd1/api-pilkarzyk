@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -13,7 +14,7 @@ namespace WebApi.Controllers
         private readonly IRankingsService _rankingsService = rankingsService;
 
         [HttpGet(Name = "GetAllRankings")]
-        public async Task<ActionResult<List<RANKINGS>>> GetAllRankings([FromQuery] GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest)
+        public async Task<ActionResult<List<GetRankingsUsersGroupsResponse>>> GetAllRankings([FromQuery] GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest)
         {
             var rankings = await _rankingsService.GetAllRankingsAsync(getRankingsUsersGroupsPaginationRequest);
             return Ok(rankings);

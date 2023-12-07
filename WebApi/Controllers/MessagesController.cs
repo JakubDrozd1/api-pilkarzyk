@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -13,7 +14,7 @@ namespace WebApi.Controllers
         private readonly IMessagesService _messagesService = messagesService;
 
         [HttpGet(Name = "GetAllMessages")]
-        public async Task<ActionResult<List<MESSAGES>>> GetAllMessages([FromQuery] GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest)
+        public async Task<ActionResult<List<GetMessagesUsersMeetingsResponse>>> GetAllMessages([FromQuery] GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest)
         {
             var messages = await _messagesService.GetAllMessagesAsync(getMessagesUsersPaginationRequest);
             return Ok(messages);

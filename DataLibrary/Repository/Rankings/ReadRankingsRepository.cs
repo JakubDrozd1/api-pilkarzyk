@@ -56,7 +56,7 @@ namespace DataLibrary.Repository
                 dynamicParameters.Add("@DateTo", getRankingsUsersGroupsPaginationRequest.DateTo);
             }
 
-            var query = new QueryBuilder<RANKINGS>()
+            var query = new QueryBuilder<GetRankingsUsersGroupsResponse>()
                 .Select(SELECT)
                 .From(FROM)
                 .Where(WHERE)

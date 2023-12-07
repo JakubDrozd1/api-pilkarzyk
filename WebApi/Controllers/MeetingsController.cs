@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -13,7 +14,7 @@ namespace WebApi.Controllers
         private readonly IMeetingsService _meetingsService = meetingsService;
 
         [HttpGet(Name = "GetAllMeetings")]
-        public async Task<ActionResult<List<MEETINGS>>> GetAllMeetings([FromQuery] GetMeetingsUsersGroupsPaginationRequest getMeetingsUsersGroupsPaginationRequest)
+        public async Task<ActionResult<List<GetMeetingUsersGroupsResponse>>> GetAllMeetings([FromQuery] GetMeetingsUsersGroupsPaginationRequest getMeetingsUsersGroupsPaginationRequest)
         {
             var meetings = await _meetingsService.GetAllMeetingsAsync(getMeetingsUsersGroupsPaginationRequest);
             return Ok(meetings);

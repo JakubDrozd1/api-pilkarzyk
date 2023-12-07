@@ -6,7 +6,6 @@
         public string? Login { get; set; }
         public string? Firstname { get; set; }
         public string? Surname { get; set; }
-        public string? AccountType { get; set; }
         public string? Email { get; set; }
         public int? PhoneNumber { get; set; }
         public DateTime? DateMeeting { get; set; }
