@@ -7,9 +7,9 @@ using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {
+    //[Authorize]
     [Route("api/users")]
     [ApiController]
-    [Authorize]
     public class UsersController(IUsersService usersService) : ControllerBase
     {
         private readonly IUsersService _usersService = usersService;

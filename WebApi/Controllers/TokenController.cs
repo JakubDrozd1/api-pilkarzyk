@@ -1,6 +1,5 @@
 ﻿using BLLLibrary;
 using DataLibrary.Model.DTO;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 

@@ -8,9 +8,9 @@ using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {
+    //[Authorize]
     [Route("api/meetings")]
     [ApiController]
-    [Authorize]
     public class MeetingsController(IMeetingsService meetingsService) : ControllerBase
     {
         private readonly IMeetingsService _meetingsService = meetingsService;

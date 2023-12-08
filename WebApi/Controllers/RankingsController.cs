@@ -8,9 +8,9 @@ using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {
+    //[Authorize]
     [Route("api/rankings")]
     [ApiController]
-    [Authorize]
     public class RankingsController(IRankingsService rankingsService) : ControllerBase
     {
         private readonly IRankingsService _rankingsService = rankingsService;

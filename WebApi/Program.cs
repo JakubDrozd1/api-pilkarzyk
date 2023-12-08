@@ -3,9 +3,11 @@ using BLLLibrary.IService;
 using BLLLibrary.Service;
 using DataLibrary.ConnectionProvider;
 using DataLibrary.UoW;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,17 +22,6 @@ builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<IGroupsUsersService, GroupsUsersService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-    {
-        //Configuration.Bind("JwtSettings", options);
-    })
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-    {
-        //Configuration.Bind("CookieSettings", options);
-    });
-// Add services to the container.
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>
@@ -38,42 +29,77 @@ builder.Services.AddControllers().
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     options =>
     {
         options.SwaggerDoc("v1", new OpenApiInfo { Title = "api.pilkarzyk", Version = "v1" });
+
         options.DocInclusionPredicate((docName, description) => true);
-        options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme()
+
+        options.AddSecurityDefinition("api-pilkarzyk-oauth2", new OpenApiSecurityScheme
         {
-            Description = "JWT Authorization header using the Bearer scheme.",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
             Type = SecuritySchemeType.OAuth2,
-            Flows = new OpenApiOAuthFlows()
+            In = ParameterLocation.Header,
+            Name = HeaderNames.Authorization,
+            Scheme = JwtBearerDefaults.AuthenticationScheme,
+            Flows = new OpenApiOAuthFlows
             {
-                Password = new OpenApiOAuthFlow()
+                Password = new OpenApiOAuthFlow
                 {
                     TokenUrl = new Uri("/api/token/generate", UriKind.Relative),
-                    Scopes = { }
-                },
+                    Scopes = new Dictionary<string, string>()
+                }
             }
-
         });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "api-pilkarzyk-oauth2"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+
         options.AddServer(new OpenApiServer()
         {
             Url = "http://localhost:27884"
         });
-
     }
     );
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"] ?? string.Empty)),
+            ClockSkew = TimeSpan.Zero
+        };
+        options.IncludeErrorDetails = true;
+    });
+
 var app = builder.Build();
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
 }
 app.UseCors(x => x
     .AllowAnyOrigin()

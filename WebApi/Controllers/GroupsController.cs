@@ -7,13 +7,12 @@ using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {
+    //[Authorize]
     [Route("api/groups")]
     [ApiController]
-    [Authorize]
     public class GroupsController(IGroupsService groupsService) : ControllerBase
     {
         private readonly IGroupsService _groupsService = groupsService;
-
         [HttpGet(Name = "GetAllGroups")]
         public async Task<ActionResult<List<GROUPS>>> GetAllGroups([FromQuery] GetGroupsPaginationRequest getGroupsPaginationRequest)
         {

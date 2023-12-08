@@ -106,6 +106,8 @@ namespace DataLibrary.Repository
             JwtSecurityTokenHandler tokenHandler = new();
             string? token = _configuration["TokenKey"] ?? throw new Exception("Key not found");
             byte[] key = Encoding.UTF8.GetBytes(token);
+            string? audience = _configuration["Jwt:Audience"] ?? throw new Exception("Audience not found");
+            string? issuer = _configuration["Jwt:Issuer"] ?? throw new Exception("Issuer not found");
 
             List<Claim> claims =
             [
@@ -114,6 +116,8 @@ namespace DataLibrary.Repository
                 new Claim(ClaimTypes.Email, user.EMAIL),
                 new Claim(ClaimTypes.Name, user.FIRSTNAME),
                 new Claim(ClaimTypes.Surname, user.SURNAME),
+                new Claim(JwtRegisteredClaimNames.Aud, audience),
+                new Claim(JwtRegisteredClaimNames.Iss, issuer)
             ];
 
             var expiresTime = DateTime.Now.AddSeconds(client.TOKEN_TIME ?? 7200);
@@ -121,6 +125,8 @@ namespace DataLibrary.Repository
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Issuer = audience,
+                Audience = issuer,
                 Subject = new ClaimsIdentity(claims),
                 Expires = expiresTime,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

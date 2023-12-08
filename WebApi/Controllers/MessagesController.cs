@@ -8,9 +8,9 @@ using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {
+    //[Authorize]
     [Route("api/messages")]
     [ApiController]
-    [Authorize]
     public class MessagesController(IMessagesService messagesService) : ControllerBase
     {
         private readonly IMessagesService _messagesService = messagesService;
