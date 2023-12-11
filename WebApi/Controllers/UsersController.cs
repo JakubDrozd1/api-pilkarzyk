@@ -57,8 +57,6 @@ namespace WebApi.Controllers
             {
                 return StatusCode(500, "Internal Server Error");
             }
-
-
         }
 
         [HttpPut("{userId}", Name = "UpdateUser")]
@@ -100,5 +98,13 @@ namespace WebApi.Controllers
                 return StatusCode(500, "Internal Server Error");
             }
         }
+
+        [HttpGet("withoutGroup", Name = "GetAllUsersWithoutGroupAsync")]
+        public async Task<ActionResult<List<USERS>>> GetAllUsersWithoutGroupAsync([FromQuery] GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest)
+        {
+            var users = await _usersService.GetAllUsersWithoutGroupAsync(getUsersWithoutGroupPaginationRequest);
+            return Ok(users);
+        }
+
     }
 }

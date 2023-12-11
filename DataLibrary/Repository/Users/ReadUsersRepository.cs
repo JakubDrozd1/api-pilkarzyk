@@ -109,5 +109,56 @@ namespace DataLibrary.Repository
                 throw new Exception($"Error while executing query: {ex.Message}");
             }
         }
+
+        public async Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, FbTransaction? transaction = null)
+        {
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+
+            FbTransaction localTransaction = transaction ?? await db.BeginTransactionAsync();
+            ReadGroupsUsersRepository readGroupsUsersRepository = new(db);
+            GetUsersGroupsPaginationRequest getUsersGroupsPaginationRequest = new()
+            {
+                IdGroup = getUsersWithoutGroupPaginationRequest.IdGroup,
+                Page = getUsersWithoutGroupPaginationRequest.Page,
+                OnPage = getUsersWithoutGroupPaginationRequest.OnPage,
+            };
+            var usersTemp = await readGroupsUsersRepository.GetListGroupsUserAsync(getUsersGroupsPaginationRequest, localTransaction);
+            DynamicParameters dynamicParameters = new();
+            string WHERE = "1=1 ";
+
+            WHERE += $"AND gu.{nameof(GROUPS_USERS.IDGROUP)} <> @GroupId ";
+            dynamicParameters.Add("@GroupId", getUsersWithoutGroupPaginationRequest.IdGroup);
+
+            foreach (var item in usersTemp)
+            {
+                WHERE += $"AND u.{nameof(USERS.ID_USER)} <> @UserId{item.IdUser} ";
+                dynamicParameters.Add($"@UserId{item.IdUser}", item.IdUser);
+            }
+
+            var query = new QueryBuilder<USERS>()
+                .Select($"DISTINCT u.{nameof(USERS.ID_USER)}, " +
+                $"u.{nameof(USERS.LOGIN)}, " +
+                $"u.{nameof(USERS.PASSWORD)}, " +
+                $"u.{nameof(USERS.EMAIL)}, " +
+                $"u.{nameof(USERS.FIRSTNAME)}, " +
+                $"u.{nameof(USERS.SURNAME)}, " +
+                $"u.{nameof(USERS.PHONE_NUMBER)}, " +
+                $"u.{nameof(USERS.IS_ADMIN)}, " +
+                $"u.{nameof(USERS.SALT)} ")
+                .From($"{nameof(USERS)} u " +
+                $"JOIN {nameof(GROUPS_USERS)} gu ON u.{nameof(USERS.ID_USER)} = gu.{nameof(GROUPS_USERS.IDUSER)} ")
+                .Where(WHERE)
+                .OrderBy(getUsersWithoutGroupPaginationRequest)
+                .Limit(getUsersWithoutGroupPaginationRequest);
+
+
+            return (await db.QueryAsync<USERS>(query.Build(), dynamicParameters, localTransaction)).AsList();
+
+        }
     }
 }

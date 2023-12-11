@@ -72,5 +72,10 @@ namespace BLLLibrary.Service
         {
             return await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
         }
+
+        public async Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest)
+        {
+            return await _unitOfWork.ReadUsersRepository.GetAllUsersWithoutGroupAsync(getUsersWithoutGroupPaginationRequest);
+        }
     }
 }

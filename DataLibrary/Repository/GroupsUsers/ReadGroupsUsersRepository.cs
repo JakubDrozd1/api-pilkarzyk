@@ -29,9 +29,8 @@ namespace DataLibrary.Repository
 
         public async Task<List<GetGroupsUsersResponse>> GetListGroupsUserAsync(GetUsersGroupsPaginationRequest getUsersGroupsRequest, FbTransaction? transaction = null)
         {
-
             DynamicParameters dynamicParameters = new();
-            string WHERE = "1=1";
+            string WHERE = "1=1 ";
 
             if (getUsersGroupsRequest.IdGroup is not null)
             {
@@ -51,13 +50,15 @@ namespace DataLibrary.Repository
                 .Where(WHERE)
                 .OrderBy(getUsersGroupsRequest)
                 .Limit(getUsersGroupsRequest);
-            FbConnection db = transaction?.Connection ?? _dbConnection;
 
+            FbConnection db = transaction?.Connection ?? _dbConnection;
             if (db.State != ConnectionState.Open && transaction == null)
             {
                 await db.OpenAsync();
             }
-            return (await db.QueryAsync<GetGroupsUsersResponse>(query.Build(), dynamicParameters, transaction)).AsList();
+            FbTransaction localTransaction = transaction ?? await db.BeginTransactionAsync();
+
+            return (await db.QueryAsync<GetGroupsUsersResponse>(query.Build(), dynamicParameters, localTransaction)).AsList();
         }
 
         public async Task<GetGroupsUsersResponse?> GetUserWithGroup(int groupId, int userId, FbTransaction? transaction = null)

@@ -38,7 +38,7 @@ namespace WebApi.Controllers
             {
                 await _groupsService.AddGroupAsync(groupRequest);
                 await _groupsService.SaveChangesAsync();
-                return Ok(_groupsService.GetGroupByNameAsync(groupRequest.Name).Result);
+                return Ok(await _groupsService.GetGroupByNameAsync(groupRequest.Name));
             }
             catch (Exception ex)
             {
