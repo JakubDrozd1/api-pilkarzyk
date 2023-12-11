@@ -11,6 +11,7 @@ namespace BLLLibrary.IService
         Task AddGroupAsync(GetGroupRequest groupRequest);
         Task UpdateGroupAsync(GetGroupRequest groupRequest, int groupId);
         Task DeleteGroupAsync(int groupId);
+        Task<GROUPS?> GetGroupByNameAsync(string name);
         Task SaveChangesAsync();
     }
 }

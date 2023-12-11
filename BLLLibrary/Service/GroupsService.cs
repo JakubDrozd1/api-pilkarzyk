@@ -48,5 +48,10 @@ namespace BLLLibrary.Service
         {
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public Task<GROUPS?> GetGroupByNameAsync(string name)
+        {
+            return _unitOfWork.ReadGroupsRepository.GetGroupByNameAsync(name);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using DataLibrary.IRepository;
+using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository
@@ -23,7 +24,8 @@ namespace DataLibrary.Repository
                 await deleteGroupsUsersRepository.DeleteAllUsersFromGroupAsync(groupId, localTransaction);
                 foreach (int userId in usersId)
                 {
-                    await createGroupsUsersRepository.AddUserToGroupAsync(userId, groupId, localTransaction);
+                    GetUserGroupRequest getUserGroupRequest = new() { IdGroup = groupId, IdUser = userId};
+                    await createGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest, localTransaction);
                 }
                 localTransaction.Commit();
             }
@@ -50,7 +52,8 @@ namespace DataLibrary.Repository
                 await deleteGroupsUsersRepository.DeleteAllGroupsFromUser(userId, localTransaction);
                 foreach (int groupId in groupsId)
                 {
-                    await createGroupsUsersRepository.AddUserToGroupAsync(userId, groupId, localTransaction);
+                    GetUserGroupRequest getUserGroupRequest = new() { IdGroup = groupId, IdUser = userId };
+                    await createGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest, localTransaction);
                 }
                 localTransaction.Commit();
             }

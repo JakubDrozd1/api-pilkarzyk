@@ -3,6 +3,6 @@
     public class GROUPS
     {
         public int? ID_GROUP { get; set; }
-        public string? NAME { get; set; }
+        public required string NAME { get; set; }
     }
 }

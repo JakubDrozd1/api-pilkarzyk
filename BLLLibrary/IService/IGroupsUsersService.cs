@@ -12,6 +12,6 @@ namespace BLLLibrary.IService
         Task DeleteAllGroupsFromUser(int userId);
         Task UpdateUserWithGroupsAsync(int[] groupsId, int userId);
         Task UpdateGroupWithUsersAsync(int[] usersId, int groupId);
-        Task AddUserToGroupAsync(int userId, int groupId);
+        Task AddUserToGroupAsync(GetUserGroupRequest getUserGroupRequest);
     }
 }

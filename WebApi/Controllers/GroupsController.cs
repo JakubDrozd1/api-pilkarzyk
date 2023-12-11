@@ -38,11 +38,11 @@ namespace WebApi.Controllers
             {
                 await _groupsService.AddGroupAsync(groupRequest);
                 await _groupsService.SaveChangesAsync();
-                return Ok(groupRequest);
+                return Ok(_groupsService.GetGroupByNameAsync(groupRequest.Name).Result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new { message = ex.Message });
             }
         }
 

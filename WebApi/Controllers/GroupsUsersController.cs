@@ -15,9 +15,9 @@ namespace WebApi.Controllers
         private readonly IGroupsUsersService _groupsUsersService = groupsUsersService;
 
         [HttpPost("add", Name = "AddUserToGroupAsync")]
-        public async Task<IActionResult> AddUserToGroupAsync([FromQuery, Required] int userId, [FromQuery, Required] int groupId)
+        public async Task<IActionResult> AddUserToGroupAsync([FromQuery, Required] GetUserGroupRequest getUserGroupRequest)
         {
-            await _groupsUsersService.AddUserToGroupAsync(userId, groupId);
+            await _groupsUsersService.AddUserToGroupAsync(getUserGroupRequest);
             return Ok();
         }
 

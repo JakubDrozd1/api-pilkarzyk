@@ -12,7 +12,6 @@ namespace DataLibrary.Repository
 
         public async Task AddGroupAsync(GROUPS group, FbTransaction? transaction = null)
         {
-
             var insertBuilder = new QueryBuilder<GROUPS>()
                 .Insert("GROUPS ", group);
             string insertQuery = insertBuilder.Build();
@@ -23,8 +22,20 @@ namespace DataLibrary.Repository
                 await db.OpenAsync();
             }
 
+            ReadGroupsRepository readGroupsRepository = new(db);
+            try
+            {
+                var groupTemp = await readGroupsRepository.GetGroupByNameAsync(group.NAME, transaction);
+                if (groupTemp != null)
+                {
+                    throw new Exception("Group with this name already exists");
+                }
+            }
+            catch (NullReferenceException)
+            {
+                throw;
+            }
             await db.ExecuteAsync(insertQuery, group, transaction);
-
         }
     }
 }

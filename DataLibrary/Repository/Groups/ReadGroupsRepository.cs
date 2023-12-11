@@ -47,5 +47,23 @@ namespace DataLibrary.Repository
             return await db.QuerySingleOrDefaultAsync<GROUPS>(query.Build(), new { GroupId = groupId }, transaction);
 
         }
+
+        public async Task<GROUPS?> GetGroupByNameAsync(string name, FbTransaction? transaction = null)
+        {
+
+            var query = new QueryBuilder<GROUPS>()
+                .Select("* ")
+                .From("GROUPS ")
+                .Where("NAME = @Name ");
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+
+            return await db.QuerySingleOrDefaultAsync<GROUPS>(query.Build(), new { Name = name }, transaction);
+
+        }
     }
 }

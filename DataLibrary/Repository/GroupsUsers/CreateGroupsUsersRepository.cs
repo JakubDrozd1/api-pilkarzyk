@@ -2,6 +2,7 @@
 using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.IRepository;
+using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository
@@ -10,7 +11,7 @@ namespace DataLibrary.Repository
     {
         private readonly FbConnection _dbConnection = dbConnection;
 
-        public async Task AddUserToGroupAsync(int userId, int groupId, FbTransaction? transaction = null)
+        public async Task AddUserToGroupAsync(GetUserGroupRequest getUserGroupRequest, FbTransaction? transaction = null)
         {
             FbConnection db = transaction?.Connection ?? _dbConnection;
             if (transaction == null && db.State != ConnectionState.Open)
@@ -23,17 +24,17 @@ namespace DataLibrary.Repository
                 var readGroupsRepository = new ReadGroupsRepository(db);
                 var readUsersRepository = new ReadUsersRepository(db);
                 var readGroupsUsersRepository = new ReadGroupsUsersRepository(db);
-                var group = await readGroupsRepository.GetGroupByIdAsync(groupId, localTransaction) ?? throw new Exception("Group is null");
-                var user = await readUsersRepository.GetUserByIdAsync(userId, localTransaction) ?? throw new Exception("User is null");
-                if (await readGroupsUsersRepository.GetUserWithGroup(groupId, userId, localTransaction) != null)
+                var group = await readGroupsRepository.GetGroupByIdAsync(getUserGroupRequest.IdGroup, localTransaction) ?? throw new Exception("Group is null");
+                var user = await readUsersRepository.GetUserByIdAsync(getUserGroupRequest.IdUser, localTransaction) ?? throw new Exception("User is null");
+                if (await readGroupsUsersRepository.GetUserWithGroup(getUserGroupRequest.IdGroup, getUserGroupRequest.IdUser, localTransaction) != null)
                 {
                     throw new Exception("User is already in this group");
                 }
                 GROUPS_USERS groupsUsers = new()
                 {
-                    IDGROUP = groupId,
-                    IDUSER = userId,
-                    ACCOUNT_TYPE = 0
+                    IDGROUP = getUserGroupRequest.IdGroup,
+                    IDUSER = getUserGroupRequest.IdUser,
+                    ACCOUNT_TYPE = getUserGroupRequest.AccountType ?? 0
                 };
                 var insertBuilder = new QueryBuilder<GROUPS_USERS>().Insert("GROUPS_USERS ", groupsUsers);
                 string insertQuery = insertBuilder.Build();

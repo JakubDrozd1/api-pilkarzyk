@@ -8,5 +8,6 @@ namespace DataLibrary.IRepository
     {
         Task<List<GROUPS>> GetAllGroupsAsync(GetGroupsPaginationRequest getGroupsPaginationRequest, FbTransaction? transaction = null);
         Task<GROUPS?> GetGroupByIdAsync(int groupId, FbTransaction? transaction = null);
+        Task<GROUPS?> GetGroupByNameAsync(string name, FbTransaction? transaction = null);
     }
 }

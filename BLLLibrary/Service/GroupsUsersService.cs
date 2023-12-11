@@ -9,9 +9,9 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task AddUserToGroupAsync(int userId, int groupId)
+        public async Task AddUserToGroupAsync(GetUserGroupRequest getUserGroupRequest)
         {
-            await _unitOfWork.CreateGroupsUsersRepository.AddUserToGroupAsync(userId, groupId);
+            await _unitOfWork.CreateGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest);
         }
 
         public async Task DeleteAllGroupsFromUser(int userId)
