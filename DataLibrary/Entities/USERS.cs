@@ -4,7 +4,7 @@
     {
         public int ID_USER { get; set; }
         public required string LOGIN { get; set; }
-        public required string PASSWORD { get; set; }
+        public required string USER_PASSWORD { get; set; }
         public required string EMAIL { get; set; }
         public required string FIRSTNAME { get; set; }
         public required string SURNAME { get; set; }

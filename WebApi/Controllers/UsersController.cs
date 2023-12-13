@@ -1,7 +1,7 @@
 ﻿using BLLLibrary.IService;
+using DataLibrary.EmailSender;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Model.DTO.Request;
 
@@ -10,9 +10,10 @@ namespace WebApi.Controllers
     //[Authorize]
     [Route("api/users")]
     [ApiController]
-    public class UsersController(IUsersService usersService) : ControllerBase
+    public class UsersController(IUsersService usersService, IEmailSenderService emailSenderService) : ControllerBase
     {
         private readonly IUsersService _usersService = usersService;
+        private readonly IEmailSenderService _emailSenderService = emailSenderService;
 
         [HttpGet(Name = "GetAllUsers")]
         public async Task<ActionResult<List<USERS>>> GetAllUsers([FromQuery] GetUsersPaginationRequest getUsersPaginationRequest)
@@ -106,5 +107,22 @@ namespace WebApi.Controllers
             return Ok(users);
         }
 
+        [HttpPost("sendInvitationEmail", Name = "SendInvitationEmail")]
+        public async Task<ActionResult> SendInvitationEmail([FromBody] GetEmailSenderRequest getEmailSenderRequest)
+        {
+
+            var user = await _usersService.GetUserByEmailAsync(getEmailSenderRequest.To);
+            if (user != null) return StatusCode(500, "Account exist with this email");
+            bool result = await _emailSenderService.SendInviteMessageAsync(getEmailSenderRequest, new CancellationToken());
+
+            if (result)
+            {
+                return Ok(getEmailSenderRequest);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured. The Mail could not be sent.");
+            }
+        }
     }
 }

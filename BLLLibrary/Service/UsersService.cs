@@ -31,7 +31,7 @@ namespace BLLLibrary.Service
                 FIRSTNAME = userRequest.Firstname,
                 SURNAME = userRequest.Surname,
                 LOGIN = userRequest.Login,
-                PASSWORD = hashedPassword,
+                USER_PASSWORD = hashedPassword,
                 PHONE_NUMBER = userRequest.PhoneNumber,
                 IS_ADMIN = userRequest.IsAdmin,
                 SALT = salt
@@ -50,7 +50,7 @@ namespace BLLLibrary.Service
                 FIRSTNAME = userRequest.Firstname,
                 SURNAME = userRequest.Surname,
                 LOGIN = userRequest.Login,
-                PASSWORD = hashedPassword,
+                USER_PASSWORD = hashedPassword,
                 PHONE_NUMBER = userRequest.PhoneNumber,
                 IS_ADMIN = userRequest.IsAdmin,
                 SALT = salt
@@ -76,6 +76,11 @@ namespace BLLLibrary.Service
         public async Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest)
         {
             return await _unitOfWork.ReadUsersRepository.GetAllUsersWithoutGroupAsync(getUsersWithoutGroupPaginationRequest);
+        }
+
+        public async Task<USERS?> GetUserByEmailAsync(string email)
+        {
+            return await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(email);
         }
     }
 }

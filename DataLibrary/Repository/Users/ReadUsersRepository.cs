@@ -90,10 +90,10 @@ namespace DataLibrary.Repository
 
                 if (getUsersByLoginAndPassword.Password is not null)
                 {
-                    if (!BCrypt.Net.BCrypt.Verify(getUsersByLoginAndPassword.Password, user?.PASSWORD))
+                    if (!BCrypt.Net.BCrypt.Verify(getUsersByLoginAndPassword.Password, user?.USER_PASSWORD))
                         throw new Exception("Password is not correct");
-                    WHERE += $"AND {nameof(USERS.PASSWORD)} = @Password ";
-                    dynamicParameters.Add("@Password", user?.PASSWORD);
+                    WHERE += $"AND {nameof(USERS.USER_PASSWORD)} = @Password ";
+                    dynamicParameters.Add("@Password", user?.USER_PASSWORD);
                 }
 
                 var query = new QueryBuilder<USERS>()
@@ -131,9 +131,6 @@ namespace DataLibrary.Repository
             DynamicParameters dynamicParameters = new();
             string WHERE = "1=1 ";
 
-            WHERE += $"AND gu.{nameof(GROUPS_USERS.IDGROUP)} <> @GroupId ";
-            dynamicParameters.Add("@GroupId", getUsersWithoutGroupPaginationRequest.IdGroup);
-
             foreach (var item in usersTemp)
             {
                 WHERE += $"AND u.{nameof(USERS.ID_USER)} <> @UserId{item.IdUser} ";
@@ -143,7 +140,7 @@ namespace DataLibrary.Repository
             var query = new QueryBuilder<USERS>()
                 .Select($"DISTINCT u.{nameof(USERS.ID_USER)}, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
-                $"u.{nameof(USERS.PASSWORD)}, " +
+                $"u.{nameof(USERS.USER_PASSWORD)}, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +
@@ -151,14 +148,45 @@ namespace DataLibrary.Repository
                 $"u.{nameof(USERS.IS_ADMIN)}, " +
                 $"u.{nameof(USERS.SALT)} ")
                 .From($"{nameof(USERS)} u " +
-                $"JOIN {nameof(GROUPS_USERS)} gu ON u.{nameof(USERS.ID_USER)} = gu.{nameof(GROUPS_USERS.IDUSER)} ")
+                $"LEFT JOIN {nameof(GROUPS_USERS)} gu ON u.{nameof(USERS.ID_USER)} = gu.{nameof(GROUPS_USERS.IDUSER)} ")
                 .Where(WHERE)
                 .OrderBy(getUsersWithoutGroupPaginationRequest)
                 .Limit(getUsersWithoutGroupPaginationRequest);
 
-
             return (await db.QueryAsync<USERS>(query.Build(), dynamicParameters, localTransaction)).AsList();
 
+        }
+
+        public async Task<USERS?> GetUserByEmailAsync(string email, FbTransaction? transaction = null)
+        {
+            var query = new QueryBuilder<USERS>()
+                .Select("* ")
+                .From("USERS ")
+                .Where("Email = @Email ");
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+
+            return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Email = email }, transaction);
+        }
+
+        public async Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber, FbTransaction? transaction = null)
+        {
+            var query = new QueryBuilder<USERS>()
+                .Select("* ")
+                .From("USERS ")
+                .Where("PHONE_NUMBER = @PhoneNumber ");
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+
+            return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, transaction);
         }
     }
 }

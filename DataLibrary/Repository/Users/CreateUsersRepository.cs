@@ -24,11 +24,21 @@ namespace DataLibrary.Repository
             try
             {
                 ReadUsersRepository readUsersRepository = new(db);
-                USERS? userTmp = await readUsersRepository.GetUserByLoginAsync(user.LOGIN, localTransaction);
+                USERS? userLogin = await readUsersRepository.GetUserByLoginAsync(user.LOGIN, localTransaction);
+                USERS? userEmail = await readUsersRepository.GetUserByEmailAsync(user.EMAIL, localTransaction);
+                USERS? userPhone = await readUsersRepository.GetUserByPhoneNumberAsync(user.PHONE_NUMBER, localTransaction);
 
-                if (userTmp != null)
+                if (userLogin != null)
                 {
-                    throw new Exception("Login already exists");
+                    throw new Exception("Acount with login already exists");
+                }
+                if (userEmail != null)
+                {
+                    throw new Exception("Acount with email already exists");
+                }
+                if (userPhone != null)
+                {
+                    throw new Exception("Acount with phone number already exists");
                 }
 
                 var insertBuilder = new QueryBuilder<USERS>()

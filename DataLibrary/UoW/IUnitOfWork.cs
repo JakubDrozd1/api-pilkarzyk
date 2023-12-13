@@ -25,6 +25,7 @@ namespace DataLibrary.UoW
         IReadRankingsRepository ReadRankingsRepository { get; }
         IReadUsersRepository ReadUsersRepository { get; }
         IReadGroupsUsersRepository ReadGroupsUsersRepository { get; }
+        IReadEmailSender ReadEmailSender { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }

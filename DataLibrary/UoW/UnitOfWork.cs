@@ -2,6 +2,7 @@
 using DataLibrary.ConnectionProvider;
 using DataLibrary.IRepository;
 using DataLibrary.Repository;
+using DataLibrary.Repository.EmailSender;
 using FirebirdSql.Data.FirebirdClient;
 using Microsoft.Extensions.Configuration;
 
@@ -36,6 +37,7 @@ namespace DataLibrary.UoW
         public IReadRankingsRepository ReadRankingsRepository => new ReadRankingsRepository(dbConnection);
         public IReadUsersRepository ReadUsersRepository => new ReadUsersRepository(dbConnection);
         public IReadGroupsUsersRepository ReadGroupsUsersRepository => new ReadGroupsUsersRepository(dbConnection);
+        public IReadEmailSender ReadEmailSender => new ReadEmailSenderRepository(dbConnection);
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection);

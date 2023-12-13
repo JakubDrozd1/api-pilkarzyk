@@ -11,6 +11,8 @@ namespace DataLibrary.IRepository
         Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword, FbTransaction? transaction = null);
         Task<USERS?> GetUserByLoginAsync(string? login, FbTransaction? transaction = null);
         Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, FbTransaction? transaction = null);
+        Task<USERS?> GetUserByEmailAsync(string email, FbTransaction? transaction = null);
+        Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber, FbTransaction? transaction = null);
 
     }
 }
