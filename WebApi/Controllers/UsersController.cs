@@ -80,6 +80,26 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpPut("column-{userId}", Name = "UpdateColumnUser")]
+        public async Task<ActionResult> UpdateColumnUser(int userId, [FromBody] GetUpdateUserRequest getUpdateUserRequest)
+        {
+            var existingUser = await _usersService.GetUserByIdAsync(userId);
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                await _usersService.UpdateColumnUserAsync(getUpdateUserRequest, userId);
+                await _usersService.SaveChangesAsync();
+                return Ok(getUpdateUserRequest);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpDelete("{userId}", Name = "DeleteUser")]
         public async Task<ActionResult> DeleteUser(int userId)
         {

@@ -49,7 +49,7 @@ namespace DataLibrary.Repository
 
                 if (transaction == null)
                 {
-                    localTransaction.Commit();
+                    await localTransaction.CommitAsync();
                 }
             }
             catch (Exception ex)

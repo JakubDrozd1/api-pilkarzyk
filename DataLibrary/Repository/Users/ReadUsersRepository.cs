@@ -188,5 +188,22 @@ namespace DataLibrary.Repository
 
             return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, transaction);
         }
+
+        public async Task<string?> GetSaltByUserId(int userId, FbTransaction? transaction = null)
+        {
+            var query = new QueryBuilder<USERS>()
+                .Select("* ")
+                .From("USERS ")
+                .Where("ID_USER = @IdUser ");
+            FbConnection db = transaction?.Connection ?? _dbConnection;
+
+            if (transaction == null && db.State != ConnectionState.Open)
+            {
+                await db.OpenAsync();
+            }
+
+            USERS? user = await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { IdUser = userId }, transaction);
+            return user == null ? throw new Exception("Salt is null") : user.SALT;
+        }
     }
 }

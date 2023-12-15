@@ -3,7 +3,6 @@ using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.UoW;
 using WebApi.Model.DTO.Request;
-using FirebirdSql.Data.FirebirdClient;
 
 namespace BLLLibrary.Service
 {
@@ -68,7 +67,7 @@ namespace BLLLibrary.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword, FbTransaction? transaction = null)
+        public async Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword)
         {
             return await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
         }
@@ -81,6 +80,11 @@ namespace BLLLibrary.Service
         public async Task<USERS?> GetUserByEmailAsync(string email)
         {
             return await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(email);
+        }
+
+        public async Task UpdateColumnUserAsync(GetUpdateUserRequest getUpdateUserRequest, int userId)
+        {
+            await _unitOfWork.UpdateUsersRepository.UpdateColumnUserAsync(getUpdateUserRequest, userId);
         }
     }
 }

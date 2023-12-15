@@ -1,4 +1,6 @@
-﻿namespace DataLibrary.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace DataLibrary.Entities
 {
     public class USERS
     {
@@ -10,6 +12,7 @@
         public required string SURNAME { get; set; }
         public int PHONE_NUMBER { get; set; }
         public bool IS_ADMIN { get; set; }
-        public string? SALT {  get; set; }
+        public string? SALT { get; set; }
+        public string? AVATAR { get; set; }
     }
 }

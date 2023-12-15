@@ -85,10 +85,10 @@ namespace DataLibrary
             return this;
         }
 
-        public QueryBuilder<T> UpdateColumns(string tableName, params string[] columns)
+        public QueryBuilder<T> UpdateColumns(string tableName, string[] columns)
         {
-            var setPairs = string.Join(", ", columns.Select(column => $"{column} = @{column}"));
 
+            var setPairs = string.Join(", ", columns.Select(column => $"{column} = @{column}"));
             query.Append($"UPDATE {tableName} SET {setPairs}");
 
             return this;
