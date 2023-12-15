@@ -36,7 +36,7 @@ namespace DataLibrary.Repository
             {
                 await db.OpenAsync();
             }
-            var localTransaction = transaction ?? db.BeginTransaction();
+            var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
                 var updateBuilder = new QueryBuilder<GetUpdateUserRequest>()
@@ -105,7 +105,7 @@ namespace DataLibrary.Repository
             }
             catch (Exception ex)
             {
-                localTransaction?.Rollback();
+                localTransaction?.RollbackAsync();
                 throw new Exception($"{ex.Message}");
             }
         }

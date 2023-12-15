@@ -18,7 +18,7 @@ namespace DataLibrary.Repository
             }
             var deleteGroupsUsersRepository = new DeleteGroupsUsersRepository(db);
             var createGroupsUsersRepository = new CreateGroupsUsersRepository(db);
-            using var localTransaction = transaction ?? db.BeginTransaction();
+            using var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
                 await deleteGroupsUsersRepository.DeleteAllUsersFromGroupAsync(groupId, localTransaction);
@@ -27,12 +27,12 @@ namespace DataLibrary.Repository
                     GetUserGroupRequest getUserGroupRequest = new() { IdGroup = groupId, IdUser = userId};
                     await createGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest, localTransaction);
                 }
-                localTransaction.Commit();
+                await localTransaction.CommitAsync();
             }
             catch (Exception ex)
             {
                 if (localTransaction != null)
-                    localTransaction?.Rollback();
+                    localTransaction?.RollbackAsync();
                 throw new Exception($"Error while executing query: {ex.Message}");
             }
         }
@@ -46,7 +46,7 @@ namespace DataLibrary.Repository
             }
             var deleteGroupsUsersRepository = new DeleteGroupsUsersRepository(db);
             var createGroupsUsersRepository = new CreateGroupsUsersRepository(db);
-            using var localTransaction = transaction ?? db.BeginTransaction();
+            using var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
                 await deleteGroupsUsersRepository.DeleteAllGroupsFromUser(userId, localTransaction);
@@ -55,11 +55,11 @@ namespace DataLibrary.Repository
                     GetUserGroupRequest getUserGroupRequest = new() { IdGroup = groupId, IdUser = userId };
                     await createGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest, localTransaction);
                 }
-                localTransaction.Commit();
+                await localTransaction.CommitAsync();
             }
             catch (Exception)
             {
-                localTransaction?.Rollback();
+                localTransaction?.RollbackAsync();
                 throw;
             }
         }

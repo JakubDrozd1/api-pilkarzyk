@@ -41,13 +41,13 @@ namespace DataLibrary.Repository
                 await db.ExecuteAsync(insertQuery, groupsUsers, localTransaction);
                 if (transaction == null)
                 {
-                    localTransaction.Commit();
+                    await localTransaction.CommitAsync();
                 }
             }
             catch (Exception ex)
             {
                 if (transaction == null)
-                    localTransaction?.Rollback();
+                    localTransaction?.RollbackAsync();
                 throw new Exception($"Error while executing query: {ex.Message}");
             }
         }

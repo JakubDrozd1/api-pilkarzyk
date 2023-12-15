@@ -34,7 +34,7 @@ namespace DataLibrary.Repository
             {
                 throw new Exception($"client id is null");
             }
-            using var localTransaction = transaction ?? db.BeginTransaction();
+            using var localTransaction = transaction ?? await db.BeginTransactionAsync();
             switch (tokenRequest.Grant_type)
             {
                 case "refresh_token":

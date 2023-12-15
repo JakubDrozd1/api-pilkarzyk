@@ -105,7 +105,7 @@ namespace DataLibrary.Repository
             }
             catch (Exception ex)
             {
-                localTransaction?.Rollback();
+                localTransaction?.RollbackAsync();
                 throw new Exception($"Error while executing query: {ex.Message}");
             }
         }
