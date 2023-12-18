@@ -72,7 +72,8 @@ builder.Services.AddSwaggerGen(
 
         options.AddServer(new OpenApiServer()
         {
-            Url = "http://localhost:27884"
+           // Url = "http://localhost:27884"
+            Url = "https://192.168.88.20:45462"
         });
     }
     );
