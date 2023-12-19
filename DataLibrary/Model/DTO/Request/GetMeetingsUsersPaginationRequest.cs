@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace DataLibrary.Model.DTO.Request
 {
-    public class GetMeetingsUsersGroupsPaginationRequest: ISortable, IPagination
+    public class GetMeetingsUsersPaginationRequest: ISortable, IPagination
     {
         [Required]
         [DefaultValue(0)]
@@ -15,7 +15,7 @@ namespace DataLibrary.Model.DTO.Request
         public string? SortMode { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
+        public int? IdMeeting {  get; set; }
         public int? IdUser { get; set; }
-        public int? IdGroup { get; set; }
     }
 }

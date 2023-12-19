@@ -3,7 +3,6 @@ using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
-using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.Service
 {

@@ -1,6 +1,5 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
-using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {

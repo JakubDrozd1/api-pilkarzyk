@@ -1,10 +1,10 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.Messages;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.Messages
 {
     public class CreateMessagesRepository(FbConnection dbConnection) : ICreateMessagesRepository
     {

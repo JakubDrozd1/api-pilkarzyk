@@ -2,7 +2,7 @@
 using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.IRepository
+namespace DataLibrary.IRepository.Groups
 {
     public interface IReadGroupsRepository
     {

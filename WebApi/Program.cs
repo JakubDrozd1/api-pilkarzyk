@@ -1,4 +1,3 @@
-using BLLLibrary;
 using BLLLibrary.IService;
 using BLLLibrary.Service;
 using DataLibrary.ConnectionProvider;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Net.Http.Headers;
-using DataLibrary.EmailSender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +21,7 @@ builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<IGroupsUsersService, GroupsUsersService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
+builder.Services.AddScoped<IUsersMeetingsService, UsersMeetingsService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>
@@ -73,7 +72,7 @@ builder.Services.AddSwaggerGen(
         options.AddServer(new OpenApiServer()
         {
            // Url = "http://localhost:27884"
-            Url = "https://192.168.88.20:45462"
+            Url = "http://192.168.88.20:45455"
         });
     }
     );

@@ -1,12 +1,12 @@
 ﻿using System.Data;
-using BLLLibrary.Model.DTO.Response;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.GroupsUsers
 {
     public class ReadGroupsUsersRepository(FbConnection dbConnection) : IReadGroupsUsersRepository
     {

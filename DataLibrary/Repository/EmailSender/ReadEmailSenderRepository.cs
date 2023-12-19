@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using System.Data;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
+using DataLibrary.IRepository.EmailSender;
 
 namespace DataLibrary.Repository.EmailSender
 {

@@ -1,11 +1,13 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Repository.Groups;
+using DataLibrary.Repository.Users;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.GroupsUsers
 {
     public class CreateGroupsUsersRepository(FbConnection dbConnection) : ICreateGroupsUsersRepository
     {
@@ -48,7 +50,7 @@ namespace DataLibrary.Repository
             {
                 if (transaction == null)
                     localTransaction?.RollbackAsync();
-                throw new Exception($"Error while executing query: {ex.Message}");
+                throw new Exception($"{ex.Message}");
             }
         }
     }

@@ -5,14 +5,15 @@ using System.Security.Cryptography;
 using System.Text;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
-using DataLibrary.Model.DTO;
+using DataLibrary.IRepository.Tokens;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
+using DataLibrary.Repository.Users;
 using FirebirdSql.Data.FirebirdClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.Tokens
 {
     public class CreateTokensRepository(IConfiguration configuration, FbConnection dbConnection) : ICreateTokensRepository
     {

@@ -1,4 +1,4 @@
-﻿namespace WebApi.Model.DTO.Request
+﻿namespace DataLibrary.Model.DTO.Request
 {
     public class GetRankingRequest
     {

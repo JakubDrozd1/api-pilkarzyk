@@ -1,10 +1,10 @@
 ﻿using Dapper;
 using System.Data;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
 using FirebirdSql.Data.FirebirdClient;
+using DataLibrary.IRepository.Tokens;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.Tokens
 {
     public class ReadTokensRepository(FbConnection dbConnection) : IReadTokensRepository
     {

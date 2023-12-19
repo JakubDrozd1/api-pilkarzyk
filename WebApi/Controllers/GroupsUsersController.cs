@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BLLLibrary.IService;
-using BLLLibrary.Model.DTO.Response;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

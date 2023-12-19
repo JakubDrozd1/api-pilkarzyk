@@ -1,9 +1,9 @@
 ﻿using System.Data;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.GroupsUsers
 {
     public class UpdateGroupsUsersRepository(FbConnection dbConnection) : IUpdateGroupsUsersRepository
     {
@@ -24,7 +24,7 @@ namespace DataLibrary.Repository
                 await deleteGroupsUsersRepository.DeleteAllUsersFromGroupAsync(groupId, localTransaction);
                 foreach (int userId in usersId)
                 {
-                    GetUserGroupRequest getUserGroupRequest = new() { IdGroup = groupId, IdUser = userId};
+                    GetUserGroupRequest getUserGroupRequest = new() { IdGroup = groupId, IdUser = userId };
                     await createGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest, localTransaction);
                 }
                 await localTransaction.CommitAsync();

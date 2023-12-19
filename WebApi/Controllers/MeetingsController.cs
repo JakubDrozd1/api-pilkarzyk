@@ -4,7 +4,6 @@ using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {
@@ -16,7 +15,7 @@ namespace WebApi.Controllers
         private readonly IMeetingsService _meetingsService = meetingsService;
 
         [HttpGet(Name = "GetAllMeetings")]
-        public async Task<ActionResult<List<GetMeetingUsersGroupsResponse>>> GetAllMeetings([FromQuery] GetMeetingsUsersGroupsPaginationRequest getMeetingsUsersGroupsPaginationRequest)
+        public async Task<ActionResult<List<GetMeetingGroupsResponse>>> GetAllMeetings([FromQuery] GetMeetingsGroupsPaginationRequest getMeetingsUsersGroupsPaginationRequest)
         {
             var meetings = await _meetingsService.GetAllMeetingsAsync(getMeetingsUsersGroupsPaginationRequest);
             return Ok(meetings);
@@ -40,11 +39,11 @@ namespace WebApi.Controllers
             {
                 await _meetingsService.AddMeetingAsync(meetingRequest);
                 await _meetingsService.SaveChangesAsync();
-                return Ok(meetingRequest);
+                return Ok(await _meetingsService.GetMeeting(meetingRequest));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return StatusCode(500, ex.Message);
             }
 
 

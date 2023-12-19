@@ -2,11 +2,11 @@
 using System.Text.Json;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.Users;
 using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.Users
 {
     public class UpdateUsersRepository(FbConnection dbConnection) : IUpdateUsersRepository
     {

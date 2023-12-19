@@ -4,7 +4,6 @@ using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {
@@ -33,7 +32,7 @@ namespace WebApi.Controllers
             return Ok(message);
         }
 
-        [HttpPost(Name = "GetMessageRequest")]
+        [HttpPost(Name = "AddMessage")]
         public async Task<ActionResult> AddMessage([FromBody] GetMessageRequest messageRequest)
         {
             try

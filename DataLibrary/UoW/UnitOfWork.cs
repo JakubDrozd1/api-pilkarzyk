@@ -1,8 +1,23 @@
 ﻿using System.Data;
 using DataLibrary.ConnectionProvider;
-using DataLibrary.IRepository;
-using DataLibrary.Repository;
+using DataLibrary.IRepository.EmailSender;
+using DataLibrary.IRepository.Groups;
+using DataLibrary.IRepository.GroupsUsers;
+using DataLibrary.IRepository.Meetings;
+using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.Rankings;
+using DataLibrary.IRepository.Tokens;
+using DataLibrary.IRepository.Users;
+using DataLibrary.IRepository.UsersMeetings;
 using DataLibrary.Repository.EmailSender;
+using DataLibrary.Repository.Groups;
+using DataLibrary.Repository.GroupsUsers;
+using DataLibrary.Repository.Meetings;
+using DataLibrary.Repository.Messages;
+using DataLibrary.Repository.Rankings;
+using DataLibrary.Repository.Tokens;
+using DataLibrary.Repository.Users;
+using DataLibrary.Repository.UsersMeetings;
 using FirebirdSql.Data.FirebirdClient;
 using Microsoft.Extensions.Configuration;
 
@@ -21,6 +36,8 @@ namespace DataLibrary.UoW
         public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection);
         public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection);
         public ICreateTokensRepository CreateTokensRepository => new CreateTokensRepository(configuration, dbConnection);
+        public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection);
+
 
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection);
@@ -38,6 +55,8 @@ namespace DataLibrary.UoW
         public IReadUsersRepository ReadUsersRepository => new ReadUsersRepository(dbConnection);
         public IReadGroupsUsersRepository ReadGroupsUsersRepository => new ReadGroupsUsersRepository(dbConnection);
         public IReadEmailSender ReadEmailSender => new ReadEmailSenderRepository(dbConnection);
+        public IReadUsersMeetingsRepository ReadUsersMeetingsRepository => new ReadUsersMeetingsRepository(dbConnection);
+
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection);

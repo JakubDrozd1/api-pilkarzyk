@@ -1,5 +1,6 @@
-﻿using BLLLibrary;
-using DataLibrary.Model.DTO;
+﻿using BLLLibrary.IService;
+using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 

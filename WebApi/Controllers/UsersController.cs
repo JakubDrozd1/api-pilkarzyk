@@ -1,9 +1,7 @@
 ﻿using BLLLibrary.IService;
-using DataLibrary.EmailSender;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {

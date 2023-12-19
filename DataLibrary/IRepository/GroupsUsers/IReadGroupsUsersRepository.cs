@@ -1,8 +1,8 @@
-﻿using BLLLibrary.Model.DTO.Response;
-using DataLibrary.Model.DTO.Request;
+﻿using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.IRepository
+namespace DataLibrary.IRepository.GroupsUsers
 {
     public interface IReadGroupsUsersRepository
     {

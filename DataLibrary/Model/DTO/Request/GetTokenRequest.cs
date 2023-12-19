@@ -1,4 +1,4 @@
-﻿namespace DataLibrary.Model.DTO
+﻿namespace DataLibrary.Model.DTO.Request
 {
     public class GetTokenRequest
     {

@@ -1,18 +1,18 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.Rankings;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.Rankings
 {
     public class ReadRankingsRepository(FbConnection dbConnection) : IReadRankingsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private static readonly string SELECT
-              = $"g.{nameof(GROUPS.NAME)}, " + 
+              = $"g.{nameof(GROUPS.NAME)}, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +

@@ -1,7 +1,7 @@
 ﻿using DataLibrary.Entities;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.IRepository
+namespace DataLibrary.IRepository.Messages
 {
     public interface IUpdateMessagesRepository
     {

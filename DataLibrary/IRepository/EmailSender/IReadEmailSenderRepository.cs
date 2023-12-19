@@ -1,7 +1,7 @@
 ﻿using DataLibrary.Entities;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.IRepository
+namespace DataLibrary.IRepository.EmailSender
 {
     public interface IReadEmailSender
     {

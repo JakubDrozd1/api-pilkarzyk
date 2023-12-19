@@ -1,6 +1,6 @@
 ﻿using BLLLibrary.IService;
-using BLLLibrary.Model.DTO.Response;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service

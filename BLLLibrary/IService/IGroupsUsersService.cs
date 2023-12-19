@@ -1,5 +1,5 @@
-﻿using BLLLibrary.Model.DTO.Response;
-using DataLibrary.Model.DTO.Request;
+﻿using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 
 namespace BLLLibrary.IService
 {

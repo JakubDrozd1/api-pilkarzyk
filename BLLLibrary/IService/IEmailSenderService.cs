@@ -1,6 +1,6 @@
 ﻿using DataLibrary.Model.DTO.Request;
 
-namespace DataLibrary.EmailSender
+namespace BLLLibrary.IService
 {
     public interface IEmailSenderService
     {

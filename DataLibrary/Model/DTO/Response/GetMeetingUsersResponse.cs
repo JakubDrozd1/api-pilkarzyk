@@ -1,8 +1,7 @@
 ﻿namespace DataLibrary.Model.DTO.Response
 {
-    public class GetMeetingUsersGroupsResponse
+    public class GetMeetingUsersResponse
     {
-        public string? Name { get; set; }
         public string? Login { get; set; }
         public string? Firstname { get; set; }
         public string? Surname { get; set; }
@@ -13,6 +12,5 @@
         public string? Description { get; set; }
         public int? Quantity { get; set; }
         public bool? IsAdmin { get; set; }
-
     }
 }

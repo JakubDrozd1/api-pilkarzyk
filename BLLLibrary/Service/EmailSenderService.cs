@@ -8,8 +8,9 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System.Security.Cryptography;
 using System;
+using BLLLibrary.IService;
 
-namespace DataLibrary.EmailSender
+namespace BLLLibrary.Service
 {
     public class EmailSenderService(IUnitOfWork unitOfWork, IConfiguration configuration) : IEmailSenderService
     {

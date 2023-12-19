@@ -4,7 +4,6 @@ using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Model.DTO.Request;
 
 namespace WebApi.Controllers
 {

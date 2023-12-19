@@ -1,4 +1,4 @@
-﻿namespace BLLLibrary.Model.DTO.Response
+﻿namespace DataLibrary.Model.DTO.Response
 {
     public class GetGroupsUsersResponse
     {

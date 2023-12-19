@@ -1,7 +1,6 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
-using WebApi.Model.DTO.Request;
 
 namespace BLLLibrary.IService
 {

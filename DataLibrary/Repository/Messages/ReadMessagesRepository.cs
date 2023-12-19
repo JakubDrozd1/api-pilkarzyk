@@ -1,13 +1,12 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.Messages;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
-using WebApi.Model.DTO.Request;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.Messages
 {
     public class ReadMessagesRepository(FbConnection dbConnection) : IReadMessagesRepository
     {

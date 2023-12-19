@@ -1,10 +1,10 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.IRepository;
+using DataLibrary.IRepository.Meetings;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository
+namespace DataLibrary.Repository.Meetings
 {
     public class DeleteMeetingsRepository(FbConnection dbConnection) : IDeleteMeetingsRepository
     {
