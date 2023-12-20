@@ -10,6 +10,7 @@ namespace BLLLibrary.IService
         Task<MESSAGES?> GetMessageByIdAsync(int messageId);
         Task AddMessageAsync(GetMessageRequest messageRequest);
         Task UpdateMessageAsync(GetMessageRequest messageRequest, int messageId);
+        Task UpdateAnswerMessageAsync(GetMessageRequest getMessageRequest);
         Task DeleteMessageAsync(int messageId);
         Task SaveChangesAsync();
     }

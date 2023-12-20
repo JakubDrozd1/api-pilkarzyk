@@ -2,18 +2,21 @@
 using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
+using DataLibrary.Helper.Notification;
 using DataLibrary.IRepository.UsersMeetings;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Repository.Meetings;
 using DataLibrary.Repository.Messages;
 using DataLibrary.Repository.Users;
 using FirebirdSql.Data.FirebirdClient;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DataLibrary.Repository.UsersMeetings
 {
-    public class CreateUsersMeetingsRepository(FbConnection dbConnection) : ICreateUsersMeetingsRepository
+    public class CreateUsersMeetingsRepository(FbConnection dbConnection, IHubContext<NotificationHub, INotificationHub> hubContext) : ICreateUsersMeetingsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly IHubContext<NotificationHub, INotificationHub> _productNotification = hubContext;
 
         public async Task AddUserToMeetingAsync(int idMeeting, int idUser, FbTransaction? transaction = null)
         {
@@ -80,6 +83,10 @@ namespace DataLibrary.Repository.UsersMeetings
                 if (transaction == null)
                 {
                     await localTransaction.CommitAsync();
+                }
+                foreach (int userId in getUsersMeetingsRequest.IdUsers)
+                {
+                    await _productNotification.Clients.All.SendMessage(userId, getUsersMeetingsRequest.IdMeeting);
                 }
             }
             catch (Exception ex)

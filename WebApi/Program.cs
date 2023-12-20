@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Net.Http.Headers;
 using DataLibrary.Helper.ConnectionProvider;
+using DataLibrary.Helper.Notification;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +72,7 @@ builder.Services.AddSwaggerGen(
 
         options.AddServer(new OpenApiServer()
         {
-           // Url = "http://localhost:27884"
+            // Url = "http://localhost:27884"
             Url = "http://192.168.88.20:45455"
         });
     }
@@ -92,6 +93,7 @@ builder.Services
         };
         options.IncludeErrorDetails = true;
     });
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -102,10 +104,16 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     });
 }
-app.UseCors(x => x
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+app.UseCors(builder =>
+{
+    builder
+        .WithOrigins("http://192.168.88.20:4200", "http://localhost:27884")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+});
+app.MapHub<NotificationHub>("/notify");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

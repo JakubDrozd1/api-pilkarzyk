@@ -14,6 +14,8 @@
         public string? Surname { get; set; }
         public int? PhoneNumber { get; set; }
         public bool? IsAdmin { get; set; }
+        public int? IdUser { get; set; }
+        public int? IdMeeting { get; set; }
 
     }
 }

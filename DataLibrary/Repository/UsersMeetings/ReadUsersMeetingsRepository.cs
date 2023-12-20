@@ -17,6 +17,7 @@ namespace DataLibrary.Repository.UsersMeetings
                 $"m.{nameof(MEETINGS.PLACE)}, " +
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.QUANTITY)}, " +
+                $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
@@ -25,7 +26,7 @@ namespace DataLibrary.Repository.UsersMeetings
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
                 $"u.{nameof(USERS.AVATAR)}, " +
                 $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin ";
-        private static readonly string FROM
+            private static readonly string FROM
               = $"{nameof(USERS_MEETINGS)} um " +
                 $"JOIN {nameof(MEETINGS)} m ON um.{nameof(USERS_MEETINGS.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +
                 $"JOIN {nameof(USERS)} u ON um.{nameof(USERS_MEETINGS.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
@@ -56,7 +57,7 @@ namespace DataLibrary.Repository.UsersMeetings
                 dynamicParameters.Add("@DateTo", getMeetingsUsersPaginationRequest.DateTo);
             }
 
-            var query = new QueryBuilder<GetGroupsUsersResponse>()
+            var query = new QueryBuilder<GetMeetingUsersResponse>()
                     .Select(SELECT)
                     .From(FROM)
                     .Where(WHERE)

@@ -52,5 +52,10 @@ namespace BLLLibrary.Service
         {
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task UpdateAnswerMessageAsync(GetMessageRequest getMessageRequest)
+        {
+            await _unitOfWork.UpdateMessagesRepository.UpdateAnswerMessageAsync(getMessageRequest);
+        }
     }
 }

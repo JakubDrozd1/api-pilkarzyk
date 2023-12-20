@@ -67,6 +67,21 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpPut("answer", Name = "UpdateAnswerMessageAsync")]
+        public async Task<ActionResult> UpdateAnswerMessageAsync([FromBody] GetMessageRequest messageRequest)
+        {
+            try
+            {
+                await _messagesService.UpdateAnswerMessageAsync(messageRequest);
+                await _messagesService.SaveChangesAsync();
+                return Ok(messageRequest);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
+
         [HttpDelete("{messageId}", Name = "DeleteMessage")]
         public async Task<ActionResult> DeleteMessage(int messageId)
         {

@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet(Name = "GetUserWithMeeting")]
-        public async Task<ActionResult<GetGroupsUsersResponse?>> GetUserWithMeeting([FromQuery, Required] int meetingId, [FromQuery, Required] int userId)
+        public async Task<ActionResult<GetMeetingUsersResponse?>> GetUserWithMeeting([FromQuery, Required] int meetingId, [FromQuery, Required] int userId)
         {
             var result = await _usersMeetingsService.GetUserWithMeeting(meetingId, userId);
             return Ok(result);

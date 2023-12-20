@@ -19,10 +19,12 @@ namespace DataLibrary.Repository.Messages
                 $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
+                $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
                 $"m.{nameof(MEETINGS.PLACE)}, " +
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.QUANTITY)}, " +
+                $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.ANSWER)} ";
         private static readonly string FROM

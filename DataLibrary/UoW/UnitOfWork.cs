@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using DataLibrary.Helper.ConnectionProvider;
+using DataLibrary.Helper.Notification;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
@@ -19,16 +20,17 @@ using DataLibrary.Repository.Tokens;
 using DataLibrary.Repository.Users;
 using DataLibrary.Repository.UsersMeetings;
 using FirebirdSql.Data.FirebirdClient;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 
 namespace DataLibrary.UoW
 {
-    public class UnitOfWork(IConnectionProvider _connectionProvider, IConfiguration configuration) : IUnitOfWork
+    public class UnitOfWork(IConnectionProvider _connectionProvider, IConfiguration _configuration, IHubContext<NotificationHub, INotificationHub> _notificationHub) : IUnitOfWork
     {
         private readonly FbConnection dbConnection = _connectionProvider.GetConnection();
-        private readonly IConfiguration configuration = configuration;
+        private readonly IConfiguration configuration = _configuration;
         private FbTransaction? dbTransaction = null;
-
+        readonly IHubContext<NotificationHub, INotificationHub> notificationHub = _notificationHub;
         public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection);
         public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection);
         public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection);
@@ -36,7 +38,7 @@ namespace DataLibrary.UoW
         public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection);
         public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection);
         public ICreateTokensRepository CreateTokensRepository => new CreateTokensRepository(configuration, dbConnection);
-        public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection);
+        public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection, notificationHub);
 
 
 
