@@ -1,9 +1,11 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
+using DataLibrary.Helper;
 using DataLibrary.IRepository.UsersMeetings;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Repository.Meetings;
+using DataLibrary.Repository.Messages;
 using DataLibrary.Repository.Users;
 using FirebirdSql.Data.FirebirdClient;
 
@@ -65,10 +67,15 @@ namespace DataLibrary.Repository.UsersMeetings
             var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
-                ReadMeetingsRepository readMeetingsRepository = new(db);
+                CreateMessagesRepository createMessageRepository = new(db);
                 foreach (int userId in getUsersMeetingsRequest.IdUsers)
                 {
                     await AddUserToMeetingAsync(getUsersMeetingsRequest.IdMeeting, userId, localTransaction);
+                    await createMessageRepository.AddMessageAsync(new MESSAGES()
+                    {
+                        IDUSER = userId,
+                        IDMEETING = getUsersMeetingsRequest.IdMeeting
+                    }, localTransaction);
                 }
                 if (transaction == null)
                 {

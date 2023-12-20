@@ -1,6 +1,6 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.ConnectionProvider
+namespace DataLibrary.Helper.ConnectionProvider
 {
     public interface IConnectionProvider
     {

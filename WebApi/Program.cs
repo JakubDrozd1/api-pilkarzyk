@@ -1,12 +1,12 @@
 using BLLLibrary.IService;
 using BLLLibrary.Service;
-using DataLibrary.ConnectionProvider;
 using DataLibrary.UoW;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Net.Http.Headers;
+using DataLibrary.Helper.ConnectionProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 

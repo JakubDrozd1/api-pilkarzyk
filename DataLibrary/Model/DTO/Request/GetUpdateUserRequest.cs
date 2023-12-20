@@ -1,5 +1,6 @@
 ﻿
 using System.Text.Json.Serialization;
+using DataLibrary.Helper;
 
 namespace DataLibrary.Model.DTO.Request
 {

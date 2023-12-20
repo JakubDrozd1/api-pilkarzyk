@@ -3,6 +3,7 @@ using System.Data;
 using DataLibrary.Entities;
 using FirebirdSql.Data.FirebirdClient;
 using DataLibrary.IRepository.Tokens;
+using DataLibrary.Helper;
 
 namespace DataLibrary.Repository.Tokens
 {

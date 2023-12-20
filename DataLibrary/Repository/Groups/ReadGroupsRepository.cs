@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
+using DataLibrary.Helper;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;

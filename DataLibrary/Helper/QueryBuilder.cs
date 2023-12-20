@@ -2,7 +2,7 @@
 using DataLibrary.Model.DTO;
 using static Dapper.SqlMapper;
 
-namespace DataLibrary
+namespace DataLibrary.Helper
 {
     internal class QueryBuilder<T>
     {
@@ -45,7 +45,7 @@ namespace DataLibrary
         {
             if (Limit.OnPage != -1)
             {
-                query.Append($"ROWS {(Limit.Page * Limit.OnPage) + 1} TO {(Limit.Page * Limit.OnPage) + Limit.OnPage} ");
+                query.Append($"ROWS {Limit.Page * Limit.OnPage + 1} TO {Limit.Page * Limit.OnPage + Limit.OnPage} ");
             }
             return this;
         }
@@ -54,7 +54,7 @@ namespace DataLibrary
         {
             if (OrderBy.SortColumn != null)
             {
-                if (OrderBy.SortMode == null || (!OrderBy.SortMode.Equals("asc", StringComparison.CurrentCultureIgnoreCase) && !OrderBy.SortMode.Equals("desc", StringComparison.CurrentCultureIgnoreCase)))
+                if (OrderBy.SortMode == null || !OrderBy.SortMode.Equals("asc", StringComparison.CurrentCultureIgnoreCase) && !OrderBy.SortMode.Equals("desc", StringComparison.CurrentCultureIgnoreCase))
                 {
                     OrderBy.SortMode = "ASC";
                 }

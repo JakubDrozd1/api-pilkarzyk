@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace DataLibrary
+namespace DataLibrary.Helper
 {
     internal sealed class JsonToByteArrayConverter : JsonConverter<byte[]>
     {

@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using DataLibrary.ConnectionProvider;
+using DataLibrary.Helper.ConnectionProvider;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
