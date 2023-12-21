@@ -1,4 +1,6 @@
-﻿namespace DataLibrary.Model.DTO.Response
+﻿using System.Runtime.CompilerServices;
+
+namespace DataLibrary.Model.DTO.Response
 {
     public class GetMeetingUsersResponse
     {
@@ -14,5 +16,6 @@
         public bool? IsAdmin { get; set; }
         public int? IdUser { get; set; }
         public int? IdMeeting { get; set; }
+        public string? Answer {  get; set; }
     }
 }

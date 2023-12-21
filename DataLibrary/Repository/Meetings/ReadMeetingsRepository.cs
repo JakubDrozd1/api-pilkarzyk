@@ -20,7 +20,8 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private static readonly string FROM
               = $"{nameof(MEETINGS)} m " +
-                $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} ";
+                $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
+                $"JOIN {nameof(MESSAGES)} msg ON m.{nameof(MEETINGS.ID_MEETING)} = msg.{nameof(MESSAGES.IDMEETING)} ";
         public async Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsRequest, FbTransaction? transaction = null)
         {
 
@@ -32,13 +33,21 @@ namespace DataLibrary.Repository.Meetings
                 WHERE += $"AND m.{nameof(MEETINGS.IDGROUP)} = @GroupId ";
                 dynamicParameters.Add("@GroupId", getMeetingsRequest.IdGroup);
             }
-
+            if (getMeetingsRequest.IdUser is not null)
+            {
+                WHERE += $"AND msg.{nameof(MESSAGES.IDUSER)} = @UserId ";
+                dynamicParameters.Add("@UserId", getMeetingsRequest.IdUser);
+            }
+            if (getMeetingsRequest.Answer is not null)
+            {
+                WHERE += $"AND msg.{nameof(MESSAGES.ANSWER)} = @Answer ";
+                dynamicParameters.Add("@Answer", getMeetingsRequest.Answer);
+            }
             if (getMeetingsRequest.DateFrom is not null)
             {
                 WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} >= @DateFrom ";
                 dynamicParameters.Add("@DateFrom", getMeetingsRequest.DateFrom);
             }
-
             if (getMeetingsRequest.DateTo is not null)
             {
                 WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";

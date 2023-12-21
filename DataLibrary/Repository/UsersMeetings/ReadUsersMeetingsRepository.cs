@@ -18,6 +18,7 @@ namespace DataLibrary.Repository.UsersMeetings
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.QUANTITY)}, " +
                 $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
+                $"msg.{nameof(MESSAGES.ANSWER)}, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
@@ -29,6 +30,7 @@ namespace DataLibrary.Repository.UsersMeetings
             private static readonly string FROM
               = $"{nameof(USERS_MEETINGS)} um " +
                 $"JOIN {nameof(MEETINGS)} m ON um.{nameof(USERS_MEETINGS.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +
+                $"JOIN {nameof(MESSAGES)} msg ON um.{nameof(USERS_MEETINGS.IDMEETING)} = msg.{nameof(MESSAGES.IDMEETING)} " +
                 $"JOIN {nameof(USERS)} u ON um.{nameof(USERS_MEETINGS.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
 
         public async Task<List<GetMeetingUsersResponse>> GetListMeetingsUsersAsync(GetMeetingsUsersPaginationRequest getMeetingsUsersPaginationRequest, FbTransaction? transaction = null)
@@ -56,6 +58,11 @@ namespace DataLibrary.Repository.UsersMeetings
                 WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
                 dynamicParameters.Add("@DateTo", getMeetingsUsersPaginationRequest.DateTo);
             }
+            if (getMeetingsUsersPaginationRequest.Answer is not null)
+            {
+                WHERE += $"AND msg.{nameof(MESSAGES.ANSWER)} = @Answer ";
+                dynamicParameters.Add("@Answer", getMeetingsUsersPaginationRequest.Answer);
+            }
 
             var query = new QueryBuilder<GetMeetingUsersResponse>()
                     .Select(SELECT)
@@ -80,7 +87,7 @@ namespace DataLibrary.Repository.UsersMeetings
             var query = new QueryBuilder<GetMeetingUsersResponse>()
                 .Select(SELECT)
                 .From(FROM)
-                .Where("um.IDMEETING = @MeetingId AND um.IDUSER = @UserId ");
+                .Where("um.IDMEETING = @MeetingId AND um.IDUSER = @UserId AND msg.IDUSER = @UserId");
             FbConnection db = transaction?.Connection ?? _dbConnection;
 
             if (transaction == null && db.State != ConnectionState.Open)

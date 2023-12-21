@@ -13,6 +13,8 @@ namespace DataLibrary.Model.DTO.Request
         public int OnPage { get; set; }
         public string? SortColumn { get; set; }
         public string? SortMode { get; set; }
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
         public int? IdUser { get; set; }
         public int? IdMeeting { get; set; }
     }

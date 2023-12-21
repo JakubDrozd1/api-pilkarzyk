@@ -32,30 +32,39 @@ namespace DataLibrary.Repository.Messages
                 $"JOIN {nameof(MEETINGS)} m ON msg.{nameof(MESSAGES.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +
                 $"JOIN {nameof(USERS)} u ON msg.{nameof(MESSAGES.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
 
-        public async Task<List<GetMessagesUsersMeetingsResponse>> GetAllMessagesAsync(GetMessagesUsersPaginationRequest getMeetingsUsersPaginationRequest, FbTransaction? transaction = null)
+        public async Task<List<GetMessagesUsersMeetingsResponse>> GetAllMessagesAsync(GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest, FbTransaction? transaction = null)
         {
 
             DynamicParameters dynamicParameters = new();
             string WHERE = "1=1";
 
-            if (getMeetingsUsersPaginationRequest.IdMeeting is not null)
+            if (getMessagesUsersPaginationRequest.IdMeeting is not null)
             {
                 WHERE += $"AND msg.{nameof(MESSAGES.IDMEETING)} = @GroupId ";
-                dynamicParameters.Add("@GroupId", getMeetingsUsersPaginationRequest.IdMeeting);
+                dynamicParameters.Add("@GroupId", getMessagesUsersPaginationRequest.IdMeeting);
             }
-
-            if (getMeetingsUsersPaginationRequest.IdUser is not null)
+            if (getMessagesUsersPaginationRequest.IdUser is not null)
             {
                 WHERE += $"AND msg.{nameof(MESSAGES.IDUSER)} = @UserId ";
-                dynamicParameters.Add("@UserId", getMeetingsUsersPaginationRequest.IdUser);
+                dynamicParameters.Add("@UserId", getMessagesUsersPaginationRequest.IdUser);
+            }
+            if (getMessagesUsersPaginationRequest.DateFrom is not null)
+            {
+                WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} >= @DateFrom ";
+                dynamicParameters.Add("@DateFrom", getMessagesUsersPaginationRequest.DateFrom);
+            }
+            if (getMessagesUsersPaginationRequest.DateTo is not null)
+            {
+                WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
+                dynamicParameters.Add("@DateTo", getMessagesUsersPaginationRequest.DateTo);
             }
 
             var query = new QueryBuilder<MESSAGES>()
                 .Select(SELECT)
                 .From(FROM)
                 .Where(WHERE)
-                .OrderBy(getMeetingsUsersPaginationRequest)
-                .Limit(getMeetingsUsersPaginationRequest);
+                .OrderBy(getMessagesUsersPaginationRequest)
+                .Limit(getMessagesUsersPaginationRequest);
             FbConnection db = transaction?.Connection ?? _dbConnection;
 
             if (transaction == null && db.State != ConnectionState.Open)
