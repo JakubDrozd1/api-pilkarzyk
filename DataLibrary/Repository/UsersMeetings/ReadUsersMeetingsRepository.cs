@@ -19,6 +19,7 @@ namespace DataLibrary.Repository.UsersMeetings
                 $"m.{nameof(MEETINGS.QUANTITY)}, " +
                 $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
                 $"msg.{nameof(MESSAGES.ANSWER)}, " +
+                $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"u.{nameof(USERS.EMAIL)}, " +

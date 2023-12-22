@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
+﻿
 namespace DataLibrary.Model.DTO.Response
 {
     public class GetMeetingUsersResponse
@@ -17,5 +16,7 @@ namespace DataLibrary.Model.DTO.Response
         public int? IdUser { get; set; }
         public int? IdMeeting { get; set; }
         public string? Answer {  get; set; }
+        public DateTime? WaitingTime { get; set; }
+
     }
 }

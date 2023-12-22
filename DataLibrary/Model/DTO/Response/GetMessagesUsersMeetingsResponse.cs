@@ -16,6 +16,8 @@
         public bool? IsAdmin { get; set; }
         public int? IdUser { get; set; }
         public int? IdMeeting { get; set; }
+        public DateTime? WaitingTime { get; set; }
+
 
     }
 }

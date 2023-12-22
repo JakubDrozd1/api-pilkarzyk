@@ -41,12 +41,13 @@ namespace DataLibrary.Repository.Messages
             try
             {
                 var updateBuilder = new QueryBuilder<GetMessageRequest>()
-                    .UpdateColumns("MESSAGES", ["ANSWER"])
+                    .UpdateColumns("MESSAGES", ["ANSWER","WAITING_TIME"])
                     .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
                 string updateQuery = updateBuilder.Build();
                 dynamicParameters.Add("@UserId", getMessageRequest.IdUser);
                 dynamicParameters.Add("@MeetingId", getMessageRequest.IdMeeting);
                 dynamicParameters.Add("@ANSWER", getMessageRequest.Answer);
+                dynamicParameters.Add("@WAITING_TIME", getMessageRequest.WaitingTime);
                 await db.ExecuteAsync(updateQuery, dynamicParameters, localTransaction);
 
                 if (transaction == null)

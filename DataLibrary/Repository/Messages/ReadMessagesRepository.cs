@@ -26,6 +26,7 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.QUANTITY)}, " +
                 $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
+                $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.ANSWER)} ";
         private static readonly string FROM
               = $"{nameof(MESSAGES)} msg " +
@@ -57,6 +58,11 @@ namespace DataLibrary.Repository.Messages
             {
                 WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
                 dynamicParameters.Add("@DateTo", getMessagesUsersPaginationRequest.DateTo);
+            }
+            if (getMessagesUsersPaginationRequest.WaitingTime is not null)
+            {
+                WHERE += $"AND m.{nameof(MESSAGES.WAITING_TIME)} <= @WaitingTime ";
+                dynamicParameters.Add("@WaitingTime", getMessagesUsersPaginationRequest.WaitingTime);
             }
 
             var query = new QueryBuilder<MESSAGES>()

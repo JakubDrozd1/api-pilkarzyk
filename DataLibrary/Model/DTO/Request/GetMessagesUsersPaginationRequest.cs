@@ -17,5 +17,7 @@ namespace DataLibrary.Model.DTO.Request
         public DateTime? DateTo { get; set; }
         public int? IdUser { get; set; }
         public int? IdMeeting { get; set; }
+        public DateTime? WaitingTime { get; set; }
+
     }
 }

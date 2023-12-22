@@ -7,5 +7,7 @@
         public int? IDUSER { get; set; }
         public string? ANSWER { get; set; }
         public DateTime? DATE_ADD { get; set; }
+        public DateTime? WAITING_TIME { get; set; }
+
     }
 }
