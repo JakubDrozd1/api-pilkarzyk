@@ -1,10 +1,9 @@
-﻿using DataLibrary.Entities;
-using FirebirdSql.Data.FirebirdClient;
+﻿using DataLibrary.Model.DTO.Request;
 
 namespace DataLibrary.IRepository.Messages
 {
     public interface ICreateMessagesRepository
     {
-        Task AddMessageAsync(MESSAGES message, FbTransaction? transaction = null);
+        Task AddMessageAsync(GetMessageRequest message);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 
 namespace BLLLibrary.IService
 {

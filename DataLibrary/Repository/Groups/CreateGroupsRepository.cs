@@ -3,40 +3,33 @@ using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Groups;
+using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Groups
 {
-    public class CreateGroupsRepository(FbConnection dbConnection) : ICreateGroupsRepository
+    public class CreateGroupsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : ICreateGroupsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddGroupAsync(GROUPS group, FbTransaction? transaction = null)
+        public async Task AddGroupAsync(GetGroupRequest group)
         {
-            var insertBuilder = new QueryBuilder<GROUPS>()
-                .Insert("GROUPS ", group);
-            string insertQuery = insertBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            ReadGroupsRepository readGroupsRepository = new(db);
             try
             {
-                var groupTemp = await readGroupsRepository.GetGroupByNameAsync(group.NAME, transaction);
-                if (groupTemp != null)
-                {
-                    throw new Exception("Group with this name already exists");
-                }
+                var insertBuilder = new QueryBuilder<GROUPS>()
+                    .Insert("GROUPS ", group);
+                string insertQuery = insertBuilder.Build();
+                await _dbConnection.ExecuteAsync(insertQuery, group, _fbTransaction);
             }
-            catch (NullReferenceException)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception($"{ex.Message}"); ;
             }
-            await db.ExecuteAsync(insertQuery, group, transaction);
         }
     }
 }

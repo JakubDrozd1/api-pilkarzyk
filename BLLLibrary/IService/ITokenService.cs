@@ -6,7 +6,7 @@ namespace BLLLibrary.IService
 {
     public interface ITokenService
     {
-        Task<GetTokenResponse> GenerateJwtTokenAsync(GetTokenRequest tokenRequest, FbTransaction? transaction = null);
+        Task<GetTokenResponse> GenerateJwtTokenAsync(GetTokenRequest tokenRequest);
         Task SaveChangesAsync();
     }
 }

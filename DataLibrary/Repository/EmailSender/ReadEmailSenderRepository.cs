@@ -7,23 +7,29 @@ using DataLibrary.Helper;
 
 namespace DataLibrary.Repository.EmailSender
 {
-    public class ReadEmailSenderRepository(FbConnection dbConnection) : IReadEmailSender
+    public class ReadEmailSenderRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IReadEmailSender
     {
         private readonly FbConnection _dbConnection = dbConnection;
-        public async Task<EMAIL_SENDER?> GetEmailDetailsAsync(string email, FbTransaction? transaction = null)
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
+        public async Task<EMAIL_SENDER?> GetEmailDetailsAsync(string email)
         {
-            var query = new QueryBuilder<EMAIL_SENDER>()
-                .Select("* ")
-                .From("EMAIL_SENDER ")
-                .Where("EMAIL = @Email ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
 
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<EMAIL_SENDER>(query.Build(), new { Email = email }, transaction);
+            try
+            {
+                var query = new QueryBuilder<EMAIL_SENDER>()
+                    .Select("* ")
+                    .From("EMAIL_SENDER ")
+                    .Where("EMAIL = @Email ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<EMAIL_SENDER>(query.Build(), new { Email = email }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

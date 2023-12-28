@@ -1,6 +1,6 @@
 ﻿namespace DataLibrary.Entities
 {
-    internal class CLIENT_TOKENS
+    public class CLIENT_TOKENS
     {
         public required string ID_CLIENT { get; set; }
         public required string CLIENT_SECRET { get; set; }

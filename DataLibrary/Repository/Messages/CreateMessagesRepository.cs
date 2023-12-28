@@ -1,27 +1,34 @@
 ﻿using System.Data;
 using Dapper;
-using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Messages;
+using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Messages
 {
-    public class CreateMessagesRepository(FbConnection dbConnection) : ICreateMessagesRepository
+    public class CreateMessagesRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : ICreateMessagesRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddMessageAsync(MESSAGES message, FbTransaction? transaction = null)
+        public async Task AddMessageAsync(GetMessageRequest message)
         {
-            var insertBuilder = new QueryBuilder<MESSAGES>()
-                .Insert("MESSAGES ", message);
-            string insertQuery = insertBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            await db.ExecuteAsync(insertQuery, message, transaction);
+            try
+            {
+                var insertBuilder = new QueryBuilder<GetMessageRequest>()
+                    .Insert("MESSAGES ", message);
+                string insertQuery = insertBuilder.Build();
+                await _dbConnection.ExecuteAsync(insertQuery, message, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

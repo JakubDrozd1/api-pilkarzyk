@@ -1,11 +1,23 @@
-﻿namespace DataLibrary.Model.DTO.Request
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
+namespace DataLibrary.Model.DTO.Request
 {
     public class GetMeetingRequest
     {
-        public DateTime? DateMeeting { get; set; }
-        public string? Place { get; set; }
-        public int? Quantity { get; set; }
-        public string? Description { get; set; }
-        public int? IdGroup { get; set; }
+        [JsonPropertyName("DateMeeting")]
+        public DateTime? DATE_MEETING { get; set; }
+
+        [JsonPropertyName("Place")]
+        public string? PLACE { get; set; }
+
+        [JsonPropertyName("Quantity")]
+        public int? QUANTITY { get; set; }
+
+        [JsonPropertyName("Description")]
+        public string? DESCRIPTION { get; set; }
+
+        [JsonPropertyName("IdGroup")]
+        public int? IDGROUP { get; set; }
     }
 }

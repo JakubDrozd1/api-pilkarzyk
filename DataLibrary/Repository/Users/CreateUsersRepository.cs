@@ -1,62 +1,33 @@
 ﻿using System.Data;
 using Dapper;
-using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Users;
+using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Users
 {
-    public class CreateUsersRepository(FbConnection dbConnection) : ICreateUsersRepository
+    public class CreateUsersRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : ICreateUsersRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddUserAsync(USERS user, FbTransaction? transaction = null)
+        public async Task AddUserAsync(GetUserRequest user)
         {
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            FbTransaction localTransaction = transaction ?? await db.BeginTransactionAsync();
-
             try
             {
-                ReadUsersRepository readUsersRepository = new(db);
-                USERS? userLogin = await readUsersRepository.GetUserByLoginAsync(user.LOGIN, localTransaction);
-                USERS? userEmail = await readUsersRepository.GetUserByEmailAsync(user.EMAIL, localTransaction);
-                USERS? userPhone = await readUsersRepository.GetUserByPhoneNumberAsync(user.PHONE_NUMBER, localTransaction);
-
-                if (userLogin != null)
-                {
-                    throw new Exception("Acount with login already exists");
-                }
-                if (userEmail != null)
-                {
-                    throw new Exception("Acount with email already exists");
-                }
-                if (userPhone != null)
-                {
-                    throw new Exception("Acount with phone number already exists");
-                }
-
-                var insertBuilder = new QueryBuilder<USERS>()
+                var insertBuilder = new QueryBuilder<GetUserRequest>()
                     .Insert("USERS ", user);
                 string insertQuery = insertBuilder.Build();
-
-                await db.ExecuteAsync(insertQuery, user, localTransaction);
-
-                if (transaction == null)
-                {
-                    await localTransaction.CommitAsync();
-                }
+                await _dbConnection.ExecuteAsync(insertQuery, user, _fbTransaction);
             }
             catch (Exception ex)
             {
-                localTransaction?.RollbackAsync();
-                throw new Exception($"Error while executing query: {ex.Message}");
+                throw new Exception($"{ex.Message}");
             }
         }
     }

@@ -1,18 +1,19 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
-using FirebirdSql.Data.FirebirdClient;
+using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Response;
 
 namespace DataLibrary.IRepository.Users
 {
     public interface IReadUsersRepository
     {
-        Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest, FbTransaction? transaction = null);
-        Task<USERS?> GetUserByIdAsync(int userId, FbTransaction? transaction = null);
-        Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword, FbTransaction? transaction = null);
-        Task<USERS?> GetUserByLoginAsync(string? login, FbTransaction? transaction = null);
-        Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, FbTransaction? transaction = null);
-        Task<USERS?> GetUserByEmailAsync(string email, FbTransaction? transaction = null);
-        Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber, FbTransaction? transaction = null);
-
+        Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest);
+        Task<USERS?> GetUserByIdAsync(int userId);
+        Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword, USERS? user);
+        Task<USERS?> GetUserByLoginAsync(string? login);
+        Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, List<GetGroupsUsersResponse> getGroupsUsersResponse);
+        Task<USERS?> GetUserByEmailAsync(string email);
+        Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber);
+        Task<string?> GetSaltByUserId(int userId);
     }
 }

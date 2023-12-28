@@ -1,5 +1,6 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 
 namespace BLLLibrary.IService
@@ -8,10 +9,10 @@ namespace BLLLibrary.IService
     {
         Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsPaginationRequest);
         Task<MEETINGS?> GetMeetingByIdAsync(int meetingId);
-        Task AddMeetingAsync(GetMeetingRequest meetingRequest);
-        Task UpdateMeetingAsync(GetMeetingRequest meetingRequest, int meetingId);
+        Task AddMeetingAsync(GetMeetingRequest getMeetingRequest);
+        Task UpdateMeetingAsync(GetMeetingRequest getMeetingRequest, int meetingId);
         Task DeleteMeetingAsync(int meetingId);
-        Task<MEETINGS?> GetMeeting(GetMeetingRequest meeting);
+        Task<MEETINGS?> GetMeeting(GetMeetingRequest getMeetingRequest);
         Task SaveChangesAsync();
     }
 }

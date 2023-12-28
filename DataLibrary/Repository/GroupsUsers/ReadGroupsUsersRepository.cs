@@ -3,15 +3,16 @@ using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.GroupsUsers;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.GroupsUsers
 {
-    public class ReadGroupsUsersRepository(FbConnection dbConnection) : IReadGroupsUsersRepository
+    public class ReadGroupsUsersRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IReadGroupsUsersRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
                 $"g.{nameof(GROUPS.ID_GROUP)} AS IdGroup, " +
@@ -29,56 +30,60 @@ namespace DataLibrary.Repository.GroupsUsers
                 $"JOIN {nameof(GROUPS)} g ON gu.{nameof(GROUPS_USERS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
                 $"JOIN {nameof(USERS)} u ON gu.{nameof(GROUPS_USERS.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
 
-        public async Task<List<GetGroupsUsersResponse>> GetListGroupsUserAsync(GetUsersGroupsPaginationRequest getUsersGroupsRequest, FbTransaction? transaction = null)
+        public async Task<List<GetGroupsUsersResponse>> GetListGroupsUserAsync(GetUsersGroupsPaginationRequest getUsersGroupsRequest)
         {
-            DynamicParameters dynamicParameters = new();
-            string WHERE = "1=1 ";
-
-            if (getUsersGroupsRequest.IdGroup is not null)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                WHERE += $"AND gu.{nameof(GROUPS_USERS.IDGROUP)} = @GroupId ";
-                dynamicParameters.Add("@GroupId", getUsersGroupsRequest.IdGroup);
+                await _dbConnection.OpenAsync();
             }
-
-            if (getUsersGroupsRequest.IdUser is not null)
+            try
             {
-                WHERE += $"AND gu.{nameof(GROUPS_USERS.IDUSER)} = @UserId ";
-                dynamicParameters.Add("@UserId", getUsersGroupsRequest.IdUser);
+                DynamicParameters dynamicParameters = new();
+                string WHERE = "1=1 ";
+
+                if (getUsersGroupsRequest.IdGroup is not null)
+                {
+                    WHERE += $"AND gu.{nameof(GROUPS_USERS.IDGROUP)} = @GroupId ";
+                    dynamicParameters.Add("@GroupId", getUsersGroupsRequest.IdGroup);
+                }
+                if (getUsersGroupsRequest.IdUser is not null)
+                {
+                    WHERE += $"AND gu.{nameof(GROUPS_USERS.IDUSER)} = @UserId ";
+                    dynamicParameters.Add("@UserId", getUsersGroupsRequest.IdUser);
+                }
+
+                var query = new QueryBuilder<GetGroupsUsersResponse>()
+                    .Select(SELECT)
+                    .From(FROM)
+                    .Where(WHERE)
+                    .OrderBy(getUsersGroupsRequest)
+                    .Limit(getUsersGroupsRequest);
+                return (await _dbConnection.QueryAsync<GetGroupsUsersResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
             }
-
-            var query = new QueryBuilder<GetGroupsUsersResponse>()
-                .Select(SELECT)
-                .From(FROM)
-                .Where(WHERE)
-                .OrderBy(getUsersGroupsRequest)
-                .Limit(getUsersGroupsRequest);
-
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (db.State != ConnectionState.Open && transaction == null)
+            catch (Exception ex)
             {
-                await db.OpenAsync();
+                throw new Exception($"{ex.Message}");
             }
-            FbTransaction localTransaction = transaction ?? await db.BeginTransactionAsync();
-
-            return (await db.QueryAsync<GetGroupsUsersResponse>(query.Build(), dynamicParameters, localTransaction)).AsList();
         }
 
-        public async Task<GetGroupsUsersResponse?> GetUserWithGroup(int groupId, int userId, FbTransaction? transaction = null)
+        public async Task<GetGroupsUsersResponse?> GetUserWithGroup(int groupId, int userId)
         {
-
-            var query = new QueryBuilder<GetGroupsUsersResponse>()
-                .Select(SELECT)
-                .From(FROM)
-                .Where("gu.IDGROUP = @GroupId AND gu.IDUSER = @UserId ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<GetGroupsUsersResponse?>(query.Build(), new { UserId = userId, GroupId = groupId }, transaction);
-
+            try
+            {
+                var query = new QueryBuilder<GetGroupsUsersResponse>()
+                    .Select(SELECT)
+                    .From(FROM)
+                    .Where("gu.IDGROUP = @GroupId AND gu.IDUSER = @UserId ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<GetGroupsUsersResponse?>(query.Build(), new { UserId = userId, GroupId = groupId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

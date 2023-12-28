@@ -7,22 +7,29 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Meetings
 {
-    public class UpdateMeetingsRepository(FbConnection dbConnection) : IUpdateMeetingsRepository
+    public class UpdateMeetingsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IUpdateMeetingsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task UpdateMeetingAsync(MEETINGS meeting, FbTransaction? transaction = null)
+        public async Task UpdateMeetingAsync(MEETINGS meeting)
         {
-            var updateBuilder = new QueryBuilder<MEETINGS>()
-                .Update("MEETINGS ", meeting)
-                .Where("ID_MEETING = @ID_MEETING ");
-            string updateQuery = updateBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            await db.ExecuteAsync(updateQuery, meeting, transaction);
+            try
+            {
+                var updateBuilder = new QueryBuilder<MEETINGS>()
+                    .Update("MEETINGS ", meeting)
+                    .Where("ID_MEETING = @ID_MEETING ");
+                string updateQuery = updateBuilder.Build();
+                await _dbConnection.ExecuteAsync(updateQuery, meeting, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

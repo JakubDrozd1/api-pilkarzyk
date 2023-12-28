@@ -8,37 +8,41 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Users
 {
-    public class UpdateUsersRepository(FbConnection dbConnection) : IUpdateUsersRepository
+    public class UpdateUsersRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IUpdateUsersRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task UpdateUserAsync(USERS user, FbTransaction? transaction = null)
+
+        public async Task UpdateUserAsync(USERS user)
         {
-            var updateBuilder = new QueryBuilder<USERS>()
-                .Update("USERS ", user)
-                .Where("ID_USER = @ID_USER");
-            string updateQuery = updateBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            await db.ExecuteAsync(updateQuery, user, transaction);
-        }
-
-        public async Task UpdateColumnUserAsync(GetUpdateUserRequest getUpdateUserRequest, int userId, FbTransaction? transaction = null)
-        {
-            DynamicParameters dynamicParameters = new();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            ReadUsersRepository readUsersRepository = new(db);
-
-            if (transaction == null && db.State != ConnectionState.Open)
-            {
-                await db.OpenAsync();
-            }
-            var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
+                var updateBuilder = new QueryBuilder<USERS>()
+                    .Update("USERS ", user)
+                    .Where("ID_USER = @ID_USER");
+                string updateQuery = updateBuilder.Build();
+                await _dbConnection.ExecuteAsync(updateQuery, user, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task UpdateColumnUserAsync(GetUpdateUserRequest getUpdateUserRequest, int userId, string salt)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                DynamicParameters dynamicParameters = new();
                 var updateBuilder = new QueryBuilder<GetUpdateUserRequest>()
                     .UpdateColumns("USERS", getUpdateUserRequest.Column)
                     .Where("ID_USER = @UserId");
@@ -51,7 +55,6 @@ namespace DataLibrary.Repository.Users
                     {
                         case "USER_PASSWORD":
                             {
-                                string salt = await readUsersRepository.GetSaltByUserId(userId, localTransaction) ?? throw new Exception("Salt is null");
                                 string password = getUpdateUserRequest.USER_PASSWORD ?? throw new Exception("Password is null");
                                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password, salt);
                                 dynamicParameters.Add($"@{column}", hashedPassword);
@@ -96,16 +99,10 @@ namespace DataLibrary.Repository.Users
                     }
 
                 }
-                await db.ExecuteAsync(updateQuery, dynamicParameters, localTransaction);
-
-                if (transaction == null)
-                {
-                    await localTransaction.CommitAsync();
-                }
+                await _dbConnection.ExecuteAsync(updateQuery, dynamicParameters, _fbTransaction);
             }
             catch (Exception ex)
             {
-                localTransaction?.RollbackAsync();
                 throw new Exception($"{ex.Message}");
             }
         }

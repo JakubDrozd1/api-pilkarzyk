@@ -7,22 +7,29 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Users
 {
-    public class DeleteUsersRepository(FbConnection dbConnection) : IDeleteUsersRepository
+    public class DeleteUsersRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IDeleteUsersRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task DeleteUserAsync(int userId, FbTransaction? transaction = null)
+        public async Task DeleteUserAsync(int userId)
         {
-            var deleteBuilder = new QueryBuilder<USERS>()
-                .Delete("USERS ")
-                .Where("ID_USER = @UserId ");
-            string deleteQuery = deleteBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            await db.ExecuteAsync(deleteQuery, new { UserId = userId }, transaction);
+            try
+            {
+                var deleteBuilder = new QueryBuilder<USERS>()
+                    .Delete("USERS ")
+                    .Where("ID_USER = @UserId ");
+                string deleteQuery = deleteBuilder.Build();
+                await _dbConnection.ExecuteAsync(deleteQuery, new { UserId = userId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

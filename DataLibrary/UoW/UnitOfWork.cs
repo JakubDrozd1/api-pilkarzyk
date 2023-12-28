@@ -2,6 +2,7 @@
 using DataLibrary.Helper.ConnectionProvider;
 using DataLibrary.Helper.Notification;
 using DataLibrary.IRepository.EmailSender;
+using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Meetings;
@@ -11,6 +12,7 @@ using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
 using DataLibrary.Repository.EmailSender;
+using DataLibrary.Repository.GroupInvite;
 using DataLibrary.Repository.Groups;
 using DataLibrary.Repository.GroupsUsers;
 using DataLibrary.Repository.Meetings;
@@ -21,52 +23,54 @@ using DataLibrary.Repository.Users;
 using DataLibrary.Repository.UsersMeetings;
 using FirebirdSql.Data.FirebirdClient;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Configuration;
 
 namespace DataLibrary.UoW
 {
-    public class UnitOfWork(IConnectionProvider _connectionProvider, IConfiguration _configuration, IHubContext<NotificationHub, INotificationHub> _notificationHub) : IUnitOfWork
+    public class UnitOfWork(IConnectionProvider _connectionProvider, IHubContext<NotificationHub, INotificationHub> _notificationHub) : IUnitOfWork
     {
         private readonly FbConnection dbConnection = _connectionProvider.GetConnection();
-        private readonly IConfiguration configuration = _configuration;
         private FbTransaction? dbTransaction = null;
         readonly IHubContext<NotificationHub, INotificationHub> notificationHub = _notificationHub;
-        public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection);
-        public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection);
-        public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection);
-        public ICreateRankingsRepository CreateRankingsRepository => new CreateRankingsRepository(dbConnection);
-        public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection);
-        public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection);
-        public ICreateTokensRepository CreateTokensRepository => new CreateTokensRepository(configuration, dbConnection);
-        public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection, notificationHub);
+
+        public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection, dbTransaction);
+        public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection, dbTransaction);
+        public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection, dbTransaction);
+        public ICreateRankingsRepository CreateRankingsRepository => new CreateRankingsRepository(dbConnection, dbTransaction);
+        public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection, dbTransaction);
+        public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection, dbTransaction);
+        public ICreateTokensRepository CreateTokensRepository => new CreateTokensRepository(dbConnection, dbTransaction);
+        public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection, notificationHub, dbTransaction);
+        public ICreateGroupInviteRepository CreateGroupInviteRepository => new CreateGroupInviteRepository(dbConnection, dbTransaction);
 
 
 
-        public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection);
-        public IDeleteMeetingsRepository DeleteMeetingsRepository => new DeleteMeetingsRepository(dbConnection);
-        public IDeleteMessagesRepository DeleteMessagesRepository => new DeleteMessagesRepository(dbConnection);
-        public IDeleteRankingsRepository DeleteRankingsRepository => new DeleteRankingsRepository(dbConnection);
-        public IDeleteUsersRepository DeleteUsersRepository => new DeleteUsersRepository(dbConnection);
-        public IDeleteGroupsUsersRepository DeleteGroupsUsersRepository => new DeleteGroupsUsersRepository(dbConnection);
+        public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);
+        public IDeleteMeetingsRepository DeleteMeetingsRepository => new DeleteMeetingsRepository(dbConnection, dbTransaction);
+        public IDeleteMessagesRepository DeleteMessagesRepository => new DeleteMessagesRepository(dbConnection, dbTransaction);
+        public IDeleteRankingsRepository DeleteRankingsRepository => new DeleteRankingsRepository(dbConnection, dbTransaction);
+        public IDeleteUsersRepository DeleteUsersRepository => new DeleteUsersRepository(dbConnection, dbTransaction);
+        public IDeleteGroupsUsersRepository DeleteGroupsUsersRepository => new DeleteGroupsUsersRepository(dbConnection, dbTransaction);
+        public IDeleteGroupInviteRepository DeleteGroupInviteRepository => new DeleteGroupInviteRepository(dbConnection, dbTransaction);
 
 
-        public IReadGroupsRepository ReadGroupsRepository => new ReadGroupsRepository(dbConnection);
-        public IReadMeetingsRepository ReadMeetingsRepository => new ReadMeetingsRepository(dbConnection);
-        public IReadMessagesRepository ReadMessagesRepository => new ReadMessagesRepository(dbConnection);
-        public IReadRankingsRepository ReadRankingsRepository => new ReadRankingsRepository(dbConnection);
-        public IReadUsersRepository ReadUsersRepository => new ReadUsersRepository(dbConnection);
-        public IReadGroupsUsersRepository ReadGroupsUsersRepository => new ReadGroupsUsersRepository(dbConnection);
-        public IReadEmailSender ReadEmailSender => new ReadEmailSenderRepository(dbConnection);
-        public IReadUsersMeetingsRepository ReadUsersMeetingsRepository => new ReadUsersMeetingsRepository(dbConnection);
+        public IReadGroupsRepository ReadGroupsRepository => new ReadGroupsRepository(dbConnection, dbTransaction);
+        public IReadMeetingsRepository ReadMeetingsRepository => new ReadMeetingsRepository(dbConnection, dbTransaction);
+        public IReadMessagesRepository ReadMessagesRepository => new ReadMessagesRepository(dbConnection, dbTransaction);
+        public IReadRankingsRepository ReadRankingsRepository => new ReadRankingsRepository(dbConnection, dbTransaction);
+        public IReadUsersRepository ReadUsersRepository => new ReadUsersRepository(dbConnection, dbTransaction);
+        public IReadGroupsUsersRepository ReadGroupsUsersRepository => new ReadGroupsUsersRepository(dbConnection, dbTransaction);
+        public IReadEmailSender ReadEmailSender => new ReadEmailSenderRepository(dbConnection, dbTransaction);
+        public IReadUsersMeetingsRepository ReadUsersMeetingsRepository => new ReadUsersMeetingsRepository(dbConnection, dbTransaction);
+        public IReadGroupInviteRepository ReadGroupInviteRepository => new ReadGroupInviteRepository(dbConnection, dbTransaction);
+        public IReadTokensRepository ReadTokensRepository => new ReadTokensRepository(dbConnection, dbTransaction);
 
 
 
-        public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection);
-        public IUpdateMeetingsRepository UpdateMeetingsRepository => new UpdateMeetingsRepository(dbConnection);
-        public IUpdateMessagesRepository UpdateMessagesRepository => new UpdateMessagesRepository(dbConnection);
-        public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection);
-        public IUpdateUsersRepository UpdateUsersRepository => new UpdateUsersRepository(dbConnection);
-        public IUpdateGroupsUsersRepository UpdateGroupsUsersRepository => new UpdateGroupsUsersRepository(dbConnection);
+        public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection, dbTransaction);
+        public IUpdateMeetingsRepository UpdateMeetingsRepository => new UpdateMeetingsRepository(dbConnection, dbTransaction);
+        public IUpdateMessagesRepository UpdateMessagesRepository => new UpdateMessagesRepository(dbConnection, dbTransaction);
+        public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection, dbTransaction);
+        public IUpdateUsersRepository UpdateUsersRepository => new UpdateUsersRepository(dbConnection, dbTransaction);
 
         public async Task SaveChangesAsync()
         {
@@ -77,25 +81,25 @@ namespace DataLibrary.UoW
             }
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
-            dbTransaction?.Rollback();
+            dbTransaction?.RollbackAsync();
             dbTransaction = null;
 
             if (dbConnection != null && dbConnection.State == ConnectionState.Open)
             {
-                dbConnection.Close();
-                dbConnection.Dispose();
+                await dbConnection.CloseAsync();
+                await dbConnection.DisposeAsync();
             }
             GC.SuppressFinalize(this);
         }
 
-        public void BeginTransaction()
+        public async Task BeginTransactionAsync()
         {
             if (dbConnection.State != ConnectionState.Open)
-                dbConnection.Open();
+                await dbConnection.OpenAsync();
 
-            dbTransaction = dbConnection.BeginTransaction();
+            dbTransaction = await dbConnection.BeginTransactionAsync();
         }
     }
 }

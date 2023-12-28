@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace DataLibrary.Model.DTO.Request
+namespace DataLibrary.Model.DTO.Request.Pagination
 {
-    public class GetUsersPaginationRequest : ISortable, IPagination
+    public class GetUsersWithoutGroupPaginationRequest : ISortable, IPagination
     {
         [Required]
         [DefaultValue(0)]
@@ -13,5 +13,6 @@ namespace DataLibrary.Model.DTO.Request
         public int OnPage { get; set; }
         public string? SortColumn { get; set; }
         public string? SortMode { get; set; }
+        public required int IdGroup { get; set; }
     }
 }

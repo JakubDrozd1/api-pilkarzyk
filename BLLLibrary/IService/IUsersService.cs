@@ -1,5 +1,6 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace BLLLibrary.IService
@@ -7,7 +8,7 @@ namespace BLLLibrary.IService
     public interface IUsersService
     {
         Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest);
-        Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword);
+        Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword);
         Task<USERS?> GetUserByIdAsync(int userId);
         Task AddUserAsync(GetUserRequest userRequest);
         Task UpdateUserAsync(GetUserRequest userRequest, int userId);

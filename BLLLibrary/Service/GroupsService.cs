@@ -1,6 +1,9 @@
-﻿using BLLLibrary.IService;
+﻿using System.Transactions;
+using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Repository.Groups;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service
@@ -21,11 +24,22 @@ namespace BLLLibrary.Service
 
         public async Task AddGroupAsync(GetGroupRequest groupRequest)
         {
-            GROUPS group = new()
+            await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                NAME = groupRequest.Name
-            };
-            await _unitOfWork.CreateGroupsRepository.AddGroupAsync(group);
+                var groupTemp = await _unitOfWork.ReadGroupsRepository.GetGroupByNameAsync(groupRequest.NAME);
+                if (groupTemp != null)
+                {
+                    throw new Exception("Group with this name already exists");
+                }
+                await _unitOfWork.CreateGroupsRepository.AddGroupAsync(groupRequest);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Dispose();
+                throw new Exception($"{ex.Message}");
+            }
         }
 
         public async Task UpdateGroupAsync(GetGroupRequest groupRequest, int groupId)
@@ -33,7 +47,7 @@ namespace BLLLibrary.Service
             GROUPS group = new()
             {
                 ID_GROUP = groupId,
-                NAME = groupRequest.Name
+                NAME = groupRequest.NAME
             };
             await _unitOfWork.UpdateGroupsRepository.UpdateGroupAsync(group);
         }

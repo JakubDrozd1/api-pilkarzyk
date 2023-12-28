@@ -4,60 +4,56 @@ using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Messages;
 using DataLibrary.Model.DTO.Request;
-using DataLibrary.Repository.Users;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Messages
 {
-    public class UpdateMessagesRepository(FbConnection dbConnection) : IUpdateMessagesRepository
+    public class UpdateMessagesRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IUpdateMessagesRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task UpdateMessageAsync(MESSAGES message, FbTransaction? transaction = null)
+        public async Task UpdateMessageAsync(MESSAGES message)
         {
-            var updateBuilder = new QueryBuilder<MESSAGES>()
-               .Update("MESSAGES ", message)
-               .Where("ID_MESSAGE = @ID_MESSAGE ");
-            string updateQuery = updateBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            await db.ExecuteAsync(updateQuery, message, transaction);
-        }
-
-        public async Task UpdateAnswerMessageAsync(GetMessageRequest getMessageRequest, FbTransaction? transaction = null)
-        {
-            DynamicParameters dynamicParameters = new();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            ReadUsersRepository readUsersRepository = new(db);
-
-            if (transaction == null && db.State != ConnectionState.Open)
-            {
-                await db.OpenAsync();
-            }
-            var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
-                var updateBuilder = new QueryBuilder<GetMessageRequest>()
-                    .UpdateColumns("MESSAGES", ["ANSWER","WAITING_TIME"])
-                    .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
+                var updateBuilder = new QueryBuilder<MESSAGES>()
+                    .Update("MESSAGES ", message)
+                    .Where("ID_MESSAGE = @ID_MESSAGE ");
                 string updateQuery = updateBuilder.Build();
-                dynamicParameters.Add("@UserId", getMessageRequest.IdUser);
-                dynamicParameters.Add("@MeetingId", getMessageRequest.IdMeeting);
-                dynamicParameters.Add("@ANSWER", getMessageRequest.Answer);
-                dynamicParameters.Add("@WAITING_TIME", getMessageRequest.WaitingTime);
-                await db.ExecuteAsync(updateQuery, dynamicParameters, localTransaction);
-
-                if (transaction == null)
-                {
-                    await localTransaction.CommitAsync();
-                }
+                await _dbConnection.ExecuteAsync(updateQuery, message, _fbTransaction);
             }
             catch (Exception ex)
             {
-                localTransaction?.RollbackAsync();
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task UpdateAnswerMessageAsync(GetMessageRequest getMessageRequest)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                DynamicParameters dynamicParameters = new();
+                var updateBuilder = new QueryBuilder<GetMessageRequest>()
+                    .UpdateColumns("MESSAGES", ["ANSWER", "WAITING_TIME"])
+                    .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
+                string updateQuery = updateBuilder.Build();
+                dynamicParameters.Add("@UserId", getMessageRequest.IDUSER);
+                dynamicParameters.Add("@MeetingId", getMessageRequest.IDMEETING);
+                dynamicParameters.Add("@ANSWER", getMessageRequest.ANSWER);
+                dynamicParameters.Add("@WAITING_TIME", getMessageRequest.WAITING_TIME);
+                await _dbConnection.ExecuteAsync(updateQuery, dynamicParameters, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
                 throw new Exception($"{ex.Message}");
             }
         }

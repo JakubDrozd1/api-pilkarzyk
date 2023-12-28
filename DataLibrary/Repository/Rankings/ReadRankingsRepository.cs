@@ -3,15 +3,16 @@ using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Rankings;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Rankings
 {
-    public class ReadRankingsRepository(FbConnection dbConnection) : IReadRankingsRepository
+    public class ReadRankingsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IReadRankingsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
@@ -27,69 +28,71 @@ namespace DataLibrary.Repository.Rankings
                 $"LEFT JOIN {nameof(GROUPS)} g ON r.{nameof(RANKINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
                 $"LEFT JOIN {nameof(USERS)} u ON r.{nameof(RANKINGS.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
 
-        public async Task<List<GetRankingsUsersGroupsResponse>> GetAllRankingsAsync(GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest, FbTransaction? transaction = null)
+        public async Task<List<GetRankingsUsersGroupsResponse>> GetAllRankingsAsync(GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest)
         {
-
-            DynamicParameters dynamicParameters = new();
-            string WHERE = "1=1";
-
-            if (getRankingsUsersGroupsPaginationRequest.IdGroup is not null)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                WHERE += $"AND r.{nameof(RANKINGS.IDGROUP)} = @GroupId ";
-                dynamicParameters.Add("@GroupId", getRankingsUsersGroupsPaginationRequest.IdGroup);
+                await _dbConnection.OpenAsync();
             }
-
-            if (getRankingsUsersGroupsPaginationRequest.IdUser is not null)
+            try
             {
-                WHERE += $"AND r.{nameof(RANKINGS.IDUSER)} = @UserId ";
-                dynamicParameters.Add("@UserId", getRankingsUsersGroupsPaginationRequest.IdUser);
-            }
+                DynamicParameters dynamicParameters = new();
+                string WHERE = "1=1";
 
-            if (getRankingsUsersGroupsPaginationRequest.DateFrom is not null)
+                if (getRankingsUsersGroupsPaginationRequest.IdGroup is not null)
+                {
+                    WHERE += $"AND r.{nameof(RANKINGS.IDGROUP)} = @GroupId ";
+                    dynamicParameters.Add("@GroupId", getRankingsUsersGroupsPaginationRequest.IdGroup);
+                }
+                if (getRankingsUsersGroupsPaginationRequest.IdUser is not null)
+                {
+                    WHERE += $"AND r.{nameof(RANKINGS.IDUSER)} = @UserId ";
+                    dynamicParameters.Add("@UserId", getRankingsUsersGroupsPaginationRequest.IdUser);
+                }
+                if (getRankingsUsersGroupsPaginationRequest.DateFrom is not null)
+                {
+                    WHERE += $"AND r.{nameof(RANKINGS.DATE_MEETING)} >= @DateFrom ";
+                    dynamicParameters.Add("@DateFrom", getRankingsUsersGroupsPaginationRequest.DateFrom);
+                }
+                if (getRankingsUsersGroupsPaginationRequest.DateTo is not null)
+                {
+                    WHERE += $"AND r.{nameof(RANKINGS.DATE_MEETING)} <= @DateTo ";
+                    dynamicParameters.Add("@DateTo", getRankingsUsersGroupsPaginationRequest.DateTo);
+                }
+
+                var query = new QueryBuilder<GetRankingsUsersGroupsResponse>()
+                    .Select(SELECT)
+                    .From(FROM)
+                    .Where(WHERE)
+                    .OrderBy(getRankingsUsersGroupsPaginationRequest)
+                    .Limit(getRankingsUsersGroupsPaginationRequest);
+
+                return (await _dbConnection.QueryAsync<GetRankingsUsersGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
+            }
+            catch (Exception ex)
             {
-                WHERE += $"AND r.{nameof(RANKINGS.DATE_MEETING)} >= @DateFrom ";
-                dynamicParameters.Add("@DateFrom", getRankingsUsersGroupsPaginationRequest.DateFrom);
+                throw new Exception($"{ex.Message}");
             }
-
-            if (getRankingsUsersGroupsPaginationRequest.DateTo is not null)
-            {
-                WHERE += $"AND r.{nameof(RANKINGS.DATE_MEETING)} <= @DateTo ";
-                dynamicParameters.Add("@DateTo", getRankingsUsersGroupsPaginationRequest.DateTo);
-            }
-
-            var query = new QueryBuilder<GetRankingsUsersGroupsResponse>()
-                .Select(SELECT)
-                .From(FROM)
-                .Where(WHERE)
-                .OrderBy(getRankingsUsersGroupsPaginationRequest)
-                .Limit(getRankingsUsersGroupsPaginationRequest);
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
-            {
-                await db.OpenAsync();
-            }
-
-            return (await db.QueryAsync<GetRankingsUsersGroupsResponse>(query.Build(), dynamicParameters, transaction)).AsList();
-
         }
 
-        public async Task<RANKINGS?> GetRankingByIdAsync(int rankingId, FbTransaction? transaction = null)
+        public async Task<RANKINGS?> GetRankingByIdAsync(int rankingId)
         {
-
-            var query = new QueryBuilder<RANKINGS>()
-                .Select("* ")
-                .From("RANKINGS ")
-                .Where("ID_RANKING = @RankingId ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<RANKINGS>(query.Build(), new { RankingId = rankingId }, transaction);
-
+            try
+            {
+                var query = new QueryBuilder<RANKINGS>()
+                    .Select("* ")
+                    .From("RANKINGS ")
+                    .Where("ID_RANKING = @RankingId ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<RANKINGS>(query.Build(), new { RankingId = rankingId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

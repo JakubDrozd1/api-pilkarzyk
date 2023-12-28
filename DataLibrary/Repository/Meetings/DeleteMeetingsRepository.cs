@@ -7,22 +7,29 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Meetings
 {
-    public class DeleteMeetingsRepository(FbConnection dbConnection) : IDeleteMeetingsRepository
+    public class DeleteMeetingsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IDeleteMeetingsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task DeleteMeetingAsync(int meetingId, FbTransaction? transaction = null)
+        public async Task DeleteMeetingAsync(int meetingId)
         {
-            var deleteBuilder = new QueryBuilder<MEETINGS>()
-                .Delete("MEETINGS ")
-                .Where("ID_MEETING = @MeetingId ");
-            string deleteQuery = deleteBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            await db.ExecuteAsync(deleteQuery, new { MeetingId = meetingId }, transaction);
+            try
+            {
+                var deleteBuilder = new QueryBuilder<MEETINGS>()
+                    .Delete("MEETINGS ")
+                    .Where("ID_MEETING = @MeetingId ");
+                string deleteQuery = deleteBuilder.Build();
+                await _dbConnection.ExecuteAsync(deleteQuery, new { MeetingId = meetingId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

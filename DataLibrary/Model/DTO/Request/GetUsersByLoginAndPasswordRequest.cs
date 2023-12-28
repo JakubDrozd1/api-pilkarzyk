@@ -2,7 +2,7 @@
 
 namespace DataLibrary.Model.DTO.Request
 {
-    public class GetUsersByLoginAndPassword
+    public class GetUsersByLoginAndPasswordRequest
     {
         [Required]
         public required string Login { get; set; }

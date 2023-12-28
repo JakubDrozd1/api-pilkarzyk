@@ -1,7 +1,11 @@
-﻿namespace DataLibrary.Model.DTO.Request
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
+namespace DataLibrary.Model.DTO.Request
 {
     public class GetGroupRequest
     {
-        public required string Name { get; set; }
+        [JsonPropertyName("Name")]
+        public required string NAME { get; set; }
     }
 }

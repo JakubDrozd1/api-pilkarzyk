@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
@@ -20,25 +21,19 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMessagesRepository.GetMessageByIdAsync(messageId);
         }
 
-        public async Task AddMessageAsync(GetMessageRequest messageRequest)
+        public async Task AddMessageAsync(GetMessageRequest getMessageRequest)
         {
-            MESSAGES message = new()
-            {
-                IDMEETING = messageRequest.IdMeeting,
-                IDUSER = messageRequest.IdUser,
-                ANSWER = messageRequest.Answer
-            };
-            await _unitOfWork.CreateMessagesRepository.AddMessageAsync(message);
+            await _unitOfWork.CreateMessagesRepository.AddMessageAsync(getMessageRequest);
         }
 
-        public async Task UpdateMessageAsync(GetMessageRequest messageRequest, int messageId)
+        public async Task UpdateMessageAsync(GetMessageRequest getMessageRequest, int messageId)
         {
             MESSAGES message = new()
             {
                 ID_MESSAGE = messageId,
-                IDMEETING = messageRequest.IdMeeting,
-                IDUSER = messageRequest.IdUser,
-                ANSWER = messageRequest.Answer
+                IDMEETING = getMessageRequest.IDMEETING,
+                IDUSER = getMessageRequest.IDUSER,
+                ANSWER = getMessageRequest.ANSWER
             };
             await _unitOfWork.UpdateMessagesRepository.UpdateMessageAsync(message);
         }

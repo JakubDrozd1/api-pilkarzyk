@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace DataLibrary.Model.DTO.Request
+namespace DataLibrary.Model.DTO.Request.Pagination
 {
     public class GetMessagesUsersPaginationRequest : ISortable, IPagination
     {

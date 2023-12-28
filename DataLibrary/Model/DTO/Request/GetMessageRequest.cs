@@ -1,10 +1,20 @@
-﻿namespace DataLibrary.Model.DTO.Request
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
+namespace DataLibrary.Model.DTO.Request
 {
     public class GetMessageRequest
     {
-        public int? IdMeeting { get; set; }
-        public int? IdUser { get; set; }
-        public string? Answer { get; set; }
-        public DateTime? WaitingTime { get; set; }
+        [JsonPropertyName("IdMeeting")]
+        public int? IDMEETING { get; set; }
+
+        [JsonPropertyName("IdUser")]
+        public int? IDUSER { get; set; }
+
+        [JsonPropertyName("Answer")]
+        public string? ANSWER { get; set; }
+
+        [JsonPropertyName("WaitingTime")]
+        public DateTime? WAITING_TIME { get; set; }
     }
 }

@@ -7,21 +7,28 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Rankings
 {
-    public class CreateRankingsRepository(FbConnection dbConnection) : ICreateRankingsRepository
+    public class CreateRankingsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : ICreateRankingsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddRankingAsync(RANKINGS ranking, FbTransaction? transaction = null)
+        public async Task AddRankingAsync(RANKINGS ranking)
         {
-            var insertBuilder = new QueryBuilder<RANKINGS>()
-                .Insert("RANKINGS ", ranking);
-            string insertQuery = insertBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            await db.ExecuteAsync(insertQuery, ranking, transaction);
+            try
+            {
+                var insertBuilder = new QueryBuilder<RANKINGS>()
+                    .Insert("RANKINGS ", ranking);
+                string insertQuery = insertBuilder.Build();
+                await _dbConnection.ExecuteAsync(insertQuery, ranking, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿using DataLibrary.Model.DTO.Request;
-using FirebirdSql.Data.FirebirdClient;
+﻿using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 
 namespace DataLibrary.IRepository.UsersMeetings
 {
     public interface ICreateUsersMeetingsRepository
     {
-        Task AddUserToMeetingAsync(int idMeeting, int idUser, FbTransaction? transaction = null);
-        Task AddUsersToMeetingAsync(GetUsersMeetingsRequest getUsersMeetingsRequest, FbTransaction? transaction = null);
+        Task AddUserToMeetingAsync(MEETINGS meeting, USERS user);
+        Task SendNotification(GetUsersMeetingsRequest getUsersMeetingsRequest);
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DataLibrary.IRepository.EmailSender;
+using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Meetings;
@@ -20,6 +21,7 @@ namespace DataLibrary.UoW
         ICreateGroupsUsersRepository CreateGroupsUsersRepository { get; }
         ICreateTokensRepository CreateTokensRepository { get; }
         ICreateUsersMeetingsRepository CreateUsersMeetingRepository { get; }
+        ICreateGroupInviteRepository CreateGroupInviteRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
@@ -27,6 +29,7 @@ namespace DataLibrary.UoW
         IDeleteRankingsRepository DeleteRankingsRepository { get; }
         IDeleteUsersRepository DeleteUsersRepository { get; }
         IDeleteGroupsUsersRepository DeleteGroupsUsersRepository { get; }
+        IDeleteGroupInviteRepository DeleteGroupInviteRepository { get; }
 
         IReadGroupsRepository ReadGroupsRepository { get; }
         IReadMeetingsRepository ReadMeetingsRepository { get; }
@@ -36,14 +39,16 @@ namespace DataLibrary.UoW
         IReadGroupsUsersRepository ReadGroupsUsersRepository { get; }
         IReadEmailSender ReadEmailSender { get; }
         IReadUsersMeetingsRepository ReadUsersMeetingsRepository { get; }
+        IReadGroupInviteRepository ReadGroupInviteRepository { get; }
+        IReadTokensRepository ReadTokensRepository { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }
         IUpdateMessagesRepository UpdateMessagesRepository { get; }
         IUpdateRankingsRepository UpdateRankingsRepository { get; }
         IUpdateUsersRepository UpdateUsersRepository { get; }
-        IUpdateGroupsUsersRepository UpdateGroupsUsersRepository { get; }
 
         Task SaveChangesAsync();
+        Task BeginTransactionAsync();
     }
 }

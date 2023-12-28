@@ -4,53 +4,29 @@ using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.Model.DTO.Request;
-using DataLibrary.Repository.Groups;
-using DataLibrary.Repository.Users;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.GroupsUsers
 {
-    public class CreateGroupsUsersRepository(FbConnection dbConnection) : ICreateGroupsUsersRepository
+    public class CreateGroupsUsersRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : ICreateGroupsUsersRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddUserToGroupAsync(GetUserGroupRequest getUserGroupRequest, FbTransaction? transaction = null)
+        public async Task AddUserToGroupAsync(GetUserGroupRequest getUserGroupRequest)
         {
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
-                var readGroupsRepository = new ReadGroupsRepository(db);
-                var readUsersRepository = new ReadUsersRepository(db);
-                var readGroupsUsersRepository = new ReadGroupsUsersRepository(db);
-                var group = await readGroupsRepository.GetGroupByIdAsync(getUserGroupRequest.IdGroup, localTransaction) ?? throw new Exception("Group is null");
-                var user = await readUsersRepository.GetUserByIdAsync(getUserGroupRequest.IdUser, localTransaction) ?? throw new Exception("User is null");
-                if (await readGroupsUsersRepository.GetUserWithGroup(getUserGroupRequest.IdGroup, getUserGroupRequest.IdUser, localTransaction) != null)
-                {
-                    throw new Exception("User is already in this group");
-                }
-                GROUPS_USERS groupsUsers = new()
-                {
-                    IDGROUP = getUserGroupRequest.IdGroup,
-                    IDUSER = getUserGroupRequest.IdUser,
-                    ACCOUNT_TYPE = getUserGroupRequest.AccountType ?? 0
-                };
-                var insertBuilder = new QueryBuilder<GROUPS_USERS>().Insert("GROUPS_USERS ", groupsUsers);
+                var insertBuilder = new QueryBuilder<GROUPS_USERS>().Insert("GROUPS_USERS ", getUserGroupRequest);
                 string insertQuery = insertBuilder.Build();
-                await db.ExecuteAsync(insertQuery, groupsUsers, localTransaction);
-                if (transaction == null)
-                {
-                    await localTransaction.CommitAsync();
-                }
+                await _dbConnection.ExecuteAsync(insertQuery, getUserGroupRequest, _fbTransaction);
             }
             catch (Exception ex)
             {
-                if (transaction == null)
-                    localTransaction?.RollbackAsync();
                 throw new Exception($"{ex.Message}");
             }
         }

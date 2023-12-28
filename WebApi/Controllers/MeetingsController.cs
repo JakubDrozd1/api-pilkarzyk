@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

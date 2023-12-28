@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BLLLibrary.IService;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +14,7 @@ namespace WebApi.Controllers
     {
         private readonly IUsersMeetingsService _usersMeetingsService = usersMeetingsService;
 
-        [HttpPost("add", Name = "AddUserToMeetingAsync")]
-        public async Task<IActionResult> AddUserToMeetingAsync([FromQuery, Required] int idMeeting, [FromQuery, Required] int idUser)
-        {
-            await _usersMeetingsService.AddUserToMeetingAsync(idMeeting, idUser);
-            return Ok();
-        }
-
-        [HttpPost("adds", Name = "AddUsersToMeetingAsync")]
+        [HttpPost("add", Name = "AddUsersToMeetingAsync")]
         public async Task<IActionResult> AddUsersToMeetingAsync([FromQuery, Required] GetUsersMeetingsRequest getUsersMeetingsRequest)
         {
             await _usersMeetingsService.AddUsersToMeetingAsync(getUsersMeetingsRequest);

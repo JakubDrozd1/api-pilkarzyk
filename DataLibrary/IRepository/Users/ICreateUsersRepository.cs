@@ -1,10 +1,10 @@
 ﻿using DataLibrary.Entities;
-using FirebirdSql.Data.FirebirdClient;
+using DataLibrary.Model.DTO.Request;
 
 namespace DataLibrary.IRepository.Users
 {
     public interface ICreateUsersRepository
     {
-        Task AddUserAsync(USERS user, FbTransaction? transaction = null);
+        Task AddUserAsync(GetUserRequest user);
     }
 }

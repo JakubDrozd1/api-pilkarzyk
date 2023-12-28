@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -32,7 +33,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("login", Name = "GetUserByLoginAndPassword")]
-        public async Task<ActionResult<USERS>> GetUserByLoginAndPassword([FromQuery] GetUsersByLoginAndPassword getUsersByLoginAndPassword)
+        public async Task<ActionResult<USERS>> GetUserByLoginAndPassword([FromQuery] GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword)
         {
             var user = await _usersService.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
             await _usersService.SaveChangesAsync();

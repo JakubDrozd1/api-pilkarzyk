@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +38,7 @@ namespace WebApi.Controllers
             {
                 await _groupsService.AddGroupAsync(groupRequest);
                 await _groupsService.SaveChangesAsync();
-                return Ok(await _groupsService.GetGroupByNameAsync(groupRequest.Name));
+                return Ok(await _groupsService.GetGroupByNameAsync(groupRequest.NAME));
             }
             catch (Exception ex)
             {

@@ -4,6 +4,6 @@ namespace DataLibrary.IRepository.Rankings
 {
     public interface IDeleteRankingsRepository
     {
-        Task DeleteRankingAsync(int rankingId, FbTransaction? transaction = null);
+        Task DeleteRankingAsync(int rankingId);
     }
 }

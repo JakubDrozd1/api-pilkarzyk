@@ -7,26 +7,29 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Groups
 {
-    public class DeleteGroupsRepository(FbConnection dbConnection) : IDeleteGroupsRepository
+    public class DeleteGroupsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IDeleteGroupsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task DeleteGroupAsync(int groupId, FbTransaction? transaction = null)
+        public async Task DeleteGroupAsync(int groupId)
         {
-
-            var deleteBuilder = new QueryBuilder<GROUPS>()
-                .Delete("GROUPS ")
-                .Where("ID_GROUP = @GroupId ");
-            string deleteQuery = deleteBuilder.Build();
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            await db.ExecuteAsync(deleteQuery, new { GroupId = groupId }, transaction);
-
+            try
+            {
+                var deleteBuilder = new QueryBuilder<GROUPS>()
+                    .Delete("GROUPS ")
+                    .Where("ID_GROUP = @GroupId ");
+                string deleteQuery = deleteBuilder.Build();
+                await _dbConnection.ExecuteAsync(deleteQuery, new { GroupId = groupId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ builder.Services.AddScoped<IGroupsUsersService, GroupsUsersService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
 builder.Services.AddScoped<IUsersMeetingsService, UsersMeetingsService>();
+builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>

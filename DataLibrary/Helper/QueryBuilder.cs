@@ -67,8 +67,8 @@ namespace DataLibrary.Helper
         public QueryBuilder<T> Insert(string tableName, object values)
         {
             var properties = values.GetType().GetProperties();
-            var columns = string.Join(", ", properties.Select(p => p.Name).Skip(1));
-            var valueParams = string.Join(", ", properties.Select(p => $"@{p.Name}").Skip(1));
+            var columns = string.Join(", ", properties.Select(p => p.Name));
+            var valueParams = string.Join(", ", properties.Select(p => $"@{p.Name}"));
 
             query.Append($"INSERT INTO {tableName} ({columns}) VALUES ({valueParams}) ");
 

@@ -1,10 +1,9 @@
-﻿using DataLibrary.Entities;
-using FirebirdSql.Data.FirebirdClient;
+﻿using DataLibrary.Model.DTO.Request;
 
 namespace DataLibrary.IRepository.Groups
 {
     public interface ICreateGroupsRepository
     {
-        Task AddGroupAsync(GROUPS group, FbTransaction? transaction = null);
+        Task AddGroupAsync(GetGroupRequest group);
     }
 }

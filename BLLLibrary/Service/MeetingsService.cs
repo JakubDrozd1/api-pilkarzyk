@@ -1,7 +1,9 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
+using DataLibrary.Repository.Meetings;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service
@@ -20,26 +22,41 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
         }
 
-        public async Task<MEETINGS?> GetMeeting(GetMeetingRequest meeting)
+        public async Task<MEETINGS?> GetMeeting(GetMeetingRequest getMeetingRequest)
         {
-            return await _unitOfWork.ReadMeetingsRepository.GetMeeting(meeting);
+            return await _unitOfWork.ReadMeetingsRepository.GetMeeting(getMeetingRequest);
         }
 
-        public async Task AddMeetingAsync(GetMeetingRequest meetingRequest)
+        public async Task AddMeetingAsync(GetMeetingRequest getMeetingRequest)
         {
-            await _unitOfWork.CreateMeetingsRepository.AddMeetingAsync(meetingRequest);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var check = await _unitOfWork.ReadMeetingsRepository.GetMeeting(getMeetingRequest);
+                if (check != null)
+                {
+                    throw new Exception("Event already exists");
+                }
+                await _unitOfWork.CreateMeetingsRepository.AddMeetingAsync(getMeetingRequest);
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Dispose();
+                throw new Exception($"{ex.Message}");
+            }
+
         }
 
-        public async Task UpdateMeetingAsync(GetMeetingRequest meetingRequest, int meetingId)
+        public async Task UpdateMeetingAsync(GetMeetingRequest getMeetingRequest, int meetingId)
         {
             MEETINGS meeting = new()
             {
                 ID_MEETING = meetingId,
-                DESCRIPTION = meetingRequest.Description,
-                QUANTITY = meetingRequest.Quantity,
-                DATE_MEETING = meetingRequest.DateMeeting,
-                PLACE = meetingRequest.Place,
-                IDGROUP = meetingRequest.IdGroup,
+                DESCRIPTION = getMeetingRequest.DESCRIPTION,
+                QUANTITY = getMeetingRequest.QUANTITY,
+                DATE_MEETING = getMeetingRequest.DATE_MEETING,
+                PLACE = getMeetingRequest.PLACE,
+                IDGROUP = getMeetingRequest.IDGROUP,
             };
             await _unitOfWork.UpdateMeetingsRepository.UpdateMeetingAsync(meeting);
         }

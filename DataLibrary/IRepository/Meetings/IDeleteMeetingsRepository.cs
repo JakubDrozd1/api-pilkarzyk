@@ -4,6 +4,6 @@ namespace DataLibrary.IRepository.Meetings
 {
     public interface IDeleteMeetingsRepository
     {
-        Task DeleteMeetingAsync(int meetingId, FbTransaction? transaction = null);
+        Task DeleteMeetingAsync(int meetingId);
     }
 }

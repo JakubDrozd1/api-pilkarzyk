@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Dapper;
-using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.Model.DTO.Request;
@@ -8,48 +7,26 @@ using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Meetings
 {
-    public class CreateMeetingsRepository(FbConnection dbConnection) : ICreateMeetingsRepository
+    public class CreateMeetingsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : ICreateMeetingsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddMeetingAsync(GetMeetingRequest getMeetingRequest, FbTransaction? transaction = null)
+        public async Task AddMeetingAsync(GetMeetingRequest getMeetingRequest)
         {
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-            var localTransaction = transaction ?? await db.BeginTransactionAsync();
             try
             {
-                ReadMeetingsRepository readMeetingsRepository = new(db);
-                MEETINGS meeting = new()
-                {
-                    DESCRIPTION = getMeetingRequest.Description,
-                    QUANTITY = getMeetingRequest.Quantity,
-                    DATE_MEETING = getMeetingRequest.DateMeeting,
-                    PLACE = getMeetingRequest.Place,
-                    IDGROUP = getMeetingRequest.IdGroup,
-                };
-                var insertBuilder = new QueryBuilder<MEETINGS>()
-                    .Insert("MEETINGS ", meeting);
+                var insertBuilder = new QueryBuilder<GetMeetingRequest>()
+                    .Insert("MEETINGS ", getMeetingRequest);
                 string insertQuery = insertBuilder.Build();
-                var check = await readMeetingsRepository.GetMeeting(getMeetingRequest, localTransaction);
-                if (check != null)
-                {
-                    throw new Exception("Event already exists");
-                }
-
-                await db.ExecuteAsync(insertQuery, meeting, localTransaction);
-
-                if (transaction == null)
-                {
-                    await localTransaction.CommitAsync();
-                }
+                await _dbConnection.ExecuteAsync(insertQuery, getMeetingRequest, _fbTransaction);
             }
             catch (Exception ex)
             {
-                localTransaction?.RollbackAsync();
                 throw new Exception($"{ex.Message}");
             }
         }

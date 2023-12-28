@@ -3,15 +3,16 @@ using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Messages;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Messages
 {
-    public class ReadMessagesRepository(FbConnection dbConnection) : IReadMessagesRepository
+    public class ReadMessagesRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IReadMessagesRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
         private static readonly string SELECT
               = $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
@@ -33,72 +34,75 @@ namespace DataLibrary.Repository.Messages
                 $"JOIN {nameof(MEETINGS)} m ON msg.{nameof(MESSAGES.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +
                 $"JOIN {nameof(USERS)} u ON msg.{nameof(MESSAGES.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
 
-        public async Task<List<GetMessagesUsersMeetingsResponse>> GetAllMessagesAsync(GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest, FbTransaction? transaction = null)
+        public async Task<List<GetMessagesUsersMeetingsResponse>> GetAllMessagesAsync(GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest)
         {
-
-            DynamicParameters dynamicParameters = new();
-            string WHERE = "1=1";
-
-            if (getMessagesUsersPaginationRequest.IdMeeting is not null)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                WHERE += $"AND msg.{nameof(MESSAGES.IDMEETING)} = @GroupId ";
-                dynamicParameters.Add("@GroupId", getMessagesUsersPaginationRequest.IdMeeting);
+                await _dbConnection.OpenAsync();
             }
-            if (getMessagesUsersPaginationRequest.IdUser is not null)
+            try
             {
-                WHERE += $"AND msg.{nameof(MESSAGES.IDUSER)} = @UserId ";
-                dynamicParameters.Add("@UserId", getMessagesUsersPaginationRequest.IdUser);
-            }
-            if (getMessagesUsersPaginationRequest.DateFrom is not null)
-            {
-                WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} >= @DateFrom ";
-                dynamicParameters.Add("@DateFrom", getMessagesUsersPaginationRequest.DateFrom);
-            }
-            if (getMessagesUsersPaginationRequest.DateTo is not null)
-            {
-                WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
-                dynamicParameters.Add("@DateTo", getMessagesUsersPaginationRequest.DateTo);
-            }
-            if (getMessagesUsersPaginationRequest.WaitingTime is not null)
-            {
-                WHERE += $"AND m.{nameof(MESSAGES.WAITING_TIME)} <= @WaitingTime ";
-                dynamicParameters.Add("@WaitingTime", getMessagesUsersPaginationRequest.WaitingTime);
-            }
+                DynamicParameters dynamicParameters = new();
+                string WHERE = "1=1";
 
-            var query = new QueryBuilder<MESSAGES>()
-                .Select(SELECT)
-                .From(FROM)
-                .Where(WHERE)
-                .OrderBy(getMessagesUsersPaginationRequest)
-                .Limit(getMessagesUsersPaginationRequest);
-            FbConnection db = transaction?.Connection ?? _dbConnection;
+                if (getMessagesUsersPaginationRequest.IdMeeting is not null)
+                {
+                    WHERE += $"AND msg.{nameof(MESSAGES.IDMEETING)} = @GroupId ";
+                    dynamicParameters.Add("@GroupId", getMessagesUsersPaginationRequest.IdMeeting);
+                }
+                if (getMessagesUsersPaginationRequest.IdUser is not null)
+                {
+                    WHERE += $"AND msg.{nameof(MESSAGES.IDUSER)} = @UserId ";
+                    dynamicParameters.Add("@UserId", getMessagesUsersPaginationRequest.IdUser);
+                }
+                if (getMessagesUsersPaginationRequest.DateFrom is not null)
+                {
+                    WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} >= @DateFrom ";
+                    dynamicParameters.Add("@DateFrom", getMessagesUsersPaginationRequest.DateFrom);
+                }
+                if (getMessagesUsersPaginationRequest.DateTo is not null)
+                {
+                    WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
+                    dynamicParameters.Add("@DateTo", getMessagesUsersPaginationRequest.DateTo);
+                }
+                if (getMessagesUsersPaginationRequest.WaitingTime is not null)
+                {
+                    WHERE += $"AND m.{nameof(MESSAGES.WAITING_TIME)} <= @WaitingTime ";
+                    dynamicParameters.Add("@WaitingTime", getMessagesUsersPaginationRequest.WaitingTime);
+                }
 
-            if (transaction == null && db.State != ConnectionState.Open)
-            {
-                await db.OpenAsync();
+                var query = new QueryBuilder<MESSAGES>()
+                    .Select(SELECT)
+                    .From(FROM)
+                    .Where(WHERE)
+                    .OrderBy(getMessagesUsersPaginationRequest)
+                    .Limit(getMessagesUsersPaginationRequest);
+                return (await _dbConnection.QueryAsync<GetMessagesUsersMeetingsResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
             }
-
-            return (await db.QueryAsync<GetMessagesUsersMeetingsResponse>(query.Build(), dynamicParameters, transaction)).AsList();
-
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
 
-        public async Task<MESSAGES?> GetMessageByIdAsync(int messageId, FbTransaction? transaction = null)
+        public async Task<MESSAGES?> GetMessageByIdAsync(int messageId)
         {
-
-            var query = new QueryBuilder<MESSAGES>()
-                .Select("* ")
-                .From("MESSAGES ")
-                .Where("ID_MESSAGE = @MessageId ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<MESSAGES>(query.Build(), new { MessageId = messageId }, transaction);
-
+            try
+            {
+                var query = new QueryBuilder<MESSAGES>()
+                    .Select("* ")
+                    .From("MESSAGES ")
+                    .Where("ID_MESSAGE = @MessageId ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<MESSAGES>(query.Build(), new { MessageId = messageId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
-
     }
 }

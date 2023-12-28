@@ -4,92 +4,94 @@ using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Users;
 using DataLibrary.Model.DTO.Request;
-using DataLibrary.Repository.GroupsUsers;
+using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Users
 {
-    public class ReadUsersRepository(FbConnection dbConnection) : IReadUsersRepository
+    public class ReadUsersRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IReadUsersRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
+        private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest, FbTransaction? transaction = null)
+        public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest)
         {
 
-            var query = new QueryBuilder<USERS>()
-                .Select("* ")
-                .From("USERS ")
-                .OrderBy(getUsersPaginationRequest)
-                .Limit(getUsersPaginationRequest);
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return (await db.QueryAsync<USERS>(query.Build(), transaction)).AsList();
-
+            try
+            {
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .OrderBy(getUsersPaginationRequest)
+                    .Limit(getUsersPaginationRequest);
+                return (await _dbConnection.QueryAsync<USERS>(query.Build(), _fbTransaction)).AsList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
 
-        public async Task<USERS?> GetUserByIdAsync(int userId, FbTransaction? transaction = null)
+        public async Task<USERS?> GetUserByIdAsync(int userId)
         {
-
-            var query = new QueryBuilder<USERS>()
-                .Select("* ")
-                .From("USERS ")
-                .Where("ID_USER = @UserId ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { UserId = userId }, transaction);
-
+            try
+            {
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .Where("ID_USER = @UserId ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { UserId = userId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
 
-        public async Task<USERS?> GetUserByLoginAsync(string? login, FbTransaction? transaction = null)
+        public async Task<USERS?> GetUserByLoginAsync(string? login)
         {
-            var query = new QueryBuilder<USERS>()
-                .Select("* ")
-                .From("USERS ")
-                .Where("LOGIN = @Login ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Login = login }, transaction);
+            try
+            {
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .Where("LOGIN = @Login ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Login = login }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
 
-        public async Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPassword getUsersByLoginAndPassword, FbTransaction? transaction = null)
+        public async Task<USERS?> GetUserByLoginAndPasswordAsync(GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword, USERS? user)
         {
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            FbTransaction localTransaction = transaction ?? await db.BeginTransactionAsync();
-
             try
             {
                 DynamicParameters dynamicParameters = new();
                 string WHERE = "1=1 ";
-                USERS? user = null;
-
                 if (getUsersByLoginAndPassword.Login is not null)
                 {
-                    user = await GetUserByLoginAsync(getUsersByLoginAndPassword.Login, localTransaction) ?? throw new InvalidOperationException("User is null");
                     WHERE += $"AND {nameof(USERS.LOGIN)} = @Login ";
                     dynamicParameters.Add("@Login", getUsersByLoginAndPassword.Login);
                 }
-
                 if (getUsersByLoginAndPassword.Password is not null)
                 {
                     if (!BCrypt.Net.BCrypt.Verify(getUsersByLoginAndPassword.Password, user?.USER_PASSWORD))
@@ -102,110 +104,114 @@ namespace DataLibrary.Repository.Users
                     .Select("* ")
                     .From("USERS ")
                     .Where(WHERE);
-
-                return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), dynamicParameters, localTransaction);
+                return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), dynamicParameters, _fbTransaction);
             }
             catch (Exception ex)
             {
-                localTransaction?.RollbackAsync();
-                throw new Exception($"Error while executing query: {ex.Message}");
+                throw new Exception($"{ex.Message}");
             }
         }
 
-        public async Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, FbTransaction? transaction = null)
+        public async Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, List<GetGroupsUsersResponse> getGroupsUsersResponse)
         {
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            FbTransaction localTransaction = transaction ?? await db.BeginTransactionAsync();
-            ReadGroupsUsersRepository readGroupsUsersRepository = new(db);
-            GetUsersGroupsPaginationRequest getUsersGroupsPaginationRequest = new()
+            try
             {
-                IdGroup = getUsersWithoutGroupPaginationRequest.IdGroup,
-                Page = getUsersWithoutGroupPaginationRequest.Page,
-                OnPage = getUsersWithoutGroupPaginationRequest.OnPage,
-            };
-            var usersTemp = await readGroupsUsersRepository.GetListGroupsUserAsync(getUsersGroupsPaginationRequest, localTransaction);
-            DynamicParameters dynamicParameters = new();
-            string WHERE = "1=1 ";
+                DynamicParameters dynamicParameters = new();
+                string WHERE = "1=1 ";
 
-            foreach (var item in usersTemp)
-            {
-                WHERE += $"AND u.{nameof(USERS.ID_USER)} <> @UserId{item.IdUser} ";
-                dynamicParameters.Add($"@UserId{item.IdUser}", item.IdUser);
+                foreach (var item in getGroupsUsersResponse)
+                {
+                    WHERE += $"AND u.{nameof(USERS.ID_USER)} <> @UserId{item.IdUser} ";
+                    dynamicParameters.Add($"@UserId{item.IdUser}", item.IdUser);
+                }
+
+                var query = new QueryBuilder<USERS>()
+                    .Select($"DISTINCT u.{nameof(USERS.ID_USER)}, " +
+                        $"u.{nameof(USERS.LOGIN)}, " +
+                        $"u.{nameof(USERS.USER_PASSWORD)}, " +
+                        $"u.{nameof(USERS.EMAIL)}, " +
+                        $"u.{nameof(USERS.FIRSTNAME)}, " +
+                        $"u.{nameof(USERS.SURNAME)}, " +
+                        $"u.{nameof(USERS.PHONE_NUMBER)}, " +
+                        $"u.{nameof(USERS.IS_ADMIN)}, " +
+                        $"u.{nameof(USERS.SALT)} ")
+                    .From($"{nameof(USERS)} u " +
+                        $"LEFT JOIN {nameof(GROUPS_USERS)} gu ON u.{nameof(USERS.ID_USER)} = gu.{nameof(GROUPS_USERS.IDUSER)} ")
+                    .Where(WHERE)
+                    .OrderBy(getUsersWithoutGroupPaginationRequest)
+                    .Limit(getUsersWithoutGroupPaginationRequest);
+
+                return (await _dbConnection.QueryAsync<USERS>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
             }
-
-            var query = new QueryBuilder<USERS>()
-                .Select($"DISTINCT u.{nameof(USERS.ID_USER)}, " +
-                $"u.{nameof(USERS.LOGIN)}, " +
-                $"u.{nameof(USERS.USER_PASSWORD)}, " +
-                $"u.{nameof(USERS.EMAIL)}, " +
-                $"u.{nameof(USERS.FIRSTNAME)}, " +
-                $"u.{nameof(USERS.SURNAME)}, " +
-                $"u.{nameof(USERS.PHONE_NUMBER)}, " +
-                $"u.{nameof(USERS.IS_ADMIN)}, " +
-                $"u.{nameof(USERS.SALT)} ")
-                .From($"{nameof(USERS)} u " +
-                $"LEFT JOIN {nameof(GROUPS_USERS)} gu ON u.{nameof(USERS.ID_USER)} = gu.{nameof(GROUPS_USERS.IDUSER)} ")
-                .Where(WHERE)
-                .OrderBy(getUsersWithoutGroupPaginationRequest)
-                .Limit(getUsersWithoutGroupPaginationRequest);
-
-            return (await db.QueryAsync<USERS>(query.Build(), dynamicParameters, localTransaction)).AsList();
-
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
 
-        public async Task<USERS?> GetUserByEmailAsync(string email, FbTransaction? transaction = null)
+        public async Task<USERS?> GetUserByEmailAsync(string email)
         {
-            var query = new QueryBuilder<USERS>()
-                .Select("* ")
-                .From("USERS ")
-                .Where("Email = @Email ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Email = email }, transaction);
+            try
+            {
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .Where("Email = @Email ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Email = email }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
 
-        public async Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber, FbTransaction? transaction = null)
+        public async Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber)
         {
-            var query = new QueryBuilder<USERS>()
-                .Select("* ")
-                .From("USERS ")
-                .Where("PHONE_NUMBER = @PhoneNumber ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            return await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, transaction);
+            try
+            {
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .Where("PHONE_NUMBER = @PhoneNumber ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
 
-        public async Task<string?> GetSaltByUserId(int userId, FbTransaction? transaction = null)
+        public async Task<string?> GetSaltByUserId(int userId)
         {
-            var query = new QueryBuilder<USERS>()
-                .Select("* ")
-                .From("USERS ")
-                .Where("ID_USER = @IdUser ");
-            FbConnection db = transaction?.Connection ?? _dbConnection;
-
-            if (transaction == null && db.State != ConnectionState.Open)
+            if (_dbConnection.State != ConnectionState.Open)
             {
-                await db.OpenAsync();
+                await _dbConnection.OpenAsync();
             }
-
-            USERS? user = await db.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { IdUser = userId }, transaction);
-            return user == null ? throw new Exception("Salt is null") : user.SALT;
+            try
+            {
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .Where("ID_USER = @IdUser ");
+                USERS? user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { IdUser = userId }, _fbTransaction);
+                return user == null ? throw new Exception("Salt is null") : user.SALT;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }
