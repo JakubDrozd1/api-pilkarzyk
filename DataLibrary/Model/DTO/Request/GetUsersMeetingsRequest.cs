@@ -1,6 +1,4 @@
-﻿using DataLibrary.Entities;
-
-namespace DataLibrary.Model.DTO.Request
+﻿namespace DataLibrary.Model.DTO.Request
 {
     public class GetUsersMeetingsRequest
     {

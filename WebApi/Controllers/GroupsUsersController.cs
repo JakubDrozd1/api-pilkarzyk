@@ -53,7 +53,7 @@ namespace WebApi.Controllers
         [HttpGet(Name = "GetUserWithGroup")]
         public async Task<ActionResult<GetGroupsUsersResponse?>> GetUserWithGroup([FromQuery, Required] int groupId, [FromQuery, Required] int userId)
         {
-            var result = await _groupsUsersService.GetUserWithGroup(groupId, userId);
+            var result = await _groupsUsersService.GetUserWithGroup(userId, groupId);
             return Ok(result);
         }
 

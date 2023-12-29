@@ -24,7 +24,7 @@ namespace DataLibrary.Repository.UsersMeetings
             }
             try
             {
-                USERS_MEETINGS usersMeetings = new()
+                GetUserMeetingRequest usersMeetings = new()
                 {
                     IDMEETING = meeting.ID_MEETING ?? throw new Exception("Meeting is null"),
                     IDUSER = user.ID_USER,
