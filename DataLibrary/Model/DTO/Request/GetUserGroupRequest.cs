@@ -1,17 +1,16 @@
-﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace DataLibrary.Model.DTO.Request
 {
     public class GetUserGroupRequest
     {
-        [JsonPropertyName("IdUser")]
+        [FromQuery(Name = "IdUser")]
         public required int IDUSER { get; set; }
 
-        [JsonPropertyName("IdGroup")]
+        [FromQuery(Name = "IdGroup")]
         public required int IDGROUP { get; set; }
 
-        [JsonPropertyName("AccountType")]
+        [FromQuery(Name = "AccountType")]
         public int? ACCOUNT_TYPE { get; set; }
     }
 }

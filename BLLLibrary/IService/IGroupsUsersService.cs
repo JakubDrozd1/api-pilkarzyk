@@ -14,5 +14,7 @@ namespace BLLLibrary.IService
         Task UpdateUserWithGroupsAsync(int[] groupsId, int userId);
         Task UpdateGroupWithUsersAsync(int[] usersId, int groupId);
         Task AddUserToGroupAsync(GetUserGroupRequest getUserGroupRequest);
+        Task UpdatePermission(GetUserGroupRequest getUserGroupRequest);
+
     }
 }

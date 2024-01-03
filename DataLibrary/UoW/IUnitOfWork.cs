@@ -47,6 +47,7 @@ namespace DataLibrary.UoW
         IUpdateMessagesRepository UpdateMessagesRepository { get; }
         IUpdateRankingsRepository UpdateRankingsRepository { get; }
         IUpdateUsersRepository UpdateUsersRepository { get; }
+        IUpdateGroupsUsersRepository UpdateGroupUsersRepository { get; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();

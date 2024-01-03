@@ -70,5 +70,12 @@ namespace WebApi.Controllers
             await _groupsUsersService.UpdateUserWithGroupsAsync(groupsId, userId);
             return Ok();
         }
+
+        [HttpPut("permission", Name = "UpdatePermission")]
+        public async Task<IActionResult> UpdatePermission(GetUserGroupRequest getUserGroupRequest)
+        {
+            await _groupsUsersService.UpdatePermission(getUserGroupRequest);
+            return Ok();
+        }
     }
 }

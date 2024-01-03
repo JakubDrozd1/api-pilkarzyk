@@ -1,10 +1,8 @@
-﻿using System.Transactions;
-using BLLLibrary.IService;
+﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
-using DataLibrary.Repository.GroupsUsers;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service
@@ -91,6 +89,30 @@ namespace BLLLibrary.Service
                     GetUserGroupRequest getUserGroupRequest = new() { IDGROUP = groupId, IDUSER = userId };
                     await _unitOfWork.CreateGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest);
                 }
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Dispose();
+                throw new Exception($"{ex.Message}");
+            }
+        }
+        public async Task UpdatePermission(GetUserGroupRequest getUserGroupRequest)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var group = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(getUserGroupRequest.IDGROUP) ?? throw new Exception("Group is null");
+                var user = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(getUserGroupRequest.IDUSER) ?? throw new Exception("User is null");
+                var groupUser = await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getUserGroupRequest.IDGROUP, getUserGroupRequest.IDUSER) ?? throw new Exception("User is not in group");
+                GROUPS_USERS groupUserTemp = new()
+                {
+                    ID_GROUP_USER = groupUser.IdGroupUser,
+                    IDGROUP = groupUser.IdGroup,
+                    IDUSER = groupUser.IdUser,
+                    ACCOUNT_TYPE = getUserGroupRequest.ACCOUNT_TYPE,
+                };
+                await _unitOfWork.UpdateGroupUsersRepository.UpdateGroupUserAsync(groupUserTemp);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)

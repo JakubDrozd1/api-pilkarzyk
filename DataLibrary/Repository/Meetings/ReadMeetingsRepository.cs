@@ -17,6 +17,7 @@ namespace DataLibrary.Repository.Meetings
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
+                $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeting, " +
                 $"m.{nameof(MEETINGS.PLACE)}, " +
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";

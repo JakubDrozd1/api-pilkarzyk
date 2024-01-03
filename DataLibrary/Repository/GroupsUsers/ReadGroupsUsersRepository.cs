@@ -17,6 +17,7 @@ namespace DataLibrary.Repository.GroupsUsers
               = $"g.{nameof(GROUPS.NAME)}, " +
                 $"g.{nameof(GROUPS.ID_GROUP)} AS IdGroup, " +
                 $"gu.{nameof(GROUPS_USERS.ACCOUNT_TYPE)} AS AccountType, " +
+                $"gu.{nameof(GROUPS_USERS.ID_GROUP_USER)} AS IdGroupUser, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"u.{nameof(USERS.EMAIL)}, " +

@@ -71,6 +71,7 @@ namespace DataLibrary.UoW
         public IUpdateMessagesRepository UpdateMessagesRepository => new UpdateMessagesRepository(dbConnection, dbTransaction);
         public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection, dbTransaction);
         public IUpdateUsersRepository UpdateUsersRepository => new UpdateUsersRepository(dbConnection, dbTransaction);
+        public IUpdateGroupsUsersRepository UpdateGroupUsersRepository => new UpdateGroupsUsersRepository(dbConnection, dbTransaction);
 
         public async Task SaveChangesAsync()
         {
