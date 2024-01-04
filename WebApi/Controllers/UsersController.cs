@@ -2,11 +2,11 @@
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    //[Authorize]
     [Route("api/users")]
     [ApiController]
     public class UsersController(IUsersService usersService, IEmailSenderService emailSenderService) : ControllerBase
@@ -14,6 +14,7 @@ namespace WebApi.Controllers
         private readonly IUsersService _usersService = usersService;
         private readonly IEmailSenderService _emailSenderService = emailSenderService;
 
+        [Authorize]
         [HttpGet(Name = "GetAllUsers")]
         public async Task<ActionResult<List<USERS>>> GetAllUsers([FromQuery] GetUsersPaginationRequest getUsersPaginationRequest)
         {
@@ -21,6 +22,7 @@ namespace WebApi.Controllers
             return Ok(users);
         }
 
+        [Authorize]
         [HttpGet("{userId}", Name = "GetUserById")]
         public async Task<ActionResult<USERS>> GetUserById(int userId)
         {
@@ -44,6 +46,7 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
+        [Authorize]
         [HttpPost(Name = "AddUser")]
         public async Task<ActionResult> AddUser([FromBody] GetUserRequest userRequest)
         {
@@ -59,6 +62,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("{userId}", Name = "UpdateUser")]
         public async Task<ActionResult> UpdateUser(int userId, [FromBody] GetUserRequest userRequest)
         {
@@ -79,6 +83,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("column-{userId}", Name = "UpdateColumnUser")]
         public async Task<ActionResult> UpdateColumnUser(int userId, [FromBody] GetUpdateUserRequest getUpdateUserRequest)
         {
@@ -99,6 +104,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("{userId}", Name = "DeleteUser")]
         public async Task<ActionResult> DeleteUser(int userId)
         {
@@ -119,6 +125,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("withoutGroup", Name = "GetAllUsersWithoutGroupAsync")]
         public async Task<ActionResult<List<USERS>>> GetAllUsersWithoutGroupAsync([FromQuery] GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest)
         {
@@ -126,6 +133,7 @@ namespace WebApi.Controllers
             return Ok(users);
         }
 
+        [Authorize]
         [HttpPost("sendInvitationEmail", Name = "SendInvitationEmail")]
         public async Task<ActionResult> SendInvitationEmail([FromBody] GetEmailSenderRequest getEmailSenderRequest)
         {

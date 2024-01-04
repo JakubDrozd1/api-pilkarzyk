@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/groups-users")]
     [ApiController]
     public class GroupsUsersController(IGroupsUsersService groupsUsersService) : ControllerBase

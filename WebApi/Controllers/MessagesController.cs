@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/messages")]
     [ApiController]
     public class MessagesController(IMessagesService messagesService) : ControllerBase

@@ -3,11 +3,12 @@ using BLLLibrary.IService;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/users-meetings")]
     [ApiController]
     public class UsersMeetingsController(IUsersMeetingsService usersMeetingsService) : ControllerBase

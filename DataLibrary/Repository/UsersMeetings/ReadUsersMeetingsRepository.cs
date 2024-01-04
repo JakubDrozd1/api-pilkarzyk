@@ -49,11 +49,15 @@ namespace DataLibrary.Repository.UsersMeetings
                 if (getMeetingsUsersPaginationRequest.IdMeeting is not null)
                 {
                     WHERE += $"AND um.{nameof(USERS_MEETINGS.IDMEETING)} = @MeetingId ";
+                    WHERE += $"AND m.{nameof(MEETINGS.ID_MEETING)} = @MeetingId ";
+                    WHERE += $"AND msg.{nameof(MESSAGES.IDMEETING)} = @MeetingId ";
                     dynamicParameters.Add("@MeetingId", getMeetingsUsersPaginationRequest.IdMeeting);
                 }
                 if (getMeetingsUsersPaginationRequest.IdUser is not null)
                 {
                     WHERE += $"AND um.{nameof(USERS_MEETINGS.IDUSER)} = @UserId ";
+                    WHERE += $"AND u.{nameof(USERS.ID_USER)} = @UserId ";
+                    WHERE += $"AND msg.{nameof(MESSAGES.IDUSER)} = @UserId ";
                     dynamicParameters.Add("@UserId", getMeetingsUsersPaginationRequest.IdUser);
                 }
                 if (getMeetingsUsersPaginationRequest.DateFrom is not null)

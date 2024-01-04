@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/meetings")]
     [ApiController]
     public class MeetingsController(IMeetingsService meetingsService) : ControllerBase

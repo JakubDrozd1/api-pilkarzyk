@@ -1,10 +1,12 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
+    [Authorize]
     [Route("api/group-invites")]
     [ApiController]
     public class GroupInvitesController(IGroupInviteService groupInviteService) : ControllerBase

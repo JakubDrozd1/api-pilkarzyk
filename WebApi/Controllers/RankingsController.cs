@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/rankings")]
     [ApiController]
     public class RankingsController(IRankingsService rankingsService) : ControllerBase

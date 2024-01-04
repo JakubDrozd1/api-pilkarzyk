@@ -100,7 +100,8 @@ namespace BLLLibrary.Service
                 new Claim(ClaimTypes.Name, user.FIRSTNAME),
                 new Claim(ClaimTypes.Surname, user.SURNAME),
                 new Claim(JwtRegisteredClaimNames.Aud, audience),
-                new Claim(JwtRegisteredClaimNames.Iss, issuer)
+                new Claim(JwtRegisteredClaimNames.Iss, issuer),
+                new Claim(JwtRegisteredClaimNames.Jti, user.USER_PASSWORD),
             ];
             var expiresTime = DateTime.Now.AddSeconds(client.TOKEN_TIME ?? 7200);
             var expiresRefreshTime = DateTime.Now.AddSeconds(client.REFRESH_TOKEN_TIME ?? 14400);
