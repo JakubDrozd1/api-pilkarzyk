@@ -108,7 +108,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors(builder =>
 {
     builder
-        .WithOrigins("http://192.168.88.20:4200", "http://localhost:27884", "http://192.168.88.224:4200", "https://jabol.manowski.pl")
+        .WithOrigins("http://192.168.88.20:4200", "http://localhost:27884", "http://192.168.88.224:4200", "https://jaball.manowski.pl")
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();
