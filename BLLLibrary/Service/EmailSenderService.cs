@@ -39,7 +39,7 @@ namespace BLLLibrary.Service
                 }
                 var body = new BodyBuilder();
                 string encodedGroupId = Convert.ToBase64String(BitConverter.GetBytes(getEmailSenderRequest.IdGroup));
-                string link = "https://jabol.manowski.pl/register/" + encodedGroupId;
+                string link = "https://jaball.manowski.pl/register/" + encodedGroupId;
                 string invateSubject = $"Zaproszenie do grupy {getEmailSenderRequest.GroupName}";
                 string bodySubject = $"<h1>Hej!</h1>" +
                                     $"<p>{getEmailSenderRequest.Name} {getEmailSenderRequest.Surname} wysłał ci zaproszenie do grupy {getEmailSenderRequest.GroupName}</p>" +
