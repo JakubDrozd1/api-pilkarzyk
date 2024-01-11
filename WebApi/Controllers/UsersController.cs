@@ -46,7 +46,6 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
-        [Authorize]
         [HttpPost(Name = "AddUser")]
         public async Task<ActionResult> AddUser([FromBody] GetUserRequest userRequest)
         {
@@ -56,9 +55,9 @@ namespace WebApi.Controllers
                 await _usersService.SaveChangesAsync();
                 return Ok(userRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
