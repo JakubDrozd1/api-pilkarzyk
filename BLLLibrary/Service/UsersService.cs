@@ -1,11 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
-using DataLibrary.IRepository.Users;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
-using DataLibrary.Model.DTO.Response;
-using DataLibrary.Repository.GroupsUsers;
-using DataLibrary.Repository.Users;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service

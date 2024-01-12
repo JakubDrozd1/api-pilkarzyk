@@ -1,6 +1,4 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-
-namespace DataLibrary.IRepository.GroupInvite
+﻿namespace DataLibrary.IRepository.GroupInvite
 {
     public interface IDeleteGroupInviteRepository
     {

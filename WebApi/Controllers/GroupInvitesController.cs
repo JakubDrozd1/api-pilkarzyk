@@ -16,8 +16,15 @@ namespace WebApi.Controllers
         [HttpGet("{userId}", Name = "GetGroupInviteByIdUserAsync")]
         public async Task<ActionResult<List<GetGroupInviteResponse>>> GetGroupInviteByIdUserAsync(int userId)
         {
-            var group = await _groupInviteService.GetGroupInviteByIdUserAsync(userId);
-            return Ok(group);
+            try
+            {
+                var group = await _groupInviteService.GetGroupInviteByIdUserAsync(userId);
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPost(Name = "AddGroupInviteAsync")]

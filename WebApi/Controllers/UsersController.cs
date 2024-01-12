@@ -18,34 +18,60 @@ namespace WebApi.Controllers
         [HttpGet(Name = "GetAllUsers")]
         public async Task<ActionResult<List<USERS>>> GetAllUsers([FromQuery] GetUsersPaginationRequest getUsersPaginationRequest)
         {
-            var users = await _usersService.GetAllUsersAsync(getUsersPaginationRequest);
-            return Ok(users);
+            try
+            {
+                var users = await _usersService.GetAllUsersAsync(getUsersPaginationRequest);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize]
         [HttpGet("{userId}", Name = "GetUserById")]
         public async Task<ActionResult<USERS>> GetUserById(int userId)
         {
-            var user = await _usersService.GetUserByIdAsync(userId);
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await _usersService.GetUserByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return Ok(user);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
+        [AllowAnonymous]
         [HttpGet("login", Name = "GetUserByLoginAndPassword")]
         public async Task<ActionResult<USERS>> GetUserByLoginAndPassword([FromQuery] GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword)
         {
-            var user = await _usersService.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
-            await _usersService.SaveChangesAsync();
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await _usersService.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword);
+                await _usersService.SaveChangesAsync();
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return Ok(user);
             }
-            return Ok(user);
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
+        [AllowAnonymous]
         [HttpPost(Name = "AddUser")]
         public async Task<ActionResult> AddUser([FromBody] GetUserRequest userRequest)
         {
@@ -65,20 +91,20 @@ namespace WebApi.Controllers
         [HttpPut("{userId}", Name = "UpdateUser")]
         public async Task<ActionResult> UpdateUser(int userId, [FromBody] GetUserRequest userRequest)
         {
-            var existingUser = await _usersService.GetUserByIdAsync(userId);
-            if (existingUser == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingUser = await _usersService.GetUserByIdAsync(userId);
+                if (existingUser == null)
+                {
+                    return NotFound();
+                }
                 await _usersService.UpdateUserAsync(userRequest, userId);
                 await _usersService.SaveChangesAsync();
                 return Ok(userRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -86,13 +112,13 @@ namespace WebApi.Controllers
         [HttpPut("column-{userId}", Name = "UpdateColumnUser")]
         public async Task<ActionResult> UpdateColumnUser(int userId, [FromBody] GetUpdateUserRequest getUpdateUserRequest)
         {
-            var existingUser = await _usersService.GetUserByIdAsync(userId);
-            if (existingUser == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingUser = await _usersService.GetUserByIdAsync(userId);
+                if (existingUser == null)
+                {
+                    return NotFound();
+                }
                 await _usersService.UpdateColumnUserAsync(getUpdateUserRequest, userId);
                 await _usersService.SaveChangesAsync();
                 return Ok(getUpdateUserRequest);
@@ -107,20 +133,21 @@ namespace WebApi.Controllers
         [HttpDelete("{userId}", Name = "DeleteUser")]
         public async Task<ActionResult> DeleteUser(int userId)
         {
-            var existingUser = await _usersService.GetUserByIdAsync(userId);
-            if (existingUser == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingUser = await _usersService.GetUserByIdAsync(userId);
+                if (existingUser == null)
+                {
+                    return NotFound();
+                }
+
                 await _usersService.DeleteUserAsync(userId);
                 await _usersService.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -128,26 +155,39 @@ namespace WebApi.Controllers
         [HttpGet("withoutGroup", Name = "GetAllUsersWithoutGroupAsync")]
         public async Task<ActionResult<List<USERS>>> GetAllUsersWithoutGroupAsync([FromQuery] GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest)
         {
-            var users = await _usersService.GetAllUsersWithoutGroupAsync(getUsersWithoutGroupPaginationRequest);
-            return Ok(users);
+            try
+            {
+                var users = await _usersService.GetAllUsersWithoutGroupAsync(getUsersWithoutGroupPaginationRequest);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [Authorize]
         [HttpPost("sendInvitationEmail", Name = "SendInvitationEmail")]
         public async Task<ActionResult> SendInvitationEmail([FromBody] GetEmailSenderRequest getEmailSenderRequest)
         {
-
-            var user = await _usersService.GetUserByEmailAsync(getEmailSenderRequest.To);
-            if (user != null) return StatusCode(500, "Account exist with this email");
-            bool result = await _emailSenderService.SendInviteMessageAsync(getEmailSenderRequest, new CancellationToken());
-
-            if (result)
+            try
             {
-                return Ok(getEmailSenderRequest);
+                var user = await _usersService.GetUserByEmailAsync(getEmailSenderRequest.To);
+                if (user != null) return StatusCode(500, "Account exist with this email");
+                bool result = await _emailSenderService.SendInviteMessageAsync(getEmailSenderRequest, new CancellationToken());
+
+                if (result)
+                {
+                    return Ok(getEmailSenderRequest);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occured. The Mail could not be sent.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured. The Mail could not be sent.");
+                return StatusCode(500, ex.Message);
             }
         }
     }

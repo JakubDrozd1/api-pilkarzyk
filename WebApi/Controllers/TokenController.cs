@@ -1,12 +1,14 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 
 namespace WebApi.Controllers
 {
+    [AllowAnonymous]
     [Route("api/token")]
     [ApiController]
     public class TokenController(ITokenService tokenService) : ControllerBase

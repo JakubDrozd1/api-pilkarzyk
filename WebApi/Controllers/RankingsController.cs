@@ -18,19 +18,39 @@ namespace WebApi.Controllers
         [HttpGet(Name = "GetAllRankings")]
         public async Task<ActionResult<List<GetRankingsUsersGroupsResponse>>> GetAllRankings([FromQuery] GetRankingsUsersGroupsPaginationRequest getRankingsUsersGroupsPaginationRequest)
         {
-            var rankings = await _rankingsService.GetAllRankingsAsync(getRankingsUsersGroupsPaginationRequest);
-            return Ok(rankings);
+            try
+            {
+                var rankings = await _rankingsService.GetAllRankingsAsync(getRankingsUsersGroupsPaginationRequest);
+                return Ok(rankings);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpGet("{rankingId}", Name = "GetRankingById")]
         public async Task<ActionResult<RANKINGS>> GetRankingById(int rankingId)
         {
-            var ranking = await _rankingsService.GetRankingByIdAsync(rankingId);
-            if (ranking == null)
+            try
             {
-                return NotFound();
+                var ranking = await _rankingsService.GetRankingByIdAsync(rankingId);
+                if (ranking == null)
+                {
+                    return NotFound();
+                }
+                return Ok(ranking);
             }
-            return Ok(ranking);
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpPost(Name = "AddRanking")]
@@ -42,49 +62,58 @@ namespace WebApi.Controllers
                 await _rankingsService.SaveChangesAsync();
                 return Ok(rankingRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
         [HttpPut("{rankingId}", Name = "UpdateRanking")]
         public async Task<ActionResult> UpdateRanking(int rankingId, [FromBody] GetRankingRequest rankingRequest)
         {
-            var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);
-            if (existingRanking == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);
+                if (existingRanking == null)
+                {
+                    return NotFound();
+                }
                 await _rankingsService.UpdateRankingAsync(rankingRequest, rankingId);
                 await _rankingsService.SaveChangesAsync();
                 return Ok(_rankingsService);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
         [HttpDelete("{rankingId}", Name = "DeleteRanking")]
         public async Task<ActionResult> DeleteRanking(int rankingId)
         {
-            var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);
-            if (existingRanking == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingRanking = await _rankingsService.GetRankingByIdAsync(rankingId);
+                if (existingRanking == null)
+                {
+                    return NotFound();
+                }
                 await _rankingsService.DeleteRankingAsync(rankingId);
                 await _rankingsService.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
         }
     }

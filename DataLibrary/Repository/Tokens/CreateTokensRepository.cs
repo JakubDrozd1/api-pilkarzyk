@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.Model.DTO.Request;

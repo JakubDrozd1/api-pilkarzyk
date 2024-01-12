@@ -3,7 +3,6 @@ using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
-using DataLibrary.Repository.Meetings;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service

@@ -1,5 +1,4 @@
 ﻿using DataLibrary.Entities;
-using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.IRepository.Rankings
 {

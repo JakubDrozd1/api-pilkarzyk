@@ -18,19 +18,36 @@ namespace WebApi.Controllers
         [HttpGet(Name = "GetAllMeetings")]
         public async Task<ActionResult<List<GetMeetingGroupsResponse>>> GetAllMeetings([FromQuery] GetMeetingsGroupsPaginationRequest getMeetingsUsersGroupsPaginationRequest)
         {
-            var meetings = await _meetingsService.GetAllMeetingsAsync(getMeetingsUsersGroupsPaginationRequest);
-            return Ok(meetings);
+            try
+            {
+                var meetings = await _meetingsService.GetAllMeetingsAsync(getMeetingsUsersGroupsPaginationRequest);
+                return Ok(meetings);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{meetingId}", Name = "GetMeetingById")]
         public async Task<ActionResult<MEETINGS>> GetMeetingById(int meetingId)
         {
-            var meeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
-            if (meeting == null)
+            try
             {
-                return NotFound();
+                var meeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
+                if (meeting == null)
+                {
+                    return NotFound();
+                }
+                return Ok(meeting);
             }
-            return Ok(meeting);
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpPost(Name = "AddMeeting")]
@@ -44,50 +61,56 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
-
-
         }
 
         [HttpPut("{meetingId}", Name = "UpdateMeeting")]
         public async Task<ActionResult> UpdateMeeting(int meetingId, [FromBody] GetMeetingRequest meetingRequest)
         {
-            var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
-            if (existingMeeting == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
+                if (existingMeeting == null)
+                {
+                    return NotFound();
+                }
                 await _meetingsService.UpdateMeetingAsync(meetingRequest, meetingId);
                 await _meetingsService.SaveChangesAsync();
                 return Ok(meetingRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
         [HttpDelete("{meetingId}", Name = "DeleteMeeting")]
         public async Task<ActionResult> DeleteMeeting(int meetingId)
         {
-            var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
-
-            if (existingMeeting == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
+                if (existingMeeting == null)
+                {
+                    return NotFound();
+                }
                 await _meetingsService.DeleteMeetingAsync(meetingId);
                 await _meetingsService.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using DataLibrary.Model.DTO;
-using static Dapper.SqlMapper;
 
 namespace DataLibrary.Helper
 {

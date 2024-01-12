@@ -16,19 +16,36 @@ namespace WebApi.Controllers
         [HttpGet(Name = "GetAllGroups")]
         public async Task<ActionResult<List<GROUPS>>> GetAllGroups([FromQuery] GetGroupsPaginationRequest getGroupsPaginationRequest)
         {
-            var group = await _groupsService.GetAllGroupsAsync(getGroupsPaginationRequest);
-            return Ok(group);
+            try
+            {
+                var group = await _groupsService.GetAllGroupsAsync(getGroupsPaginationRequest);
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{groupId}", Name = "GetGroupById")]
         public async Task<ActionResult<GROUPS>> GetGroupById(int groupId)
         {
-            var group = await _groupsService.GetGroupByIdAsync(groupId);
-            if (group == null)
+            try
             {
-                return NotFound();
+                var group = await _groupsService.GetGroupByIdAsync(groupId);
+                if (group == null)
+                {
+                    return NotFound();
+                }
+                return Ok(group);
             }
-            return Ok(group);
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpPost(Name = "AddGroup")]
@@ -49,41 +66,40 @@ namespace WebApi.Controllers
         [HttpPut("{groupId}", Name = "UpdateGroup")]
         public async Task<ActionResult> UpdateGroup(int groupId, [FromBody] GetGroupRequest groupRequest)
         {
-            var existingGroup = await _groupsService.GetGroupByIdAsync(groupId);
-            if (existingGroup == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingGroup = await _groupsService.GetGroupByIdAsync(groupId);
+                if (existingGroup == null)
+                {
+                    return NotFound();
+                }
                 await _groupsService.UpdateGroupAsync(groupRequest, groupId);
                 await _groupsService.SaveChangesAsync();
                 return Ok(groupRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new { message = ex.Message });
             }
         }
 
         [HttpDelete("{groupId}", Name = "DeleteGroup")]
         public async Task<ActionResult> DeleteGroup(int groupId)
         {
-            var existingGroup = await _groupsService.GetGroupByIdAsync(groupId);
-
-            if (existingGroup == null)
-            {
-                return NotFound();
-            }
             try
             {
+                var existingGroup = await _groupsService.GetGroupByIdAsync(groupId);
+                if (existingGroup == null)
+                {
+                    return NotFound();
+                }
                 await _groupsService.DeleteGroupAsync(groupId);
                 await _groupsService.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

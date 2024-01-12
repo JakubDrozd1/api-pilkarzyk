@@ -7,7 +7,6 @@ using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System.Security.Cryptography;
-using System;
 using BLLLibrary.IService;
 
 namespace BLLLibrary.Service

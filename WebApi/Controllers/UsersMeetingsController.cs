@@ -18,22 +18,49 @@ namespace WebApi.Controllers
         [HttpPost("add", Name = "AddUsersToMeetingAsync")]
         public async Task<IActionResult> AddUsersToMeetingAsync([FromQuery, Required] GetUsersMeetingsRequest getUsersMeetingsRequest)
         {
-            await _usersMeetingsService.AddUsersToMeetingAsync(getUsersMeetingsRequest);
-            return Ok();
+            try
+            {
+                await _usersMeetingsService.AddUsersToMeetingAsync(getUsersMeetingsRequest);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("all", Name = "GetListMeetingsUsersAsync")]
         public async Task<ActionResult<List<GetMeetingUsersResponse>>> GetListMeetingsUsersAsync([FromQuery] GetMeetingsUsersPaginationRequest getMeetingsUsersPaginationRequest)
         {
-            var result = await _usersMeetingsService.GetListMeetingsUsersAsync(getMeetingsUsersPaginationRequest);
-            return Ok(result);
+            try
+            {
+                var result = await _usersMeetingsService.GetListMeetingsUsersAsync(getMeetingsUsersPaginationRequest);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpGet(Name = "GetUserWithMeeting")]
         public async Task<ActionResult<GetMeetingUsersResponse?>> GetUserWithMeeting([FromQuery, Required] int meetingId, [FromQuery, Required] int userId)
         {
-            var result = await _usersMeetingsService.GetUserWithMeeting(meetingId, userId);
-            return Ok(result);
+            try
+            {
+                var result = await _usersMeetingsService.GetUserWithMeeting(meetingId, userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
     }
 }

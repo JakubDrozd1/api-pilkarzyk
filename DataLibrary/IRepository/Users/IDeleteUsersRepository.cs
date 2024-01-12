@@ -1,6 +1,4 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-
-namespace DataLibrary.IRepository.Users
+﻿namespace DataLibrary.IRepository.Users
 {
     public interface IDeleteUsersRepository
     {
