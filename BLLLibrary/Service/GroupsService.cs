@@ -20,17 +20,46 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(groupId);
         }
 
-        public async Task AddGroupAsync(GetGroupRequest groupRequest)
+        public async Task AddGroupAsync(GetCreateGroupRequest groupRequest)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var groupTemp = await _unitOfWork.ReadGroupsRepository.GetGroupByNameAsync(groupRequest.NAME);
+                var groupTemp = await _unitOfWork.ReadGroupsRepository.GetGroupByNameAsync(groupRequest.GroupRequest.NAME);
                 if (groupTemp != null)
                 {
                     throw new Exception("Group with this name already exists");
                 }
-                await _unitOfWork.CreateGroupsRepository.AddGroupAsync(groupRequest);
+                if (groupRequest.User.IS_ADMIN)
+                {
+                    await _unitOfWork.CreateGroupsRepository.AddGroupAsync(groupRequest.GroupRequest);
+                }
+                else
+                {
+                    if (groupRequest.User.GROUP_COUNTER > 0)
+                    {
+                        await _unitOfWork.CreateGroupsRepository.AddGroupAsync(groupRequest.GroupRequest);
+                        await _unitOfWork.UpdateUsersRepository.UpdateColumnUserAsync(new GetUpdateUserRequest()
+                        {
+                            Column = ["GROUP_COUNTER"],
+                            GROUP_COUNTER = groupRequest.User.GROUP_COUNTER - 1
+                        },
+                        userId: groupRequest.User.ID_USER,
+                        salt: groupRequest.User.SALT
+                        );
+                        var addedGroup = await _unitOfWork.ReadGroupsRepository.GetGroupByNameAsync(groupRequest.GroupRequest.NAME);
+                        await _unitOfWork.CreateGroupsUsersRepository.AddUserToGroupAsync(new GetUserGroupRequest()
+                        {
+                            IDGROUP = addedGroup?.ID_GROUP ?? throw new Exception("Group is null"),
+                            IDUSER = groupRequest.User.ID_USER,
+                            ACCOUNT_TYPE = 1
+                        });
+                    }
+                    else
+                    {
+                        throw new Exception("Group conter < 1");
+                    }
+                }
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)

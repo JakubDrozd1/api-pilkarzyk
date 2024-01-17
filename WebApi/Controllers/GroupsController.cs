@@ -49,13 +49,13 @@ namespace WebApi.Controllers
         }
 
         [HttpPost(Name = "AddGroup")]
-        public async Task<ActionResult> AddGroup([FromBody] GetGroupRequest groupRequest)
+        public async Task<ActionResult> AddGroup([FromBody] GetCreateGroupRequest groupRequest)
         {
             try
             {
                 await _groupsService.AddGroupAsync(groupRequest);
                 await _groupsService.SaveChangesAsync();
-                return Ok(await _groupsService.GetGroupByNameAsync(groupRequest.NAME));
+                return Ok(await _groupsService.GetGroupByNameAsync(groupRequest.GroupRequest.NAME));
             }
             catch (Exception ex)
             {

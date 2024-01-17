@@ -69,7 +69,8 @@ namespace BLLLibrary.Service
                 USER_PASSWORD = hashedPassword,
                 PHONE_NUMBER = userRequest.PHONE_NUMBER,
                 IS_ADMIN = userRequest.IS_ADMIN,
-                SALT = salt
+                SALT = salt,
+                GROUP_COUNTER = 1
             };
             await _unitOfWork.UpdateUsersRepository.UpdateUserAsync(user);
         }

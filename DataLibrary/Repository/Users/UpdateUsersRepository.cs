@@ -34,7 +34,7 @@ namespace DataLibrary.Repository.Users
             }
         }
 
-        public async Task UpdateColumnUserAsync(GetUpdateUserRequest getUpdateUserRequest, int userId, string salt)
+        public async Task UpdateColumnUserAsync(GetUpdateUserRequest getUpdateUserRequest, int userId, string? salt)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -94,6 +94,12 @@ namespace DataLibrary.Repository.Users
                             {
                                 byte[] avatar = getUpdateUserRequest.AVATAR ?? throw new Exception("Avatar is null");
                                 dynamicParameters.Add($"@{column}", avatar);
+                            }
+                            break;
+                        case "GROUP_COUNTER":
+                            {
+                                int groupCounter = getUpdateUserRequest.GROUP_COUNTER ?? throw new Exception("Group Counter is null");
+                                dynamicParameters.Add($"@{column}", groupCounter);
                             }
                             break;
                     }

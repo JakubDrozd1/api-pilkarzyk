@@ -14,5 +14,6 @@ namespace DataLibrary.Entities
         public bool IS_ADMIN { get; set; }
         public string? SALT { get; set; }
         public string? AVATAR { get; set; }
+        public required int GROUP_COUNTER { get; set; }
     }
 }
