@@ -27,5 +27,9 @@ namespace DataLibrary.Model.DTO.Request
 
         [JsonPropertyName("Salt")]
         public string? SALT { get; set; }
+
+        [JsonPropertyName("GroupCounter")]
+        public int GROUP_COUNTER { get; set; }
+
     }
 }

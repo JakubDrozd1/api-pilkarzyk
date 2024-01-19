@@ -37,8 +37,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                tokenRequest.Client_secret = "@%7fMQSMMmhc5x40M8S4Y%A%h7l7!5Zcfkm!uXKL8nzvYO%ITc4P!hm14ENP08GD*Nh8XWumaL*yEur8";
-                tokenRequest.Client_id = "api.pilkarzyk";
+                //tokenRequest.Client_secret = "@%7fMQSMMmhc5x40M8S4Y%A%h7l7!5Zcfkm!uXKL8nzvYO%ITc4P!hm14ENP08GD*Nh8XWumaL*yEur8";
+                //tokenRequest.Client_id = "api.pilkarzyk";
                 var tokenResponse = await _tokenService.GenerateJwtTokenAsync(tokenRequest);
                 await _tokenService.SaveChangesAsync();
                 return Ok(tokenResponse);
