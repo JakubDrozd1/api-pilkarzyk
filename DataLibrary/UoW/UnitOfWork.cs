@@ -84,9 +84,6 @@ namespace DataLibrary.UoW
 
         public async void Dispose()
         {
-            dbTransaction?.RollbackAsync();
-            dbTransaction = null;
-
             if (dbConnection != null && dbConnection.State == ConnectionState.Open)
             {
                 await dbConnection.CloseAsync();
@@ -101,6 +98,15 @@ namespace DataLibrary.UoW
                 await dbConnection.OpenAsync();
 
             dbTransaction = await dbConnection.BeginTransactionAsync();
+        }
+
+        public async Task RollBackTransactionAsync()
+        {
+            if (dbTransaction != null)
+            {
+                await dbTransaction.RollbackAsync();
+            }
+            dbTransaction = null;
         }
     }
 }

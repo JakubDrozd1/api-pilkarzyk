@@ -51,5 +51,6 @@ namespace DataLibrary.UoW
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();
+        Task RollBackTransactionAsync();
     }
 }

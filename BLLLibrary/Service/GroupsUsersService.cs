@@ -27,7 +27,7 @@ namespace BLLLibrary.Service
             }
             catch (Exception ex)
             {
-                _unitOfWork.Dispose();
+                await _unitOfWork.RollBackTransactionAsync();
                 throw new Exception($"{ex.Message}");
             }
 
@@ -73,7 +73,7 @@ namespace BLLLibrary.Service
             }
             catch (Exception ex)
             {
-                _unitOfWork.Dispose();
+                await _unitOfWork.RollBackTransactionAsync();
                 throw new Exception($"{ex.Message}");
             }
         }
@@ -93,7 +93,7 @@ namespace BLLLibrary.Service
             }
             catch (Exception ex)
             {
-                _unitOfWork.Dispose();
+                await _unitOfWork.RollBackTransactionAsync();
                 throw new Exception($"{ex.Message}");
             }
         }
@@ -117,7 +117,7 @@ namespace BLLLibrary.Service
             }
             catch (Exception ex)
             {
-                _unitOfWork.Dispose();
+                await _unitOfWork.RollBackTransactionAsync();
                 throw new Exception($"{ex.Message}");
             }
         }

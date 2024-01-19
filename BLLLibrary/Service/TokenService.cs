@@ -63,7 +63,7 @@ namespace BLLLibrary.Service
                         }
                         if (tokenRequest.Password == null) throw new Exception("Password is null");
                         if (tokenRequest.Username == null) throw new Exception("Username is null");
-                        var userLogin = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(tokenRequest.Username);
+                        var userLogin = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(tokenRequest.Username) ?? throw new Exception("Username is null");
                         var user = await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(new GetUsersByLoginAndPasswordRequest()
                         {
                             Login = tokenRequest.Username,
@@ -80,7 +80,7 @@ namespace BLLLibrary.Service
             }
             catch (Exception ex)
             {
-                _unitOfWork.Dispose();
+                await _unitOfWork.RollBackTransactionAsync();
                 throw new Exception($"{ex.Message}");
             }
         }
