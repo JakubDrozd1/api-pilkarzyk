@@ -6,7 +6,6 @@ namespace BLLLibrary.IService
 {
     public interface IUsersMeetingsService
     {
-        Task AddUsersToMeetingAsync(GetUsersMeetingsRequest getUsersMeetingsRequest);
         Task<List<GetMeetingUsersResponse>> GetListMeetingsUsersAsync(GetMeetingsUsersPaginationRequest getMeetingsUsersPaginationRequest);
         Task<GetMeetingUsersResponse?> GetUserWithMeeting(int meetingId, int userId);
         Task SaveChangesAsync();

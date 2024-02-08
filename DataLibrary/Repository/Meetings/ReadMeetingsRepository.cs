@@ -77,7 +77,7 @@ namespace DataLibrary.Repository.Meetings
             }
         }
 
-        public async Task<MEETINGS?> GetMeetingByIdAsync(int meetingId)
+        public async Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -85,11 +85,12 @@ namespace DataLibrary.Repository.Meetings
             }
             try
             {
-                var query = new QueryBuilder<MEETINGS>()
-                    .Select("* ")
-                    .From("MEETINGS ")
-                    .Where("ID_MEETING = @MeetingId ");
-                return await _dbConnection.QuerySingleOrDefaultAsync<MEETINGS>(query.Build(), new { MeetingId = meetingId }, _fbTransaction);
+                var query = new QueryBuilder<GetMeetingGroupsResponse>()
+                    .Select(SELECT)
+                    .From($"{nameof(MEETINGS)} m " +
+                    $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} ")
+                    .Where("m.ID_MEETING = @MeetingId ");
+                return await _dbConnection.QuerySingleOrDefaultAsync<GetMeetingGroupsResponse>(query.Build(), new { MeetingId = meetingId }, _fbTransaction);
             }
             catch (Exception ex)
             {

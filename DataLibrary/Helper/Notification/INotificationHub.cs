@@ -1,8 +1,10 @@
-﻿namespace DataLibrary.Helper.Notification
+﻿using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Response;
+
+namespace DataLibrary.Helper.Notification
 {
     public interface INotificationHub
     {
-        Task SendMessage(int userId, int meetingId);
-
+        void SendMeetingNotification(GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens);
     }
 }

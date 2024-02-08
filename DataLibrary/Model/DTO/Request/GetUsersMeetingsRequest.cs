@@ -2,7 +2,8 @@
 {
     public class GetUsersMeetingsRequest
     {
+        public required GetMeetingRequest Meeting { get; set; }
         public required int[] IdUsers { get; set; }
-        public required int IdMeeting { get; set; }
+        public required GetMessageRequest Message { get; set; }
     }
 }

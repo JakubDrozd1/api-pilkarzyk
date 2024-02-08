@@ -8,8 +8,8 @@ namespace BLLLibrary.IService
     public interface IMeetingsService
     {
         Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsPaginationRequest);
-        Task<MEETINGS?> GetMeetingByIdAsync(int meetingId);
-        Task AddMeetingAsync(GetMeetingRequest getMeetingRequest);
+        Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId);
+        Task AddMeetingAsync(GetUsersMeetingsRequest getMeetingRequest);
         Task UpdateMeetingAsync(GetMeetingRequest getMeetingRequest, int meetingId);
         Task DeleteMeetingAsync(int meetingId);
         Task<MEETINGS?> GetMeeting(GetMeetingRequest getMeetingRequest);

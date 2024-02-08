@@ -51,13 +51,13 @@ namespace WebApi.Controllers
         }
 
         [HttpPost(Name = "AddMeeting")]
-        public async Task<ActionResult> AddMeeting([FromBody] GetMeetingRequest meetingRequest)
+        public async Task<ActionResult> AddMeeting([FromBody] GetUsersMeetingsRequest meetingRequest)
         {
             try
             {
                 await _meetingsService.AddMeetingAsync(meetingRequest);
                 await _meetingsService.SaveChangesAsync();
-                return Ok(await _meetingsService.GetMeeting(meetingRequest));
+                return Ok(await _meetingsService.GetMeeting(meetingRequest.Meeting));
             }
             catch (Exception ex)
             {

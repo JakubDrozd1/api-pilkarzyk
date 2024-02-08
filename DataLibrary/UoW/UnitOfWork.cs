@@ -1,12 +1,12 @@
 ﻿using System.Data;
 using DataLibrary.Helper.ConnectionProvider;
-using DataLibrary.Helper.Notification;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
@@ -17,20 +17,19 @@ using DataLibrary.Repository.Groups;
 using DataLibrary.Repository.GroupsUsers;
 using DataLibrary.Repository.Meetings;
 using DataLibrary.Repository.Messages;
+using DataLibrary.Repository.NotificationToken;
 using DataLibrary.Repository.Rankings;
 using DataLibrary.Repository.Tokens;
 using DataLibrary.Repository.Users;
 using DataLibrary.Repository.UsersMeetings;
 using FirebirdSql.Data.FirebirdClient;
-using Microsoft.AspNetCore.SignalR;
 
 namespace DataLibrary.UoW
 {
-    public class UnitOfWork(IConnectionProvider _connectionProvider, IHubContext<NotificationHub, INotificationHub> _notificationHub) : IUnitOfWork
+    public class UnitOfWork(IConnectionProvider _connectionProvider) : IUnitOfWork
     {
         private readonly FbConnection dbConnection = _connectionProvider.GetConnection();
         private FbTransaction? dbTransaction = null;
-        readonly IHubContext<NotificationHub, INotificationHub> notificationHub = _notificationHub;
 
         public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection, dbTransaction);
         public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection, dbTransaction);
@@ -39,8 +38,9 @@ namespace DataLibrary.UoW
         public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection, dbTransaction);
         public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection, dbTransaction);
         public ICreateTokensRepository CreateTokensRepository => new CreateTokensRepository(dbConnection, dbTransaction);
-        public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection, notificationHub, dbTransaction);
+        public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection, dbTransaction);
         public ICreateGroupInviteRepository CreateGroupInviteRepository => new CreateGroupInviteRepository(dbConnection, dbTransaction);
+        public ICreateNotificationTokenRepository CreateNotificationTokenRepository => new CreateNotificationTokenRepository(dbConnection, dbTransaction);
 
 
 
@@ -51,6 +51,7 @@ namespace DataLibrary.UoW
         public IDeleteUsersRepository DeleteUsersRepository => new DeleteUsersRepository(dbConnection, dbTransaction);
         public IDeleteGroupsUsersRepository DeleteGroupsUsersRepository => new DeleteGroupsUsersRepository(dbConnection, dbTransaction);
         public IDeleteGroupInviteRepository DeleteGroupInviteRepository => new DeleteGroupInviteRepository(dbConnection, dbTransaction);
+        public IDeleteNotificationTokenRepository DeleteNotificationTokenRepository => new DeleteNotificationTokenRepository(dbConnection, dbTransaction);
 
 
         public IReadGroupsRepository ReadGroupsRepository => new ReadGroupsRepository(dbConnection, dbTransaction);
@@ -63,6 +64,7 @@ namespace DataLibrary.UoW
         public IReadUsersMeetingsRepository ReadUsersMeetingsRepository => new ReadUsersMeetingsRepository(dbConnection, dbTransaction);
         public IReadGroupInviteRepository ReadGroupInviteRepository => new ReadGroupInviteRepository(dbConnection, dbTransaction);
         public IReadTokensRepository ReadTokensRepository => new ReadTokensRepository(dbConnection, dbTransaction);
+        public IReadNotificationTokenRepository ReadNotificationTokenRepository => new ReadNotificationTokenRepository(dbConnection, dbTransaction);
 
 
 

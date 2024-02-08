@@ -1,5 +1,4 @@
-﻿using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Request;
+﻿using DataLibrary.Model.DTO.Request;
 
 namespace DataLibrary.IRepository.Users
 {

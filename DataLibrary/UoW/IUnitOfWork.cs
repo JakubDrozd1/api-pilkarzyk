@@ -4,6 +4,7 @@ using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
@@ -22,6 +23,7 @@ namespace DataLibrary.UoW
         ICreateTokensRepository CreateTokensRepository { get; }
         ICreateUsersMeetingsRepository CreateUsersMeetingRepository { get; }
         ICreateGroupInviteRepository CreateGroupInviteRepository { get; }
+        ICreateNotificationTokenRepository CreateNotificationTokenRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
@@ -30,6 +32,7 @@ namespace DataLibrary.UoW
         IDeleteUsersRepository DeleteUsersRepository { get; }
         IDeleteGroupsUsersRepository DeleteGroupsUsersRepository { get; }
         IDeleteGroupInviteRepository DeleteGroupInviteRepository { get; }
+        IDeleteNotificationTokenRepository DeleteNotificationTokenRepository { get; }
 
         IReadGroupsRepository ReadGroupsRepository { get; }
         IReadMeetingsRepository ReadMeetingsRepository { get; }
@@ -41,6 +44,7 @@ namespace DataLibrary.UoW
         IReadUsersMeetingsRepository ReadUsersMeetingsRepository { get; }
         IReadGroupInviteRepository ReadGroupInviteRepository { get; }
         IReadTokensRepository ReadTokensRepository { get; }
+        IReadNotificationTokenRepository ReadNotificationTokenRepository { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }

@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Net.Http.Headers;
 using DataLibrary.Helper.ConnectionProvider;
-using DataLibrary.Helper.Notification;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +23,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailSenderService, EmailSenderService>();
 builder.Services.AddScoped<IUsersMeetingsService, UsersMeetingsService>();
 builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
+builder.Services.AddScoped<INotificationTokenService, NotificationTokenService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>
@@ -113,7 +113,6 @@ app.UseCors(builder =>
         .AllowAnyMethod()
         .AllowCredentials();
 });
-app.MapHub<NotificationHub>("/notify");
 
 app.UseAuthentication();
 app.UseAuthorization();

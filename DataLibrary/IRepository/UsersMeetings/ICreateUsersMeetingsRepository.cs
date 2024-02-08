@@ -1,12 +1,10 @@
 ﻿using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Response;
 
 namespace DataLibrary.IRepository.UsersMeetings
 {
     public interface ICreateUsersMeetingsRepository
     {
-        Task AddUserToMeetingAsync(MEETINGS meeting, USERS user);
-        Task SendNotification(GetUsersMeetingsRequest getUsersMeetingsRequest);
-
+        Task AddUserToMeetingAsync(GetMeetingGroupsResponse meeting, USERS user);
     }
 }
