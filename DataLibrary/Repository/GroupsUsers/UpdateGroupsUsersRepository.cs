@@ -21,7 +21,7 @@ namespace DataLibrary.Repository.GroupsUsers
             {
                 var updateBuilder = new QueryBuilder<GROUPS_USERS>()
                     .Update("GROUPS_USERS ", groupUsers)
-                    .Where("ID_GROUP_USER = @ID_GROUP_USER ");
+                    .Where("IDUSER = @IDUSER AND IDGROUP = @IDGROUP");
                 string updateQuery = updateBuilder.Build();
                 await _dbConnection.ExecuteAsync(updateQuery, groupUsers, _fbTransaction);
             }

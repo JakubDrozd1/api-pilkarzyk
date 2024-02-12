@@ -18,10 +18,13 @@ namespace DataLibrary.Repository.GroupInvite
                 $"gi.{nameof(GROUP_INVITE.IDAUTHOR)}, " +
                 $"gi.{nameof(GROUP_INVITE.IDGROUP)}, " +
                 $"gi.{nameof(GROUP_INVITE.ID_GROUP_INVITE)} AS IdGroupInvite, " +
-                $"gi.{nameof(GROUP_INVITE.DATE_ADD)} AS DateAdd ";
+                $"gi.{nameof(GROUP_INVITE.DATE_ADD)} AS DateAdd, " +
+                $"u.{nameof(USERS.FIRSTNAME)}, " +
+                $"u.{nameof(USERS.SURNAME)} ";
         private static readonly string FROM
               = $"{nameof(GROUP_INVITE)} gi " +
-                $"JOIN {nameof(GROUPS)} g ON gi.{nameof(GROUP_INVITE.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} ";
+                $"JOIN {nameof(GROUPS)} g ON gi.{nameof(GROUP_INVITE.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
+                $"JOIN {nameof(USERS)} u ON gi.{nameof(GROUP_INVITE.IDAUTHOR)} = u.{nameof(USERS.ID_USER)} ";
 
         public async Task<List<GetGroupInviteResponse?>> GetGroupInviteByIdUserAsync(int userId)
         {
@@ -34,7 +37,7 @@ namespace DataLibrary.Repository.GroupInvite
                 var query = new QueryBuilder<GetGroupInviteResponse>()
                     .Select(SELECT)
                     .From(FROM)
-                    .Where("IDUSER = @UserId ");
+                    .Where("gi.IDUSER = @UserId ");
                 return (await _dbConnection.QueryAsync<GetGroupInviteResponse?>(query.Build(), new { UserId = userId }, _fbTransaction)).AsList();
             }
             catch (Exception ex)

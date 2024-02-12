@@ -15,5 +15,6 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public string? SortMode { get; set; }
         public int? IdUser { get; set; }
         public int? IdGroup { get; set; }
+        public bool IsAvatar {  get; set; }
     }
 }

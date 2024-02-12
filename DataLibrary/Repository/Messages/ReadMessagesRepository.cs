@@ -13,13 +13,12 @@ namespace DataLibrary.Repository.Messages
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-        private static readonly string SELECT
+        private string SELECT
               = $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +
                 $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
-                $"u.{nameof(USERS.AVATAR)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
@@ -48,8 +47,8 @@ namespace DataLibrary.Repository.Messages
 
                 if (getMessagesUsersPaginationRequest.IdMeeting is not null)
                 {
-                    WHERE += $"AND msg.{nameof(MESSAGES.IDMEETING)} = @GroupId ";
-                    dynamicParameters.Add("@GroupId", getMessagesUsersPaginationRequest.IdMeeting);
+                    WHERE += $"AND msg.{nameof(MESSAGES.IDMEETING)} = @MeetingId ";
+                    dynamicParameters.Add("@MeetingId", getMessagesUsersPaginationRequest.IdMeeting);
                 }
                 if (getMessagesUsersPaginationRequest.IdUser is not null)
                 {
@@ -71,7 +70,10 @@ namespace DataLibrary.Repository.Messages
                     WHERE += $"AND m.{nameof(MESSAGES.WAITING_TIME)} <= @WaitingTime ";
                     dynamicParameters.Add("@WaitingTime", getMessagesUsersPaginationRequest.WaitingTime);
                 }
-
+                if (getMessagesUsersPaginationRequest.IsAvatar)
+                {
+                    SELECT += $", u.{nameof(USERS.AVATAR)} ";
+                }
                 var query = new QueryBuilder<MESSAGES>()
                     .Select(SELECT)
                     .From(FROM)

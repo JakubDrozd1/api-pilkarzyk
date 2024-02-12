@@ -1,4 +1,6 @@
 ﻿using BLLLibrary.IService;
+using DataLibrary.Entities;
+using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
@@ -22,6 +24,7 @@ namespace BLLLibrary.Service
                 }
                 await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
                 await _unitOfWork.SaveChangesAsync();
+                await SendNotificationToUserAsync(group, user.ID_USER);
             }
             catch (Exception ex)
             {
@@ -29,6 +32,18 @@ namespace BLLLibrary.Service
                 throw new Exception($"{ex.Message}");
             }
 
+        }
+
+        private async Task SendNotificationToUserAsync(GROUPS group, int idUser)
+        {
+            NotificationHub notificationHub = new();
+
+            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
+
+            if (tokens != null)
+            {
+                notificationHub.SendGroupNotification(group, tokens);
+            }
         }
 
         public async Task DeleteGroupInviteAsync(int groupInviteId)

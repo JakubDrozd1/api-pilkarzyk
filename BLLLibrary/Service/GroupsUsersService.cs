@@ -107,7 +107,6 @@ namespace BLLLibrary.Service
                 var groupUser = await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getUserGroupRequest.IDGROUP, getUserGroupRequest.IDUSER) ?? throw new Exception("User is not in group");
                 GROUPS_USERS groupUserTemp = new()
                 {
-                    ID_GROUP_USER = groupUser.IdGroupUser,
                     IDGROUP = groupUser.IdGroup,
                     IDUSER = groupUser.IdUser,
                     ACCOUNT_TYPE = getUserGroupRequest.ACCOUNT_TYPE,

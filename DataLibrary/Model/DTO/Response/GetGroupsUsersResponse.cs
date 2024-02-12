@@ -12,7 +12,6 @@
         public int? AccountType { get; set; }
         public int? IdGroup { get; set; }
         public int? IdUser { get; set; }
-        public int? IdGroupUser { get; set; }
         public string? Avatar { get; set; }
         public int? GroupCounter { get; set; }
     }

@@ -8,5 +8,7 @@
         public int IdUser { get; set; }
         public int IdAuthor { get; set; }
         public DateTime DateAdd { get; set; }
+        public string? Firstname {  get; set; }
+        public string? Surname { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace DataLibrary.Helper.Notification
 
             var androidNotificationObj = new Dictionary<string, string>
             {
-                { "NavigationID", "2" }
+                { "Meeting", "1" }
             };
             foreach (var token in tokens)
             {
@@ -45,8 +45,29 @@ namespace DataLibrary.Helper.Notification
                 };
                 await FirebaseMessaging.DefaultInstance.SendAsync(obj);
             }
+        }
 
+        public async void SendGroupNotification(GROUPS group, List<NOTIFICATION_TOKENS> tokens)
+        {
 
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "Group", "2" }
+            };
+            foreach (var token in tokens)
+            {
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = "Ktoś właśnie wysłał ci zaproszenie do grupy!",
+                        Body = "Nowe zaproszenie do grupy " + group.NAME,
+                    },
+                    Data = androidNotificationObj
+                };
+                await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+            }
         }
     }
 

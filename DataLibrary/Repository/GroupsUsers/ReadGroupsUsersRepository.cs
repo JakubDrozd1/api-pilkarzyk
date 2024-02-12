@@ -13,18 +13,16 @@ namespace DataLibrary.Repository.GroupsUsers
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-        private static readonly string SELECT
+        private string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
                 $"g.{nameof(GROUPS.ID_GROUP)} AS IdGroup, " +
                 $"gu.{nameof(GROUPS_USERS.ACCOUNT_TYPE)} AS AccountType, " +
-                $"gu.{nameof(GROUPS_USERS.ID_GROUP_USER)} AS IdGroupUser, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
-                $"u.{nameof(USERS.AVATAR)}, " +
                 $"u.{nameof(USERS.GROUP_COUNTER)} AS GroupCounter, " +
                 $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin ";
         private static readonly string FROM
@@ -52,6 +50,10 @@ namespace DataLibrary.Repository.GroupsUsers
                 {
                     WHERE += $"AND gu.{nameof(GROUPS_USERS.IDUSER)} = @UserId ";
                     dynamicParameters.Add("@UserId", getUsersGroupsRequest.IdUser);
+                }
+                if (getUsersGroupsRequest.IsAvatar)
+                {
+                    SELECT += $", u.{nameof(USERS.AVATAR)} ";
                 }
 
                 var query = new QueryBuilder<GetGroupsUsersResponse>()
