@@ -21,10 +21,9 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.PLACE)}, " +
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
-        private static readonly string FROM
+        private string FROM
               = $"{nameof(MEETINGS)} m " +
-                $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
-                $"JOIN {nameof(MESSAGES)} msg ON m.{nameof(MEETINGS.ID_MEETING)} = msg.{nameof(MESSAGES.IDMEETING)} ";
+                $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} ";
 
         public async Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsRequest)
         {
@@ -35,7 +34,7 @@ namespace DataLibrary.Repository.Meetings
             try
             {
                 DynamicParameters dynamicParameters = new();
-                string WHERE = "1=1";
+                string WHERE = "1=1 ";
 
                 if (getMeetingsRequest.IdGroup is not null)
                 {
@@ -62,7 +61,10 @@ namespace DataLibrary.Repository.Meetings
                     WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
                     dynamicParameters.Add("@DateTo", getMeetingsRequest.DateTo);
                 }
-
+                if (getMeetingsRequest.WithMessages)
+                {
+                    FROM += $"JOIN {nameof(MESSAGES)} msg ON m.{nameof(MEETINGS.ID_MEETING)} = msg.{nameof(MESSAGES.IDMEETING)} ";
+                }
                 var query = new QueryBuilder<GetMeetingGroupsResponse>()
                     .Select(SELECT)
                     .From(FROM)

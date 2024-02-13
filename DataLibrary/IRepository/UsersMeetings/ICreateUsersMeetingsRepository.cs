@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository.UsersMeetings
 {
     public interface ICreateUsersMeetingsRepository
     {
-        Task AddUserToMeetingAsync(GetMeetingGroupsResponse meeting, USERS user);
+        Task AddUserToMeetingAsync(GetMeetingGroupsResponse meeting, int userId);
     }
 }

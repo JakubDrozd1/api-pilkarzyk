@@ -23,6 +23,26 @@ namespace BLLLibrary.Service
                     throw new Exception("User is already in this group");
                 }
                 await _unitOfWork.CreateGroupsUsersRepository.AddUserToGroupAsync(getUserGroupRequest);
+                var meetings = await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsAsync(new GetMeetingsGroupsPaginationRequest()
+                {
+                    OnPage = -1,
+                    Page = 0,
+                    DateFrom = DateTime.Now,
+                    IdGroup = getUserGroupRequest.IDGROUP,
+                    WithMessages = false,
+                });
+                if (meetings != null)
+                {
+                    foreach (var meeting in meetings)
+                    {
+                        await _unitOfWork.CreateUsersMeetingRepository.AddUserToMeetingAsync(meeting, getUserGroupRequest.IDUSER);
+                        await _unitOfWork.CreateMessagesRepository.AddMessageAsync(new GetMessageRequest()
+                        {
+                            IDUSER = getUserGroupRequest.IDUSER,
+                            IDMEETING = meeting.IdMeeting
+                        });
+                    }
+                }
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)

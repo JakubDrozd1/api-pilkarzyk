@@ -14,7 +14,7 @@ namespace DataLibrary.Repository.UsersMeetings
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddUserToMeetingAsync(GetMeetingGroupsResponse meeting, USERS user)
+        public async Task AddUserToMeetingAsync(GetMeetingGroupsResponse meeting, int userId)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -25,7 +25,7 @@ namespace DataLibrary.Repository.UsersMeetings
                 GetUserMeetingRequest usersMeetings = new()
                 {
                     IDMEETING = meeting.IdMeeting ?? throw new Exception("Meeting is null"),
-                    IDUSER = user.ID_USER,
+                    IDUSER = userId,
                 };
                 var insertBuilder = new QueryBuilder<USERS_MEETINGS>().Insert("USERS_MEETINGS ", usersMeetings);
                 string insertQuery = insertBuilder.Build();

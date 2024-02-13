@@ -6,12 +6,13 @@ using Google.Apis.Auth.OAuth2;
 
 namespace DataLibrary.Helper.Notification
 {
-    public class NotificationHub : INotificationHub
+    public class FirebaseNotification : IFirebaseNotification
     {
-        public NotificationHub()
+        public FirebaseNotification()
         {
             ReadFireBaseAdminSdk();
         }
+
         private static void ReadFireBaseAdminSdk()
         {
 

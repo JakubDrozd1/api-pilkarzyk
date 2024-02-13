@@ -14,7 +14,7 @@ namespace DataLibrary.Repository.Users
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-
+        private string SELECT = " ID_USER, LOGIN, USER_PASSWORD, FIRSTNAME, SURNAME, EMAIL, PHONE_NUMBER, SALT, IS_ADMIN, GROUP_COUNTER ";
         public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest)
         {
 
@@ -24,8 +24,12 @@ namespace DataLibrary.Repository.Users
             }
             try
             {
+                if (getUsersPaginationRequest.IsAvatar)
+                {
+                    SELECT += ", AVATAR ";
+                }
                 var query = new QueryBuilder<USERS>()
-                    .Select("* ")
+                    .Select(SELECT)
                     .From("USERS ")
                     .OrderBy(getUsersPaginationRequest)
                     .Limit(getUsersPaginationRequest);

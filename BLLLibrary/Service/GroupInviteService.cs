@@ -36,7 +36,7 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserAsync(GROUPS group, int idUser)
         {
-            NotificationHub notificationHub = new();
+            FirebaseNotification notificationHub = new();
 
             var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
 

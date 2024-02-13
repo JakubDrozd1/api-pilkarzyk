@@ -78,7 +78,7 @@ namespace BLLLibrary.Service
                 {
                     throw new Exception("User is already in this meeting");
                 }
-                await _unitOfWork.CreateUsersMeetingRepository.AddUserToMeetingAsync(meeting, user);
+                await _unitOfWork.CreateUsersMeetingRepository.AddUserToMeetingAsync(meeting, user.ID_USER);
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserAsync(int idMeeting, int[] idUsers, int? idAuthor)
         {
-            NotificationHub notificationHub = new();
+            FirebaseNotification notificationHub = new();
             var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(idMeeting) ?? throw new Exception("Meeting is null");
 
             foreach (int userId in idUsers)
