@@ -30,7 +30,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{meetingId}", Name = "GetMeetingById")]
-        public async Task<ActionResult<MEETINGS>> GetMeetingById(int meetingId)
+        public async Task<ActionResult<GetMeetingGroupsResponse>> GetMeetingById(int meetingId)
         {
             try
             {

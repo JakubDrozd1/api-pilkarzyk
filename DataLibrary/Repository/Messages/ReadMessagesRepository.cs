@@ -28,7 +28,8 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
-                $"msg.{nameof(MESSAGES.ANSWER)} ";
+                $"msg.{nameof(MESSAGES.ANSWER)}, " +
+                $"msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
         private static readonly string FROM
               = $"{nameof(MESSAGES)} msg " +
                 $"JOIN {nameof(MEETINGS)} m ON msg.{nameof(MESSAGES.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +

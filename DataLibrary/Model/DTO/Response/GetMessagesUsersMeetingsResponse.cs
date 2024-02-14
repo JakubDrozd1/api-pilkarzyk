@@ -18,6 +18,7 @@
         public int? IdMeeting { get; set; }
         public DateTime? WaitingTime { get; set; }
         public string? Avatar { get; set; }
+        public int? IdMessage { get; set; }
 
     }
 }
