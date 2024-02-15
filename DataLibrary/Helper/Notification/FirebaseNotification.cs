@@ -20,7 +20,7 @@ namespace DataLibrary.Helper.Notification
             {
                 FirebaseApp.Create(new AppOptions()
                 {
-                    Credential = GoogleCredential.FromFile("./Resources/admin_sdk.json")
+                    Credential = GoogleCredential.FromFile("Resources/admin_sdk.json")
                 });
             }
         }
