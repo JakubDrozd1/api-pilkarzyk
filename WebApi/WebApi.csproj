@@ -9,12 +9,10 @@
 
   <ItemGroup>
     <Content Remove="Resources\admin_sdk.example.json" />
-    <Content Remove="Resources\admin_sdk.json" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Resources\admin_sdk.example.json" />
-    <None Include="Resources\admin_sdk.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +38,12 @@
   <ItemGroup>
     <ProjectReference Include="..\BLLLibrary\BLLLibrary.csproj" />
     <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Resources\admin_sdk.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
