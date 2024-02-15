@@ -2,6 +2,7 @@
 using DataLibrary.Entities;
 using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
@@ -22,6 +23,16 @@ namespace BLLLibrary.Service
                 {
                     throw new Exception("User is already in this group");
                 }
+                var invites = await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdUserAsync(
+                    new GetGroupInvitePaginationRequest()
+                    {
+                        OnPage = -1,
+                        Page = 0,
+                        IdGroup = getGroupInviteRequest.IDGROUP,
+                        IdUser = getGroupInviteRequest.IDUSER
+                    }
+                    );
+                if (invites.Count > 0) throw new Exception("Invitation alredy send");
                 await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
                 await _unitOfWork.SaveChangesAsync();
                 await SendNotificationToUserAsync(group, user.ID_USER);
@@ -51,9 +62,9 @@ namespace BLLLibrary.Service
             await _unitOfWork.DeleteGroupInviteRepository.DeleteGroupInviteAsync(groupInviteId);
         }
 
-        public async Task<List<GetGroupInviteResponse?>> GetGroupInviteByIdUserAsync(int userId)
+        public async Task<List<GetGroupInviteResponse?>> GetGroupInviteByIdUserAsync(GetGroupInvitePaginationRequest getGroupInvitePaginationRequest)
         {
-            return await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdUserAsync(userId);
+            return await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdUserAsync(getGroupInvitePaginationRequest);
         }
 
         public async Task SaveChangesAsync()
