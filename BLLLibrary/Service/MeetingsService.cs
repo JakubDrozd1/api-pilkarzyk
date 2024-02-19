@@ -39,16 +39,22 @@ namespace BLLLibrary.Service
                 }
                 await _unitOfWork.CreateMeetingsRepository.AddMeetingAsync(getUsersMeetingsRequest.Meeting);
                 var meeetingAdded = await _unitOfWork.ReadMeetingsRepository.GetMeeting(getUsersMeetingsRequest.Meeting);
-
-                foreach (int userId in getUsersMeetingsRequest.IdUsers)
+                var users = await _unitOfWork.ReadGroupsUsersRepository.GetListGroupsUserAsync(new GetUsersGroupsPaginationRequest()
                 {
-                    await AddUserToMeetingAsync(meeetingAdded?.ID_MEETING ?? 0, userId);
-                    if (userId != getUsersMeetingsRequest.Message.IDUSER)
+                    Page = 0,
+                    OnPage = -1,
+                    IdGroup = getUsersMeetingsRequest.Meeting.IDGROUP,
+                    IsAvatar = false
+                });
+                foreach (var user in users)
+                {
+                    await AddUserToMeetingAsync(meeetingAdded?.ID_MEETING ?? throw new Exception("Meeting is null"), user.IdUser ?? throw new Exception("User is null"));
+                    if (user.IdUser != getUsersMeetingsRequest.Message.IDUSER)
                     {
                         await _unitOfWork.CreateMessagesRepository.AddMessageAsync(new GetMessageRequest()
                         {
-                            IDUSER = userId,
-                            IDMEETING = meeetingAdded?.ID_MEETING ?? 0
+                            IDUSER = user.IdUser,
+                            IDMEETING = meeetingAdded?.ID_MEETING ?? throw new Exception("Meeting is null")
                         });
                     }
                     else
@@ -58,7 +64,7 @@ namespace BLLLibrary.Service
                     }
                 }
                 await _unitOfWork.SaveChangesAsync();
-                await SendNotificationToUserAsync(meeetingAdded?.ID_MEETING ?? 0, getUsersMeetingsRequest.IdUsers, getUsersMeetingsRequest.Message.IDUSER);
+                await SendNotificationToUserAsync(meeetingAdded?.ID_MEETING ?? 0, users, getUsersMeetingsRequest.Message.IDUSER);
             }
             catch (Exception ex)
             {
@@ -86,16 +92,16 @@ namespace BLLLibrary.Service
             }
         }
 
-        private async Task SendNotificationToUserAsync(int idMeeting, int[] idUsers, int? idAuthor)
+        private async Task SendNotificationToUserAsync(int idMeeting, List<GetGroupsUsersResponse> users, int? idAuthor)
         {
             FirebaseNotification notificationHub = new();
             var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(idMeeting) ?? throw new Exception("Meeting is null");
 
-            foreach (int userId in idUsers)
+            foreach (var user in users)
             {
-                if (userId != idAuthor)
+                if (user.IdUser != idAuthor)
                 {
-                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(userId);
+                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser?? throw new Exception("User is null"));
 
                     if (tokens != null)
                     {
