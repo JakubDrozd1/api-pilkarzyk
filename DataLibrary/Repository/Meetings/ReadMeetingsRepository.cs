@@ -20,6 +20,7 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
                 $"m.{nameof(MEETINGS.PLACE)}, " +
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
+                $"m.{nameof(MEETINGS.IDAUTHOR)}, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
               = $"{nameof(MEETINGS)} m " +

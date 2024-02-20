@@ -121,6 +121,7 @@ namespace BLLLibrary.Service
                 DATE_MEETING = getMeetingRequest.DATE_MEETING,
                 PLACE = getMeetingRequest.PLACE,
                 IDGROUP = getMeetingRequest.IDGROUP,
+                IDAUTHOR = getMeetingRequest.IDAUTHOR
             };
             await _unitOfWork.UpdateMeetingsRepository.UpdateMeetingAsync(meeting);
         }

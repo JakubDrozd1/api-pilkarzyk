@@ -18,5 +18,8 @@ namespace DataLibrary.Model.DTO.Request
 
         [JsonPropertyName("IdGroup")]
         public int? IDGROUP { get; set; }
+
+        [JsonPropertyName("IdAuthor")]
+        public int? IDAUTHOR { get; set; }
     }
 }

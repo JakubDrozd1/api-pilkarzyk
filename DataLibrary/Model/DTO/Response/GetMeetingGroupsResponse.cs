@@ -8,6 +8,7 @@
         public string? Description { get; set; }
         public int? Quantity { get; set; }
         public int? IdMeeting { get; set; }
+        public int? IdAuthor { get; set; }
 
     }
 }
