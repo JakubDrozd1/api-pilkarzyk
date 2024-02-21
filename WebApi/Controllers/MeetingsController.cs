@@ -1,4 +1,5 @@
 ﻿using BLLLibrary.IService;
+using BLLLibrary.Service;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
@@ -113,5 +114,21 @@ namespace WebApi.Controllers
                 });
             }
         }
+
+        [HttpPut("column-{meetingId}", Name = "UpdateColumnMeeting")]
+        public async Task<ActionResult> UpdateColumnMeetingAsync([FromBody] GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId)
+        {
+            try
+            {
+                await _meetingsService.UpdateColumnMeetingAsync(getUpdateMeetingRequest, meetingId);
+                await _meetingsService.SaveChangesAsync();
+                return Ok(getUpdateMeetingRequest);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

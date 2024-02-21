@@ -101,7 +101,7 @@ namespace BLLLibrary.Service
             {
                 if (user.IdUser != idAuthor)
                 {
-                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser?? throw new Exception("User is null"));
+                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
 
                     if (tokens != null)
                     {
@@ -124,6 +124,23 @@ namespace BLLLibrary.Service
                 IDAUTHOR = getMeetingRequest.IDAUTHOR
             };
             await _unitOfWork.UpdateMeetingsRepository.UpdateMeetingAsync(meeting);
+        }
+
+        public async Task UpdateColumnMeetingAsync(GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId) ?? throw new Exception("Meeting is null");
+                await _unitOfWork.UpdateMeetingsRepository.UpdateColumnMeetingAsync(getUpdateMeetingRequest, meetingId);
+                await _unitOfWork.UpdateMessagesRepository.UpdateAnswerMessageAsync(getUpdateMeetingRequest.Message);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
         }
 
         public async Task DeleteMeetingAsync(int meetingId)
