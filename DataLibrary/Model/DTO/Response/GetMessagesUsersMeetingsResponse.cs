@@ -19,6 +19,8 @@
         public DateTime? WaitingTime { get; set; }
         public string? Avatar { get; set; }
         public int? IdMessage { get; set; }
+        public int? IdAuthor { get; set; }
+        public int? IdGroup { get; set; }
 
     }
 }

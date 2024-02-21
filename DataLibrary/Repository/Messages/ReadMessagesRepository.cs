@@ -26,6 +26,8 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.QUANTITY)}, " +
                 $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
+                $"m.{nameof(MEETINGS.IDAUTHOR)}, " +
+                $"m.{nameof(MEETINGS.IDGROUP)}, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.ANSWER)}, " +
