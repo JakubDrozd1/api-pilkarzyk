@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using DataLibrary.Helper.ConnectionProvider;
+using DataLibrary.IRepository.ChatMessages;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
@@ -11,6 +12,7 @@ using DataLibrary.IRepository.Rankings;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
+using DataLibrary.Repository.ChatMessages;
 using DataLibrary.Repository.EmailSender;
 using DataLibrary.Repository.GroupInvite;
 using DataLibrary.Repository.Groups;
@@ -41,7 +43,7 @@ namespace DataLibrary.UoW
         public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection, dbTransaction);
         public ICreateGroupInviteRepository CreateGroupInviteRepository => new CreateGroupInviteRepository(dbConnection, dbTransaction);
         public ICreateNotificationTokenRepository CreateNotificationTokenRepository => new CreateNotificationTokenRepository(dbConnection, dbTransaction);
-
+        public ICreateChatMessagesRepository CreateChatMessagesRepository=> new CreateChatMessagesRepository(dbConnection, dbTransaction);
 
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);
@@ -65,7 +67,7 @@ namespace DataLibrary.UoW
         public IReadGroupInviteRepository ReadGroupInviteRepository => new ReadGroupInviteRepository(dbConnection, dbTransaction);
         public IReadTokensRepository ReadTokensRepository => new ReadTokensRepository(dbConnection, dbTransaction);
         public IReadNotificationTokenRepository ReadNotificationTokenRepository => new ReadNotificationTokenRepository(dbConnection, dbTransaction);
-
+        public IReadChatMessagesRepository ReadChatMessagesRepository => new ReadChatMessagesRepository(dbConnection, dbTransaction);
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection, dbTransaction);

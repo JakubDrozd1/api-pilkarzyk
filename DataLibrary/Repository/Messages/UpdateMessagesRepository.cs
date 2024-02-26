@@ -42,14 +42,16 @@ namespace DataLibrary.Repository.Messages
             try
             {
                 DynamicParameters dynamicParameters = new();
+                DateTime currentDateTime = DateTime.Now;
                 var updateBuilder = new QueryBuilder<GetMessageRequest>()
-                    .UpdateColumns("MESSAGES", ["ANSWER", "WAITING_TIME"])
+                    .UpdateColumns("MESSAGES", ["ANSWER", "WAITING_TIME", "DATE_RESPONSE"])
                     .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
                 string updateQuery = updateBuilder.Build();
                 dynamicParameters.Add("@UserId", getMessageRequest.IDUSER);
                 dynamicParameters.Add("@MeetingId", getMessageRequest.IDMEETING);
                 dynamicParameters.Add("@ANSWER", getMessageRequest.ANSWER);
                 dynamicParameters.Add("@WAITING_TIME", getMessageRequest.WAITING_TIME);
+                dynamicParameters.Add("@DATE_RESPONSE", currentDateTime);
                 await _dbConnection.ExecuteAsync(updateQuery, dynamicParameters, _fbTransaction);
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using DataLibrary.IRepository.EmailSender;
+﻿using DataLibrary.IRepository.ChatMessages;
+using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
@@ -24,6 +25,7 @@ namespace DataLibrary.UoW
         ICreateUsersMeetingsRepository CreateUsersMeetingRepository { get; }
         ICreateGroupInviteRepository CreateGroupInviteRepository { get; }
         ICreateNotificationTokenRepository CreateNotificationTokenRepository { get; }
+        ICreateChatMessagesRepository CreateChatMessagesRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
@@ -45,6 +47,7 @@ namespace DataLibrary.UoW
         IReadGroupInviteRepository ReadGroupInviteRepository { get; }
         IReadTokensRepository ReadTokensRepository { get; }
         IReadNotificationTokenRepository ReadNotificationTokenRepository { get; }
+        IReadChatMessagesRepository ReadChatMessagesRepository { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }

@@ -15,5 +15,8 @@ namespace DataLibrary.Model.DTO.Request
 
         [JsonPropertyName("WaitingTime")]
         public DateTime? WAITING_TIME { get; set; }
+
+        [JsonPropertyName("DateResponse")]
+        public DateTime? DATE_RESPONSE {  get; set; }
     }
 }
