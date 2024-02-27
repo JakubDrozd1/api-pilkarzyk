@@ -14,8 +14,8 @@ namespace WebApi.Controllers
     {
         private readonly IGroupInviteService _groupInviteService = groupInviteService;
 
-        [HttpGet(Name = "GetGroupInviteByIdUserAsync")]
-        public async Task<ActionResult<List<GetGroupInviteResponse>>> GetGroupInviteByIdUserAsync([FromQuery] GetGroupInvitePaginationRequest getGroupInvitePaginationRequest)
+        [HttpGet(Name = "GetGroupInviteByIdUser")]
+        public async Task<ActionResult<List<GetGroupInviteResponse>>> GetGroupInviteByIdUser([FromQuery] GetGroupInvitePaginationRequest getGroupInvitePaginationRequest)
         {
             try
             {
@@ -28,8 +28,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost(Name = "AddGroupInviteAsync")]
-        public async Task<ActionResult> AddGroupInviteAsync([FromBody] GetGroupInviteRequest getGroupInviteRequest)
+        [HttpPost(Name = "AddGroupInvite")]
+        public async Task<ActionResult> AddGroupInvite([FromBody] GetGroupInviteRequest getGroupInviteRequest)
         {
             try
             {
@@ -42,8 +42,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("{groupInvitedId}", Name = "DeleteGroupInviteAsync")]
-        public async Task<ActionResult> DeleteGroupInviteAsync(int groupInvitedId)
+        [HttpDelete("{groupInvitedId}", Name = "DeleteGroupInvite")]
+        public async Task<ActionResult> DeleteGroupInvite(int groupInvitedId)
         {
             try
             {

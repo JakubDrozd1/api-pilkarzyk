@@ -82,8 +82,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("answer", Name = "UpdateAnswerMessageAsync")]
-        public async Task<ActionResult> UpdateAnswerMessageAsync([FromBody] GetMessageRequest messageRequest)
+        [HttpPut("answer", Name = "UpdateAnswerMessage")]
+        public async Task<ActionResult> UpdateAnswerMessage([FromBody] GetMessageRequest messageRequest)
         {
             try
             {

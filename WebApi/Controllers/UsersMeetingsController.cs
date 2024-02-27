@@ -15,8 +15,8 @@ namespace WebApi.Controllers
     {
         private readonly IUsersMeetingsService _usersMeetingsService = usersMeetingsService;
 
-        [HttpGet("all", Name = "GetListMeetingsUsersAsync")]
-        public async Task<ActionResult<List<GetMeetingUsersResponse>>> GetListMeetingsUsersAsync([FromQuery] GetMeetingsUsersPaginationRequest getMeetingsUsersPaginationRequest)
+        [HttpGet("all", Name = "GetListMeetingsUsers")]
+        public async Task<ActionResult<List<GetMeetingUsersResponse>>> GetListMeetingsUsers([FromQuery] GetMeetingsUsersPaginationRequest getMeetingsUsersPaginationRequest)
         {
             try
             {

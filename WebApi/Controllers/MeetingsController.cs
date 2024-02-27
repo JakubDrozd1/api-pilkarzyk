@@ -116,7 +116,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("column-{meetingId}", Name = "UpdateColumnMeeting")]
-        public async Task<ActionResult> UpdateColumnMeetingAsync([FromBody] GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId)
+        public async Task<ActionResult> UpdateColumnMeeting([FromBody] GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId)
         {
             try
             {

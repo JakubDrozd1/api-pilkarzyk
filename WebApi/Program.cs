@@ -25,6 +25,7 @@ builder.Services.AddScoped<IUsersMeetingsService, UsersMeetingsService>();
 builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
 builder.Services.AddScoped<INotificationTokenService, NotificationTokenService>();
 builder.Services.AddScoped<IChatMessagesService, ChatMessagesService>();
+builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>

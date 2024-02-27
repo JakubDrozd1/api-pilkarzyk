@@ -108,7 +108,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPut("column-{userId}", Name = "UpdateColumnUser")]
         public async Task<ActionResult> UpdateColumnUser(int userId, [FromBody] GetUpdateUserRequest getUpdateUserRequest)
         {
@@ -152,8 +152,8 @@ namespace WebApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("withoutGroup", Name = "GetAllUsersWithoutGroupAsync")]
-        public async Task<ActionResult<List<USERS>>> GetAllUsersWithoutGroupAsync([FromQuery] GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest)
+        [HttpGet("withoutGroup", Name = "GetAllUsersWithoutGroup")]
+        public async Task<ActionResult<List<USERS>>> GetAllUsersWithoutGroup([FromQuery] GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest)
         {
             try
             {

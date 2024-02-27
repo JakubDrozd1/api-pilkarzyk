@@ -15,8 +15,8 @@ namespace WebApi.Controllers
     {
         private readonly ITokenService _tokenService = tokenService;
 
-        [HttpPost(Name = "GenerateJwtTokenAsync")]
-        public async Task<IActionResult> GenerateJwtTokenAsync([FromBody] GetTokenRequest getTokenRequest)
+        [HttpPost(Name = "GenerateJwtToken")]
+        public async Task<IActionResult> GenerateJwtToken([FromBody] GetTokenRequest getTokenRequest)
         {
             try
             {

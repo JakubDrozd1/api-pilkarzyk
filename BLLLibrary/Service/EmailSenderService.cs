@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System.Security.Cryptography;
 using BLLLibrary.IService;
+using System.Xml.Serialization;
 
 namespace BLLLibrary.Service
 {
@@ -84,6 +85,54 @@ namespace BLLLibrary.Service
             using var decryptor = aes.CreateDecryptor();
             byte[] decryptedData = decryptor.TransformFinalBlock(dane, aes.IV.Length, dane.Length - aes.IV.Length);
             return Encoding.UTF8.GetString(decryptedData);
+        }
+
+        public async Task<bool> SendRecoveryPasswordMessageAsync(string email, int resetPasswordId, CancellationToken ct)
+        {
+            try
+            {
+                string? emailFrom = _configuration["MailSettings:From"] ?? throw new Exception("Sender not found");
+                EMAIL_SENDER? emailSender = await _unitOfWork.ReadEmailSender.GetEmailDetailsAsync(emailFrom) ?? throw new Exception("Sender not found");
+                var mail = new MimeMessage();
+                mail.From.Add(new MailboxAddress(emailSender.DISPLAY_NAME, emailSender.EMAIL));
+                mail.Sender = new MailboxAddress(emailSender.DISPLAY_NAME, emailSender.EMAIL);
+                mail.To.Add(MailboxAddress.Parse(email));
+                var body = new BodyBuilder();
+                string encodedResetPasswordId = Convert.ToBase64String(BitConverter.GetBytes(resetPasswordId));
+                string link = "https://jaball.manowski.pl/recovery/" + encodedResetPasswordId;
+                string invateSubject = $"Przypomnienie hasła";
+                string bodySubject = $"<h1>Hej!</h1>" +
+                                    $"<p>Kliknij poniższy link, aby zmienić hasło do swojego konta.</p>" +
+                                    $"<p>Link będzie ważny 10 minut.</p>" +
+                                    $"<p><a href=\"{link}\" style=\"text-decoration: underline; color: black;\" onmouseover=\"this.style.color='blue'\" onmouseout=\"this.style.color='black'\">RESET</a></p>";
+                mail.Subject = invateSubject;
+                body.HtmlBody = bodySubject;
+                mail.Body = body.ToMessageBody();
+                string host = KeyDecrypt(Convert.FromBase64String(emailSender.SALT), Convert.FromBase64String(emailSender.HOST));
+                string emailPassword = KeyDecrypt(Convert.FromBase64String(emailSender.SALT), Convert.FromBase64String(emailSender.EMAIL_PASSWORD));
+                using var smtp = new SmtpClient();
+                if (emailSender.SSL)
+                {
+                    await smtp.ConnectAsync(host, emailSender.PORT, SecureSocketOptions.SslOnConnect, ct);
+                }
+                else if (emailSender.TLS)
+                {
+                    await smtp.ConnectAsync(host, emailSender.PORT, SecureSocketOptions.StartTls, ct);
+                }
+                else
+                {
+                    await smtp.ConnectAsync(host, emailSender.PORT, cancellationToken: ct);
+                }
+                await smtp.AuthenticateAsync(emailSender.EMAIL, emailPassword, ct);
+                await smtp.SendAsync(mail, ct);
+                await smtp.DisconnectAsync(true, ct);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

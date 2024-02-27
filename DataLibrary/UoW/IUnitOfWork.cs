@@ -7,6 +7,7 @@ using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
 using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
+using DataLibrary.IRepository.ResetPassword;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
@@ -26,6 +27,7 @@ namespace DataLibrary.UoW
         ICreateGroupInviteRepository CreateGroupInviteRepository { get; }
         ICreateNotificationTokenRepository CreateNotificationTokenRepository { get; }
         ICreateChatMessagesRepository CreateChatMessagesRepository { get; }
+        ICreateResetPasswordRepository CreateResetPasswordRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
@@ -48,6 +50,7 @@ namespace DataLibrary.UoW
         IReadTokensRepository ReadTokensRepository { get; }
         IReadNotificationTokenRepository ReadNotificationTokenRepository { get; }
         IReadChatMessagesRepository ReadChatMessagesRepository { get; }
+        IReadResetPasswordRepository ReadResetPasswordRepository { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }

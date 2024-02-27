@@ -9,6 +9,7 @@ using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
 using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
+using DataLibrary.IRepository.ResetPassword;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
@@ -21,6 +22,7 @@ using DataLibrary.Repository.Meetings;
 using DataLibrary.Repository.Messages;
 using DataLibrary.Repository.NotificationToken;
 using DataLibrary.Repository.Rankings;
+using DataLibrary.Repository.ResetPassword;
 using DataLibrary.Repository.Tokens;
 using DataLibrary.Repository.Users;
 using DataLibrary.Repository.UsersMeetings;
@@ -43,8 +45,8 @@ namespace DataLibrary.UoW
         public ICreateUsersMeetingsRepository CreateUsersMeetingRepository => new CreateUsersMeetingsRepository(dbConnection, dbTransaction);
         public ICreateGroupInviteRepository CreateGroupInviteRepository => new CreateGroupInviteRepository(dbConnection, dbTransaction);
         public ICreateNotificationTokenRepository CreateNotificationTokenRepository => new CreateNotificationTokenRepository(dbConnection, dbTransaction);
-        public ICreateChatMessagesRepository CreateChatMessagesRepository=> new CreateChatMessagesRepository(dbConnection, dbTransaction);
-
+        public ICreateChatMessagesRepository CreateChatMessagesRepository => new CreateChatMessagesRepository(dbConnection, dbTransaction);
+        public ICreateResetPasswordRepository CreateResetPasswordRepository => new CreateResetPasswordRepository(dbConnection, dbTransaction);
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);
         public IDeleteMeetingsRepository DeleteMeetingsRepository => new DeleteMeetingsRepository(dbConnection, dbTransaction);
@@ -68,6 +70,7 @@ namespace DataLibrary.UoW
         public IReadTokensRepository ReadTokensRepository => new ReadTokensRepository(dbConnection, dbTransaction);
         public IReadNotificationTokenRepository ReadNotificationTokenRepository => new ReadNotificationTokenRepository(dbConnection, dbTransaction);
         public IReadChatMessagesRepository ReadChatMessagesRepository => new ReadChatMessagesRepository(dbConnection, dbTransaction);
+        public IReadResetPasswordRepository ReadResetPasswordRepository => new ReadResetPasswordRepository(dbConnection, dbTransaction);
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection, dbTransaction);

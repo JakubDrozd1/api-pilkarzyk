@@ -15,8 +15,8 @@ namespace WebApi.Controllers
     {
         private readonly IGroupsUsersService _groupsUsersService = groupsUsersService;
 
-        [HttpPost("add", Name = "AddUserToGroupAsync")]
-        public async Task<IActionResult> AddUserToGroupAsync([FromQuery, Required] GetUserGroupRequest getUserGroupRequest)
+        [HttpPost("add", Name = "AddUserToGroup")]
+        public async Task<IActionResult> AddUserToGroup([FromQuery, Required] GetUserGroupRequest getUserGroupRequest)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("group/{groupId}", Name = "DeleteAllUsersFromGroupAsync")]
-        public async Task<IActionResult> DeleteAllUsersFromGroupAsync(int groupId)
+        public async Task<IActionResult> DeleteAllUsersFromGroup(int groupId)
         {
             try
             {
@@ -60,8 +60,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete("users/{groupId}", Name = "DeleteUsersFromGroupAsync")]
-        public async Task<IActionResult> DeleteUsersFromGroupAsync(int[] usersId, int groupId)
+        [HttpDelete("users/{groupId}", Name = "DeleteUsersFromGroup")]
+        public async Task<IActionResult> DeleteUsersFromGroup(int[] usersId, int groupId)
         {
             try
             {
@@ -74,8 +74,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("all", Name = "GetAllGroupsFromUserAsync")]
-        public async Task<ActionResult<List<GetGroupsUsersResponse>>> GetAllGroupsFromUserAsync([FromQuery] GetUsersGroupsPaginationRequest getUsersGroupsPaginationRequest)
+        [HttpGet("all", Name = "GetAllGroupsFromUser")]
+        public async Task<ActionResult<List<GetGroupsUsersResponse>>> GetAllGroupsFromUser([FromQuery] GetUsersGroupsPaginationRequest getUsersGroupsPaginationRequest)
         {
             try
             {
@@ -102,8 +102,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("update-group/{groupId}", Name = "UpdateGroupWithUsersAsync")]
-        public async Task<IActionResult> UpdateGroupWithUsersAsync(int[] usersId, int groupId)
+        [HttpPut("update-group/{groupId}", Name = "UpdateGroupWithUsers")]
+        public async Task<IActionResult> UpdateGroupWithUsers(int[] usersId, int groupId)
         {
             try
             {
@@ -116,8 +116,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("update-user/{userId}", Name = "UpdateUserWithGroupsAsync")]
-        public async Task<IActionResult> UpdateUserWithGroupsAsync(int[] groupsId, int userId)
+        [HttpPut("update-user/{userId}", Name = "UpdateUserWithGroups")]
+        public async Task<IActionResult> UpdateUserWithGroups(int[] groupsId, int userId)
         {
             try
             {
