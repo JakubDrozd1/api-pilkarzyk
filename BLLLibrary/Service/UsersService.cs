@@ -90,7 +90,15 @@ namespace BLLLibrary.Service
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var user = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(getUsersByLoginAndPassword.Login) ?? throw new Exception("User is null");
+                USERS? user = null;
+                if (getUsersByLoginAndPassword.Email != null)
+                {
+                    user = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getUsersByLoginAndPassword.Email) ?? throw new Exception("Email is null");
+                }
+                if (getUsersByLoginAndPassword.Login != null)
+                {
+                    user = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(getUsersByLoginAndPassword.Login) ?? throw new Exception("Username is null");
+                }
                 return await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword, user);
             }
             catch (Exception ex)

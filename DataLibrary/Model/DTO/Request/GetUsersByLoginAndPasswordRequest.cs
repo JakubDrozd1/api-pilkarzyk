@@ -4,8 +4,10 @@ namespace DataLibrary.Model.DTO.Request
 {
     public class GetUsersByLoginAndPasswordRequest
     {
-        [Required]
-        public required string Login { get; set; }
+        
+        public string? Login { get; set; }
+        public string? Email { get; set; }
+
         [Required]
         public required string Password { get; set; }
     }

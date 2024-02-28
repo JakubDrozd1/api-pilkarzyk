@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System.Security.Cryptography;
 using BLLLibrary.IService;
-using System.Xml.Serialization;
 
 namespace BLLLibrary.Service
 {
@@ -39,6 +38,7 @@ namespace BLLLibrary.Service
                 }
                 var body = new BodyBuilder();
                 string encodedGroupId = Convert.ToBase64String(BitConverter.GetBytes(getEmailSenderRequest.IdGroup));
+                //string link = "http://192.168.88.20:4200/register/" + encodedGroupId;
                 string link = "https://jaball.manowski.pl/register/" + encodedGroupId;
                 string invateSubject = $"Zaproszenie do grupy {getEmailSenderRequest.GroupName}";
                 string bodySubject = $"<h1>Hej!</h1>" +
@@ -99,6 +99,7 @@ namespace BLLLibrary.Service
                 mail.To.Add(MailboxAddress.Parse(email));
                 var body = new BodyBuilder();
                 string encodedResetPasswordId = Convert.ToBase64String(BitConverter.GetBytes(resetPasswordId));
+                //string link = "http://192.168.88.20:4200/recovery/" + encodedResetPasswordId;
                 string link = "https://jaball.manowski.pl/recovery/" + encodedResetPasswordId;
                 string invateSubject = $"Przypomnienie hasła";
                 string bodySubject = $"<h1>Hej!</h1>" +

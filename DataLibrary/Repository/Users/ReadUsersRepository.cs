@@ -96,6 +96,11 @@ namespace DataLibrary.Repository.Users
                     WHERE += $"AND {nameof(USERS.LOGIN)} = @Login ";
                     dynamicParameters.Add("@Login", getUsersByLoginAndPassword.Login);
                 }
+                if (getUsersByLoginAndPassword.Email is not null)
+                {
+                    WHERE += $"AND {nameof(USERS.EMAIL)} = @Email ";
+                    dynamicParameters.Add("@Email", getUsersByLoginAndPassword.Email);
+                }
                 if (getUsersByLoginAndPassword.Password is not null)
                 {
                     if (!BCrypt.Net.BCrypt.Verify(getUsersByLoginAndPassword.Password, user?.USER_PASSWORD))

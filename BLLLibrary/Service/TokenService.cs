@@ -63,12 +63,26 @@ namespace BLLLibrary.Service
                         }
                         if (tokenRequest.Password == null) throw new Exception("Password is null");
                         if (tokenRequest.Username == null) throw new Exception("Username is null");
-                        var userLogin = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(tokenRequest.Username) ?? throw new Exception("Username is null");
-                        var user = await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(new GetUsersByLoginAndPasswordRequest()
+                        USERS? user;
+                        USERS? userLogged;
+                        user = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(tokenRequest.Username);
+                        if (user != null)
                         {
-                            Login = tokenRequest.Username,
-                            Password = tokenRequest.Password
-                        }, userLogin);
+                            userLogged = await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(new GetUsersByLoginAndPasswordRequest()
+                            {
+                                Email = tokenRequest.Username,
+                                Password = tokenRequest.Password
+                            }, user);
+                        }
+                        else
+                        {
+                            user = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(tokenRequest.Username) ?? throw new Exception("Account is null");
+                            userLogged = await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(new GetUsersByLoginAndPasswordRequest()
+                            {
+                                Login = tokenRequest.Username,
+                                Password = tokenRequest.Password
+                            }, user);
+                        }
                         if (user == null)
                         {
                             throw new Exception($"Invalid user: {user?.ID_USER}");
