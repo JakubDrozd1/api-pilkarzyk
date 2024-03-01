@@ -32,7 +32,9 @@ namespace DataLibrary.Helper.Notification
             {
                 { "Meeting", "1" }
             };
-            foreach (var token in tokens)
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
             {
                 var obj = new Message
                 {
@@ -44,7 +46,11 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-                await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
             }
         }
 
@@ -55,7 +61,9 @@ namespace DataLibrary.Helper.Notification
             {
                 { "Group", "2" }
             };
-            foreach (var token in tokens)
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+            .   ToList())
             {
                 var obj = new Message
                 {
