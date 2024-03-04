@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
@@ -50,7 +51,34 @@ namespace BLLLibrary.Service
 
         public async Task UpdateAnswerMessageAsync(GetMessageRequest getMessageRequest)
         {
-            await _unitOfWork.UpdateMessagesRepository.UpdateAnswerMessageAsync(getMessageRequest);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _unitOfWork.UpdateMessagesRepository.UpdateAnswerMessageAsync(getMessageRequest);
+                var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(getMessageRequest.IDMEETING ?? throw new Exception("Meeting is null"));
+                var user = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(meeting?.IdAuthor ?? throw new Exception("User is null"));
+                await _unitOfWork.SaveChangesAsync();
+                await SendNotificationToUserAsync(meeting, user, getMessageRequest);
+
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
         }
+
+        private async Task SendNotificationToUserAsync(GetMeetingGroupsResponse meeting, USERS? user, GetMessageRequest getMessageRequest)
+        {
+            FirebaseNotification notificationHub = new();
+            var idUser = user?.ID_USER ?? throw new Exception("User is null");
+            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
+
+            if (tokens != null)
+            {
+                notificationHub.SendMessageNotificationAsync(meeting, getMessageRequest, tokens);
+            }
+        }
+
     }
 }
