@@ -1,4 +1,5 @@
-﻿using BLLLibrary.IService;
+﻿using System.Data.Common;
+using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
@@ -141,6 +142,32 @@ namespace BLLLibrary.Service
             {
                 string salt = await _unitOfWork.ReadUsersRepository.GetSaltByUserId(userId) ?? throw new Exception("Salt is null");
                 await _unitOfWork.UpdateUsersRepository.UpdateColumnUserAsync(getUpdateUserRequest, userId, salt);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task ChangePassword(GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                USERS? user = null;
+                if (getUsersByLoginAndPassword.Login != null)
+                {
+                    user = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(getUsersByLoginAndPassword.Login) ?? throw new Exception("Username is null");
+                }
+                var userLogged = await _unitOfWork.ReadUsersRepository.GetUserByLoginAndPasswordAsync(getUsersByLoginAndPassword, user) ?? throw new Exception("Username is null");
+                string salt = await _unitOfWork.ReadUsersRepository.GetSaltByUserId(userLogged.ID_USER) ?? throw new Exception("Salt is null");
+                await _unitOfWork.UpdateUsersRepository.UpdateColumnUserAsync(new GetUpdateUserRequest()
+                {
+                    USER_PASSWORD = getUsersByLoginAndPassword.PasswordNew,
+                    Column = ["USER_PASSWORD"]
+                }, userLogged.ID_USER, salt);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)

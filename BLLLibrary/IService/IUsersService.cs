@@ -16,5 +16,6 @@ namespace BLLLibrary.IService
         Task<USERS?> GetUserByEmailAsync(string email);
         Task UpdateColumnUserAsync(GetUpdateUserRequest getUpdateUserRequest, int userId);
         Task SaveChangesAsync();
+        Task ChangePassword(GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword);
     }
 }

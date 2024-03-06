@@ -76,51 +76,62 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-                await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
             }
         }
 
         public async void SendMessageNotificationAsync(GetMeetingGroupsResponse meeting, GetMessageRequest getMessageRequest, List<NOTIFICATION_TOKENS> tokens)
         {
-            var androidNotificationObj = new Dictionary<string, string>
+            if (getMessageRequest.IDUSER != meeting.IdAuthor)
+            {
+                var androidNotificationObj = new Dictionary<string, string>
             {
                 { "Message", "3" }
             };
-            string title;
-            foreach (var token in tokens.GroupBy(x => x.TOKEN)
-                .Select(g => g.First())
-                .ToList())
-            {
-                switch (getMessageRequest.ANSWER)
+                string title;
+                foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                    .Select(g => g.First())
+                    .ToList())
                 {
-                    case "yes":
-                        {
-                            title = "Ktoś właśnie zaakceptował twoje zaproszenie do spotkania!";
-                        }
-                        break;
-                    case "no":
-                        {
-                            title = "Ktoś właśnie odrzucił twoje zaproszenie do spotkania!";
-                        }
-                        break;
-                    default:
-                        {
-                            title = "Ktoś właśnie odpowiedział na twoje zaproszenie do grupy!";
-
-                        };
-                        break;
-                }
-                var obj = new Message
-                {
-                    Token = token.TOKEN,
-                    Notification = new FirebaseAdmin.Messaging.Notification
+                    switch (getMessageRequest.ANSWER)
                     {
-                        Title = title,
-                        Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
-                    },
-                    Data = androidNotificationObj
-                };
-                await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                        case "yes":
+                            {
+                                title = "Ktoś właśnie zaakceptował twoje zaproszenie do spotkania!";
+                            }
+                            break;
+                        case "no":
+                            {
+                                title = "Ktoś właśnie odrzucił twoje zaproszenie do spotkania!";
+                            }
+                            break;
+                        default:
+                            {
+                                title = "Ktoś właśnie odpowiedział na twoje zaproszenie do grupy!";
+
+                            };
+                            break;
+                    }
+                    var obj = new Message
+                    {
+                        Token = token.TOKEN,
+                        Notification = new FirebaseAdmin.Messaging.Notification
+                        {
+                            Title = title,
+                            Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
+                        },
+                        Data = androidNotificationObj
+                    };
+                    try
+                    {
+                        await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                    }
+                    catch { }
+                }
             }
         }
     }

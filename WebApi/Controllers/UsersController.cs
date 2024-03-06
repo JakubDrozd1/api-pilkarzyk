@@ -190,5 +190,20 @@ namespace WebApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [Authorize]
+        [HttpPut(Name = "changePassword")]
+        public async Task<ActionResult> ChangePassword([FromBody] GetUsersByLoginAndPasswordRequest getUsersByLoginAndPassword)
+        {
+            try
+            {
+                await _usersService.ChangePassword(getUsersByLoginAndPassword);
+                return Ok(getUsersByLoginAndPassword);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
