@@ -10,6 +10,7 @@ using DataLibrary.IRepository.Messages;
 using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
 using DataLibrary.IRepository.ResetPassword;
+using DataLibrary.IRepository.Teams;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
@@ -23,6 +24,7 @@ using DataLibrary.Repository.Messages;
 using DataLibrary.Repository.NotificationToken;
 using DataLibrary.Repository.Rankings;
 using DataLibrary.Repository.ResetPassword;
+using DataLibrary.Repository.Teams;
 using DataLibrary.Repository.Tokens;
 using DataLibrary.Repository.Users;
 using DataLibrary.Repository.UsersMeetings;
@@ -47,6 +49,8 @@ namespace DataLibrary.UoW
         public ICreateNotificationTokenRepository CreateNotificationTokenRepository => new CreateNotificationTokenRepository(dbConnection, dbTransaction);
         public ICreateChatMessagesRepository CreateChatMessagesRepository => new CreateChatMessagesRepository(dbConnection, dbTransaction);
         public ICreateResetPasswordRepository CreateResetPasswordRepository => new CreateResetPasswordRepository(dbConnection, dbTransaction);
+        public ICreateTeamsRepository CreateTeamsRepository => new CreateTeamsRopository(dbConnection, dbTransaction);
+
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);
         public IDeleteMeetingsRepository DeleteMeetingsRepository => new DeleteMeetingsRepository(dbConnection, dbTransaction);
@@ -71,6 +75,7 @@ namespace DataLibrary.UoW
         public IReadNotificationTokenRepository ReadNotificationTokenRepository => new ReadNotificationTokenRepository(dbConnection, dbTransaction);
         public IReadChatMessagesRepository ReadChatMessagesRepository => new ReadChatMessagesRepository(dbConnection, dbTransaction);
         public IReadResetPasswordRepository ReadResetPasswordRepository => new ReadResetPasswordRepository(dbConnection, dbTransaction);
+        public IReadTeamsRepository ReadTeamsRepository => new ReadTeamsRepository(dbConnection, dbTransaction);
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection, dbTransaction);
@@ -79,6 +84,7 @@ namespace DataLibrary.UoW
         public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection, dbTransaction);
         public IUpdateUsersRepository UpdateUsersRepository => new UpdateUsersRepository(dbConnection, dbTransaction);
         public IUpdateGroupsUsersRepository UpdateGroupUsersRepository => new UpdateGroupsUsersRepository(dbConnection, dbTransaction);
+
 
         public async Task SaveChangesAsync()
         {

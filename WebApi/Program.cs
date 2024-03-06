@@ -26,6 +26,7 @@ builder.Services.AddScoped<IGroupInviteService, GroupInviteService>();
 builder.Services.AddScoped<INotificationTokenService, NotificationTokenService>();
 builder.Services.AddScoped<IChatMessagesService, ChatMessagesService>();
 builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
+builder.Services.AddScoped<ITeamsService, TeamsService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>
