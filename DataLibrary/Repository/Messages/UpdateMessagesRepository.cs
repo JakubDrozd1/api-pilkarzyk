@@ -59,5 +59,29 @@ namespace DataLibrary.Repository.Messages
                 throw new Exception($"{ex.Message}");
             }
         }
+
+        public async Task UpdateTeamMessageAsync(GetTeamMessageRequest getTeamMessageRequest)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                DynamicParameters dynamicParameters = new();
+                var updateBuilder = new QueryBuilder<GetMessageRequest>()
+                    .UpdateColumns("MESSAGES", ["IDTEAM"])
+                    .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
+                string updateQuery = updateBuilder.Build();
+                dynamicParameters.Add("@UserId", getTeamMessageRequest.IDUSER);
+                dynamicParameters.Add("@MeetingId", getTeamMessageRequest.IDMEETING);
+                dynamicParameters.Add("@IDTEAM", getTeamMessageRequest.IDTEAM);
+                await _dbConnection.ExecuteAsync(updateQuery, dynamicParameters, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
     }
 }

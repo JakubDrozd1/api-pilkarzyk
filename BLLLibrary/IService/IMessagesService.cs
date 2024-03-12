@@ -13,6 +13,7 @@ namespace BLLLibrary.IService
         Task UpdateMessageAsync(GetMessageRequest getMessageRequest, int messageId);
         Task UpdateAnswerMessageAsync(GetMessageRequest getMessageRequest);
         Task DeleteMessageAsync(int messageId);
+        Task UpdateTeamMessageAsync(GetTeamTableMessageRequest getTeamTableMessageRequest);
         Task SaveChangesAsync();
     }
 }

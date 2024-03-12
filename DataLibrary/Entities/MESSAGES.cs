@@ -9,5 +9,6 @@
         public DateTime? DATE_ADD { get; set; }
         public DateTime? WAITING_TIME { get; set; }
         public DateTime? DATE_RESPONSE { get; set; }
+        public int? IDTEAM { get; set; }
     }
 }

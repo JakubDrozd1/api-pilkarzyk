@@ -134,6 +134,49 @@ namespace DataLibrary.Helper.Notification
                 }
             }
         }
+
+        public async void SendNotificationToUserTeamAsync(string? teamName, List<NOTIFICATION_TOKENS> tokens)
+        {
+
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "Team", "4" }
+            };
+            string title;
+            string body;
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
+            {
+                if (teamName != null)
+                {
+                    title = "Zostałeś dodany do drużyny!";
+                    body = "Organizator właśnie dodał cię do drużyny " + teamName;
+                }
+                else
+                {
+                    title = "Zostałeś usuniety z drużyny!";
+                    body = "Organizator właśnie usunął cie z druzyny i przeniósł do rezerwy";
+                }
+
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = title,
+                        Body = body
+                    },
+                    Data = androidNotificationObj
+                };
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
+
+            }
+        }
     }
 
 

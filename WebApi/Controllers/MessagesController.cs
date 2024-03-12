@@ -116,5 +116,21 @@ namespace WebApi.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
+        [HttpPut(Name = "UpdateTeamMessageAsync")]
+        public async Task<ActionResult> UpdateTeamMessageAsync(GetTeamTableMessageRequest getTeamTableMessageRequest)
+        {
+            try
+            {
+                await _messagesService.UpdateTeamMessageAsync(getTeamTableMessageRequest);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }

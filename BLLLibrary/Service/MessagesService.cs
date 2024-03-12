@@ -80,5 +80,97 @@ namespace BLLLibrary.Service
             }
         }
 
+        public async Task UpdateTeamMessageAsync(GetTeamTableMessageRequest getTeamTableMessageRequest)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                if (getTeamTableMessageRequest.Teams != null)
+                {
+                    foreach (var team in getTeamTableMessageRequest.Teams)
+                    {
+                        if (getTeamTableMessageRequest.UpdatedTeams != null)
+                        {
+                            var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
+                            foreach (var user in updated)
+                                if (user.IdTeam != team.ID_TEAM)
+                                {
+                                    await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                    {
+                                        IDMEETING = team.IDMEETING,
+                                        IDTEAM = team.ID_TEAM,
+                                        IDUSER = user.IdUser
+                                    });
+                                }
+                            var removeUser = getTeamTableMessageRequest.UpdatedTeams[0];
+                            if (removeUser.Count > 0)
+                            {
+                                foreach (var user in removeUser)
+                                {
+                                    if (user.IdTeam != null)
+                                    {
+                                        await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                        {
+                                            IDMEETING = team.IDMEETING,
+                                            IDTEAM = null,
+                                            IDUSER = user.IdUser
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    await _unitOfWork.SaveChangesAsync();
+
+
+                    foreach (var team in getTeamTableMessageRequest.Teams)
+                    {
+                        if (getTeamTableMessageRequest.UpdatedTeams != null)
+                        {
+                            var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
+                            foreach (var user in updated)
+                                if (user.IdTeam != team.ID_TEAM)
+                                {
+                                    if (user.IdUser != user.IdAuthor)
+                                    {
+                                        await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), team.NAME);
+                                    }
+                                }
+                        }
+                    }
+                    var removeTeam = getTeamTableMessageRequest.UpdatedTeams?[0];
+                    if (removeTeam?.Count > 0)
+                    {
+                        foreach (var user in removeTeam)
+                        {
+                            if (user.IdTeam != null)
+                            {
+                                if (user.IdUser != user.IdAuthor)
+                                {
+                                    await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), null);
+                                }
+                            }
+                        }
+                    }
+                }
+            
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        private async Task SendNotificationToUserTeamAsync(int idUser, string? teamName)
+        {
+            FirebaseNotification notificationHub = new();
+            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
+
+            if (tokens != null)
+            {
+                notificationHub.SendNotificationToUserTeamAsync(teamName, tokens);
+            }
+        }
     }
 }

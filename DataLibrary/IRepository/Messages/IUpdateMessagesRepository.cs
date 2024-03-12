@@ -7,5 +7,7 @@ namespace DataLibrary.IRepository.Messages
     {
         Task UpdateMessageAsync(MESSAGES message);
         Task UpdateAnswerMessageAsync(GetMessageRequest getMessageRequest);
+        Task UpdateTeamMessageAsync(GetTeamMessageRequest getTeamMessageRequest);
+
     }
 }

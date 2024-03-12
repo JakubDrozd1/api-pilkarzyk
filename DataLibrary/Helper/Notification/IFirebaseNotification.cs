@@ -12,5 +12,7 @@ namespace DataLibrary.Helper.Notification
 
         void SendMessageNotificationAsync(GetMeetingGroupsResponse meeting, GetMessageRequest getMessageRequest, List<NOTIFICATION_TOKENS> tokens);
 
+        void SendNotificationToUserTeamAsync(string? teamName, List<NOTIFICATION_TOKENS> tokens);
+
     }
 }

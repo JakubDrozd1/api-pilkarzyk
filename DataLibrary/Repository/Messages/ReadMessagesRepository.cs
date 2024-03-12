@@ -31,6 +31,7 @@ namespace DataLibrary.Repository.Messages
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.ANSWER)}, " +
+                $"msg.{nameof(MESSAGES.IDTEAM)}, " +
                 $"msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
         private static readonly string FROM
               = $"{nameof(MESSAGES)} msg " +
