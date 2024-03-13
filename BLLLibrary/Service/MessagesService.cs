@@ -102,19 +102,22 @@ namespace BLLLibrary.Service
                                         IDUSER = user.IdUser
                                     });
                                 }
-                            var removeUser = getTeamTableMessageRequest.UpdatedTeams[0];
-                            if (removeUser.Count > 0)
+                            if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(0, out List<GetMessagesUsersMeetingsResponse>? value))
                             {
-                                foreach (var user in removeUser)
+                                var removeUser = getTeamTableMessageRequest.UpdatedTeams[0];
+                                if (removeUser.Count > 0)
                                 {
-                                    if (user.IdTeam != null)
+                                    foreach (var user in removeUser)
                                     {
-                                        await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                        if (user.IdTeam != null)
                                         {
-                                            IDMEETING = team.IDMEETING,
-                                            IDTEAM = null,
-                                            IDUSER = user.IdUser
-                                        });
+                                            await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                            {
+                                                IDMEETING = team.IDMEETING,
+                                                IDTEAM = null,
+                                                IDUSER = user.IdUser
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -138,22 +141,26 @@ namespace BLLLibrary.Service
                                 }
                         }
                     }
-                    var removeTeam = getTeamTableMessageRequest.UpdatedTeams?[0];
-                    if (removeTeam?.Count > 0)
-                    {
-                        foreach (var user in removeTeam)
+                    if (getTeamTableMessageRequest.UpdatedTeams != null)
+                        if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(0, out List<GetMessagesUsersMeetingsResponse>? value))
                         {
-                            if (user.IdTeam != null)
+                            var removeTeam = getTeamTableMessageRequest.UpdatedTeams?[0];
+                            if (removeTeam?.Count > 0)
                             {
-                                if (user.IdUser != user.IdAuthor)
+                                foreach (var user in removeTeam)
                                 {
-                                    await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), null);
+                                    if (user.IdTeam != null)
+                                    {
+                                        if (user.IdUser != user.IdAuthor)
+                                        {
+                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), null);
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
                 }
-            
+
             }
             catch (Exception ex)
             {
