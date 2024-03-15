@@ -3,7 +3,7 @@ using System.Data;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.GroupInvite;
 using FirebirdSql.Data.FirebirdClient;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.TableRequest;
 
 namespace DataLibrary.Repository.GroupInvite
 {

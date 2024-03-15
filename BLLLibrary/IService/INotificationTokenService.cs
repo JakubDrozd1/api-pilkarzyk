@@ -1,5 +1,5 @@
 ﻿using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.TableRequest;
 
 namespace BLLLibrary.IService
 {

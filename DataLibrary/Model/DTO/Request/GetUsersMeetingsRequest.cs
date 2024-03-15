@@ -1,4 +1,6 @@
-﻿namespace DataLibrary.Model.DTO.Request
+﻿using DataLibrary.Model.DTO.Request.TableRequest;
+
+namespace DataLibrary.Model.DTO.Request
 {
     public class GetUsersMeetingsRequest
     {

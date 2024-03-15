@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DataLibrary.Model.DTO.Request
+namespace DataLibrary.Model.DTO.Request.TableRequest
 {
     public class GetMessageRequest
     {
@@ -17,6 +17,6 @@ namespace DataLibrary.Model.DTO.Request
         public DateTime? WAITING_TIME { get; set; }
 
         [JsonPropertyName("DateResponse")]
-        public DateTime? DATE_RESPONSE {  get; set; }
+        public DateTime? DATE_RESPONSE { get; set; }
     }
 }

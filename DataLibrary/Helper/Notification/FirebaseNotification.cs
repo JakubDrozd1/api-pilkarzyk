@@ -1,5 +1,5 @@
 ﻿using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
@@ -9,6 +9,8 @@ namespace DataLibrary.Helper.Notification
 {
     public class FirebaseNotification : IFirebaseNotification
     {
+        static FirebaseApp? app;
+
         public FirebaseNotification()
         {
             ReadFireBaseAdminSdk();
@@ -16,17 +18,20 @@ namespace DataLibrary.Helper.Notification
 
         private static void ReadFireBaseAdminSdk()
         {
-
             if (FirebaseMessaging.DefaultInstance == null)
             {
-                FirebaseApp.Create(new AppOptions()
+                app = FirebaseApp.Create(new AppOptions()
                 {
                     Credential = GoogleCredential.FromFile("Resources/admin_sdk.json")
                 });
             }
+            else
+            {
+                app = FirebaseApp.DefaultInstance;
+            }
         }
 
-        public async void SendMeetingNotification(GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendMeetingNotification(GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>
@@ -55,7 +60,7 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
-        public async void SendGroupNotification(GROUPS group, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendGroupNotification(GROUPS group, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>
@@ -84,7 +89,7 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
-        public async void SendMessageNotificationAsync(GetMeetingGroupsResponse meeting, GetMessageRequest getMessageRequest, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendMessageNotificationAsync(GetMeetingGroupsResponse meeting, GetMessageRequest getMessageRequest, List<NOTIFICATION_TOKENS> tokens)
         {
             if (getMessageRequest.IDUSER != meeting.IdAuthor)
             {
@@ -111,7 +116,7 @@ namespace DataLibrary.Helper.Notification
                             break;
                         default:
                             {
-                                title = "Ktoś właśnie odpowiedział na twoje zaproszenie do grupy!";
+                                title = "Ktoś właśnie odpowiedział na twoje zaproszenie do spotkania!";
 
                             };
                             break;
@@ -128,14 +133,16 @@ namespace DataLibrary.Helper.Notification
                     };
                     try
                     {
-                        await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                        FirebaseMessaging messaging = FirebaseMessaging.GetMessaging(app);
+                        await messaging.SendAsync(obj);
+                        //await FirebaseMessaging.DefaultInstance.SendAsync(obj);
                     }
                     catch { }
                 }
             }
         }
 
-        public async void SendNotificationToUserTeamAsync(string? teamName, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendNotificationToUserTeamAsync(string? teamName, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>

@@ -3,6 +3,7 @@ using DataLibrary.Entities;
 using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
@@ -113,7 +114,7 @@ namespace BLLLibrary.Service
 
                     if (tokens != null)
                     {
-                        notificationHub.SendMeetingNotification(meeting, tokens);
+                        await notificationHub.SendMeetingNotification(meeting, tokens);
                     }
                 }
             }

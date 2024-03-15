@@ -1,4 +1,4 @@
-﻿using DataLibrary.Model.DTO.Request;
+﻿using DataLibrary.Model.DTO.Request.TableRequest;
 
 namespace DataLibrary.IRepository.Tokens
 {

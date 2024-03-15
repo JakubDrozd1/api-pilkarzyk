@@ -2,6 +2,7 @@
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

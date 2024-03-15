@@ -5,6 +5,7 @@ using System.Text;
 using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 using Microsoft.Extensions.Configuration;

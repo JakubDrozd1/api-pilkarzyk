@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace DataLibrary.Model.DTO.Request
+namespace DataLibrary.Model.DTO.Request.TableRequest
 {
     public class GetGroupInviteRequest
     {
@@ -9,9 +8,12 @@ namespace DataLibrary.Model.DTO.Request
         public required int IDGROUP { get; set; }
 
         [JsonPropertyName("IdUser")]
-        public required int IDUSER { get; set; }
+        public int? IDUSER { get; set; }
 
         [JsonPropertyName("IdAuthor")]
         public required int IDAUTHOR { get; set; }
+
+        [JsonPropertyName("Email")]
+        public required string EMAIL { get; set; }
     }
 }

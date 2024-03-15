@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,20 @@ namespace WebApi.Controllers
             try
             {
                 var group = await _groupInviteService.GetGroupInviteByIdUserAsync(getGroupInvitePaginationRequest);
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [AllowAnonymous]
+        [HttpGet("{groupInviteId}", Name = "GetGroupInviteById")]
+        public async Task<ActionResult<GROUP_INVITE>> GetGroupInviteById(int groupInviteId)
+        {
+            try
+            {
+                var group = await _groupInviteService.GetGroupInviteByIdAsync(groupInviteId);
                 return Ok(group);
             }
             catch (Exception ex)

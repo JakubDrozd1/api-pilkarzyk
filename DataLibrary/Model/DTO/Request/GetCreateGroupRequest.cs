@@ -1,4 +1,5 @@
 ﻿using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request.TableRequest;
 
 namespace DataLibrary.Model.DTO.Request
 {

@@ -2,6 +2,7 @@
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,9 @@ namespace WebApi.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UsersController(IUsersService usersService, IEmailSenderService emailSenderService) : ControllerBase
+    public class UsersController(IUsersService usersService) : ControllerBase
     {
         private readonly IUsersService _usersService = usersService;
-        private readonly IEmailSenderService _emailSenderService = emailSenderService;
 
         [Authorize]
         [HttpGet(Name = "GetAllUsers")]
@@ -159,31 +159,6 @@ namespace WebApi.Controllers
             {
                 var users = await _usersService.GetAllUsersWithoutGroupAsync(getUsersWithoutGroupPaginationRequest);
                 return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [Authorize]
-        [HttpPost("sendInvitationEmail", Name = "SendInvitationEmail")]
-        public async Task<ActionResult> SendInvitationEmail([FromBody] GetEmailSenderRequest getEmailSenderRequest)
-        {
-            try
-            {
-                var user = await _usersService.GetUserByEmailAsync(getEmailSenderRequest.To);
-                if (user != null) return StatusCode(500, "Account exist with this email");
-                bool result = await _emailSenderService.SendInviteMessageAsync(getEmailSenderRequest, new CancellationToken());
-
-                if (result)
-                {
-                    return Ok(getEmailSenderRequest);
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occured. The Mail could not be sent.");
-                }
             }
             catch (Exception ex)
             {

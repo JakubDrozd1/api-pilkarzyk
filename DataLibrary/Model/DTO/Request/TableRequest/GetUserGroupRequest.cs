@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DataLibrary.Model.DTO.Request
+namespace DataLibrary.Model.DTO.Request.TableRequest
 {
     public class GetUserGroupRequest
     {

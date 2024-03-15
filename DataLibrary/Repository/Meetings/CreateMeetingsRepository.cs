@@ -2,7 +2,7 @@
 using Dapper;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Meetings;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Meetings

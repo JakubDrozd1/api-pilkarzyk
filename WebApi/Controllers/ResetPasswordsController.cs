@@ -1,5 +1,5 @@
 ﻿using BLLLibrary.IService;
-using DataLibrary.Entities;
+using DataLibrary.Helper.Email;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +9,8 @@ namespace WebApi.Controllers
     [Route("api/reset-password")]
     [AllowAnonymous]
     [ApiController]
-    public class ResetPasswordsController(IResetPasswordService resetPasswordService, IEmailSenderService emailSenderService) : ControllerBase
+    public class ResetPasswordsController(IResetPasswordService resetPasswordService) : ControllerBase
     {
-        private readonly IEmailSenderService _emailSenderService = emailSenderService;
         private readonly IResetPasswordService _resetPasswordService = resetPasswordService;
 
         [HttpPost(Name = "SendRecoveryPasswordEmail")]
@@ -19,16 +18,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = await _resetPasswordService.AddResetPasswordAsync(email);
-                bool result = await _emailSenderService.SendRecoveryPasswordMessageAsync(email, user?.ID_RESET_PASSWORD ?? throw new Exception(), new CancellationToken());
-                if (result)
-                {
-                    return Ok(email);
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occured. The Mail could not be sent.");
-                }
+                await _resetPasswordService.AddResetPasswordAsync(email);
+                return Ok(email);
             }
             catch (Exception ex)
             {

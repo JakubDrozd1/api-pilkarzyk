@@ -2,8 +2,8 @@
 using DataLibrary.Helper;
 using System.Data;
 using DataLibrary.IRepository.ResetPassword;
-using DataLibrary.Model.DTO.Request;
 using FirebirdSql.Data.FirebirdClient;
+using DataLibrary.Model.DTO.Request.TableRequest;
 
 namespace DataLibrary.Repository.ResetPassword
 {

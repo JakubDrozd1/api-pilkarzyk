@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 
-namespace DataLibrary.Model.DTO.Request
+namespace DataLibrary.Model.DTO.Request.TableRequest
 {
     public class GetUpdateUserRequest
     {
@@ -24,13 +24,13 @@ namespace DataLibrary.Model.DTO.Request
 
         [JsonPropertyName("PhoneNumber")]
         public int? PHONE_NUMBER { get; set; }
-        
+
         [JsonPropertyName("GroupCounter")]
         public int? GROUP_COUNTER { get; set; }
 
         [JsonPropertyName("Avatar")]
         [JsonConverter(typeof(JsonToByteArrayConverter))]
         public byte[]? AVATAR { get; set; }
-        public required string[] Column {  get; set; }
+        public required string[] Column { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace DataLibrary.Model.DTO.Request
+﻿namespace DataLibrary.Model.DTO.Request.TableRequest
 {
     public class GetUserMeetingRequest
     {

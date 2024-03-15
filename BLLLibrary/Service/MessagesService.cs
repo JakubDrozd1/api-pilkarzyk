@@ -3,6 +3,7 @@ using DataLibrary.Entities;
 using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
@@ -76,7 +77,7 @@ namespace BLLLibrary.Service
 
             if (tokens != null)
             {
-                notificationHub.SendMessageNotificationAsync(meeting, getMessageRequest, tokens);
+                await notificationHub.SendMessageNotificationAsync(meeting, getMessageRequest, tokens);
             }
         }
 
@@ -176,7 +177,7 @@ namespace BLLLibrary.Service
 
             if (tokens != null)
             {
-                notificationHub.SendNotificationToUserTeamAsync(teamName, tokens);
+                await notificationHub.SendNotificationToUserTeamAsync(teamName, tokens);
             }
         }
     }

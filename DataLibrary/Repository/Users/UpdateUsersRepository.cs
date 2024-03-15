@@ -3,7 +3,7 @@ using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Users;
-using DataLibrary.Model.DTO.Request;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.Users

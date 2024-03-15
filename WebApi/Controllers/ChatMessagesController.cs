@@ -1,9 +1,9 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Model.DTO.Request.Pagination;
-using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DataLibrary.Model.DTO.Request.TableRequest;
 
 namespace WebApi.Controllers
 {
