@@ -4,6 +4,7 @@ using DataLibrary.Model.DTO.Response;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
+using Newtonsoft.Json.Linq;
 
 namespace DataLibrary.Helper.Notification
 {
@@ -184,6 +185,57 @@ namespace DataLibrary.Helper.Notification
 
             }
         }
+
+        public async Task SendUpdateMeetingNotification(GetMeetingGroupsResponse updated, GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens)
+        {
+
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "MeetingUpdate", "5" }
+            };
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
+            {
+                string body = "";
+                if (updated.DateMeeting != meeting.DateMeeting)
+                {
+                    body += meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " => " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
+                }
+                if (updated.Place != meeting.Place)
+                {
+                    body += meeting.Place + " => " + updated.Place + "\n";
+
+                }
+                if (updated.Quantity != meeting.Quantity)
+                {
+                    body += meeting.Quantity + " => " + updated.Quantity + "\n";
+
+                }
+                if (updated.Description != meeting.Description)
+                {
+                    body += meeting.Description + " => " + updated.Description + "\n";
+
+                }
+
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = "Organizator zaaktualizował spotkanie w grupie " + meeting.Name,
+                        Body = body
+                    },
+                    Data = androidNotificationObj
+                };
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
+            }
+        }
+
     }
 
 

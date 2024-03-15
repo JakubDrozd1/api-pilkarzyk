@@ -39,6 +39,7 @@ namespace BLLLibrary.Service
                         IdUser = userEmail.ID_USER
                     });
                     if (invites.Count > 0) throw new Exception("Invitation alredy send");
+                    getGroupInviteRequest.IDUSER = userEmail.ID_USER;
                     await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
                     await _unitOfWork.SaveChangesAsync();
                     await SendNotificationToUserAsync(group, userEmail.ID_USER);

@@ -141,14 +141,44 @@ namespace BLLLibrary.Service
             try
             {
                 var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId) ?? throw new Exception("Meeting is null");
+                var users = await _unitOfWork.ReadGroupsUsersRepository.GetListGroupsUserAsync(new GetUsersGroupsPaginationRequest()
+                {
+                    IdGroup = meeting.IdGroup,
+                    IsAvatar = false,
+                    Page = 0,
+                    OnPage = -1
+                });
                 await _unitOfWork.UpdateMeetingsRepository.UpdateColumnMeetingAsync(getUpdateMeetingRequest, meetingId);
                 await _unitOfWork.UpdateMessagesRepository.UpdateAnswerMessageAsync(getUpdateMeetingRequest.Message);
+                var updated = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId) ?? throw new Exception("Meeting is null");
                 await _unitOfWork.SaveChangesAsync();
+                if (updated.DateMeeting != meeting.DateMeeting || updated.Place != meeting.Place || updated.Quantity != meeting.Quantity || updated.Description != meeting.Description)
+                {
+                    await SendUpdateNotificationToUserAsync(updated, meeting, users);
+                }
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollBackTransactionAsync();
                 throw new Exception($"{ex.Message}");
+            }
+        }
+
+        private async Task SendUpdateNotificationToUserAsync(GetMeetingGroupsResponse updated, GetMeetingGroupsResponse meeting, List<GetGroupsUsersResponse> users)
+        {
+            FirebaseNotification notificationHub = new();
+
+            foreach (var user in users)
+            {
+                if (user.IdUser != meeting.IdAuthor)
+                {
+                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
+
+                    if (tokens != null)
+                    {
+                        await notificationHub.SendUpdateMeetingNotification(updated, meeting, tokens);
+                    }
+                }
             }
         }
 

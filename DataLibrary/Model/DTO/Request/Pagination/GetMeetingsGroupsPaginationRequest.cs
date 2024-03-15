@@ -17,6 +17,7 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public DateTime? DateTo { get; set; }
         public int? IdGroup { get; set; }
         public int? IdUser { get; set; }
+        public int? IdAuthor { get; set; }
         public string? Answer { get; set; }
         public bool WithMessages {  get; set; }
     }

@@ -16,6 +16,7 @@ namespace DataLibrary.Repository.Meetings
         private readonly FbTransaction? _fbTransaction = fbTransaction;
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
+                $"g.{nameof(GROUPS.ID_GROUP)} AS IdGroup, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
                 $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
                 $"m.{nameof(MEETINGS.PLACE)}, " +
@@ -36,7 +37,11 @@ namespace DataLibrary.Repository.Meetings
             {
                 DynamicParameters dynamicParameters = new();
                 string WHERE = "1=1 ";
-
+                if (getMeetingsRequest.IdAuthor is not null)
+                {
+                    WHERE += $"AND m.{nameof(MEETINGS.IDAUTHOR)} = @AuthorId ";
+                    dynamicParameters.Add("@AuthorId", getMeetingsRequest.IdAuthor);
+                }
                 if (getMeetingsRequest.IdGroup is not null)
                 {
                     WHERE += $"AND m.{nameof(MEETINGS.IDGROUP)} = @GroupId ";
