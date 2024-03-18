@@ -39,6 +39,7 @@ namespace DataLibrary.UoW
         IDeleteGroupsUsersRepository DeleteGroupsUsersRepository { get; }
         IDeleteGroupInviteRepository DeleteGroupInviteRepository { get; }
         IDeleteNotificationTokenRepository DeleteNotificationTokenRepository { get; }
+        IDeleteTeamsRepository DeleteTeamsRepository { get; }
 
         IReadGroupsRepository ReadGroupsRepository { get; }
         IReadMeetingsRepository ReadMeetingsRepository { get; }
@@ -61,6 +62,7 @@ namespace DataLibrary.UoW
         IUpdateRankingsRepository UpdateRankingsRepository { get; }
         IUpdateUsersRepository UpdateUsersRepository { get; }
         IUpdateGroupsUsersRepository UpdateGroupUsersRepository { get; }
+        IUpdateTeamsRepository UpdateTeamsRepository { get; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();

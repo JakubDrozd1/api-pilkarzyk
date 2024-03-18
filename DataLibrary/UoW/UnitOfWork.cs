@@ -60,6 +60,7 @@ namespace DataLibrary.UoW
         public IDeleteGroupsUsersRepository DeleteGroupsUsersRepository => new DeleteGroupsUsersRepository(dbConnection, dbTransaction);
         public IDeleteGroupInviteRepository DeleteGroupInviteRepository => new DeleteGroupInviteRepository(dbConnection, dbTransaction);
         public IDeleteNotificationTokenRepository DeleteNotificationTokenRepository => new DeleteNotificationTokenRepository(dbConnection, dbTransaction);
+        public IDeleteTeamsRepository DeleteTeamsRepository => new DeleteTeamsRepository(dbConnection, dbTransaction);
 
 
         public IReadGroupsRepository ReadGroupsRepository => new ReadGroupsRepository(dbConnection, dbTransaction);
@@ -84,6 +85,7 @@ namespace DataLibrary.UoW
         public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection, dbTransaction);
         public IUpdateUsersRepository UpdateUsersRepository => new UpdateUsersRepository(dbConnection, dbTransaction);
         public IUpdateGroupsUsersRepository UpdateGroupUsersRepository => new UpdateGroupsUsersRepository(dbConnection, dbTransaction);
+        public IUpdateTeamsRepository UpdateTeamsRepository => new UpdateTeamsRepository(dbConnection, dbTransaction);
 
 
         public async Task SaveChangesAsync()

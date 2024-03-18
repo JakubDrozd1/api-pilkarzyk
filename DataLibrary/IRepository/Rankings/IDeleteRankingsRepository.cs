@@ -1,5 +1,4 @@
-﻿using FirebirdSql.Data.FirebirdClient;
-
+﻿
 namespace DataLibrary.IRepository.Rankings
 {
     public interface IDeleteRankingsRepository

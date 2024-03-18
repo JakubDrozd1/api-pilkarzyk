@@ -92,18 +92,21 @@ namespace BLLLibrary.Service
                     {
                         if (getTeamTableMessageRequest.UpdatedTeams != null)
                         {
-                            var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
-                            foreach (var user in updated)
-                                if (user.IdTeam != team.ID_TEAM)
-                                {
-                                    await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                            if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(team.ID_TEAM??0, out List<GetMessagesUsersMeetingsResponse>? addTeams))
+                            {
+                                var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
+                                foreach (var user in updated)
+                                    if (user.IdTeam != team.ID_TEAM)
                                     {
-                                        IDMEETING = team.IDMEETING,
-                                        IDTEAM = team.ID_TEAM,
-                                        IDUSER = user.IdUser
-                                    });
-                                }
-                            if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(0, out List<GetMessagesUsersMeetingsResponse>? value))
+                                        await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                        {
+                                            IDMEETING = team.IDMEETING,
+                                            IDTEAM = team.ID_TEAM,
+                                            IDUSER = user.IdUser
+                                        });
+                                    }
+                            }
+                            if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(0, out List<GetMessagesUsersMeetingsResponse>? removeTeams))
                             {
                                 var removeUser = getTeamTableMessageRequest.UpdatedTeams[0];
                                 if (removeUser.Count > 0)
@@ -131,19 +134,22 @@ namespace BLLLibrary.Service
                     {
                         if (getTeamTableMessageRequest.UpdatedTeams != null)
                         {
-                            var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
-                            foreach (var user in updated)
-                                if (user.IdTeam != team.ID_TEAM)
-                                {
-                                    if (user.IdUser != user.IdAuthor)
+                            if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(team.ID_TEAM ?? 0, out List<GetMessagesUsersMeetingsResponse>? addTeams))
+                            {
+                                var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
+                                foreach (var user in updated)
+                                    if (user.IdTeam != team.ID_TEAM)
                                     {
-                                        await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), team.NAME);
+                                        if (user.IdUser != user.IdAuthor)
+                                        {
+                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), team.NAME);
+                                        }
                                     }
-                                }
+                            }
                         }
                     }
                     if (getTeamTableMessageRequest.UpdatedTeams != null)
-                        if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(0, out List<GetMessagesUsersMeetingsResponse>? value))
+                        if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(0, out List<GetMessagesUsersMeetingsResponse>? removeTeams))
                         {
                             var removeTeam = getTeamTableMessageRequest.UpdatedTeams?[0];
                             if (removeTeam?.Count > 0)

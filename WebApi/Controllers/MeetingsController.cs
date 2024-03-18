@@ -1,6 +1,4 @@
 ﻿using BLLLibrary.IService;
-using BLLLibrary.Service;
-using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
