@@ -9,5 +9,6 @@
         public string? DESCRIPTION { get; set; }
         public int? IDGROUP { get; set; }
         public int? IDAUTHOR { get; set; }
+        public bool? IS_INDEPENDENT { get; set; }
     }
 }

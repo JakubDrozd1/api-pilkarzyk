@@ -92,7 +92,7 @@ namespace BLLLibrary.Service
                     {
                         if (getTeamTableMessageRequest.UpdatedTeams != null)
                         {
-                            if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(team.ID_TEAM??0, out List<GetMessagesUsersMeetingsResponse>? addTeams))
+                            if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(team.ID_TEAM ?? 0, out List<GetMessagesUsersMeetingsResponse>? addTeams))
                             {
                                 var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
                                 foreach (var user in updated)
@@ -127,6 +127,7 @@ namespace BLLLibrary.Service
                             }
                         }
                     }
+                    var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(getTeamTableMessageRequest.Teams[0].IDMEETING ?? throw new Exception("Meeting is null"));
                     await _unitOfWork.SaveChangesAsync();
 
 
@@ -142,7 +143,11 @@ namespace BLLLibrary.Service
                                     {
                                         if (user.IdUser != user.IdAuthor)
                                         {
-                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), team.NAME);
+                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team.NAME);
+                                        }
+                                        if (meeting?.IdAuthor != user.IdAuthor)
+                                        {
+                                            await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team.NAME);
                                         }
                                     }
                             }
@@ -160,7 +165,11 @@ namespace BLLLibrary.Service
                                     {
                                         if (user.IdUser != user.IdAuthor)
                                         {
-                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), null);
+                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), null);
+                                        }
+                                        if (meeting?.IdAuthor != user.IdAuthor)
+                                        {
+                                            await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), null);
                                         }
                                     }
                                 }
@@ -176,14 +185,25 @@ namespace BLLLibrary.Service
             }
         }
 
-        private async Task SendNotificationToUserTeamAsync(int idUser, string? teamName)
+        private async Task SendNotificationToUserTeamAsync(int idUser, int idMeeting, string? teamName)
         {
             FirebaseNotification notificationHub = new();
             var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
 
             if (tokens != null)
             {
-                await notificationHub.SendNotificationToUserTeamAsync(teamName, tokens);
+                await notificationHub.SendNotificationToUserTeamAsync(teamName, idMeeting, tokens);
+            }
+        }
+
+        private async Task SendNotificationToAuthorTeamAsync(int idUser, int idMeeting, string? teamName)
+        {
+            FirebaseNotification notificationHub = new();
+            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
+
+            if (tokens != null)
+            {
+                await notificationHub.SendNotificationToAuthorTeamAsync(teamName, idMeeting, tokens);
             }
         }
     }

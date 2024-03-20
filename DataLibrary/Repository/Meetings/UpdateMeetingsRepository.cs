@@ -76,6 +76,12 @@ namespace DataLibrary.Repository.Meetings
                                 dynamicParameters.Add($"@{column}", description);
                             }
                             break;
+                        case "IS_INDEPENDENT":
+                            {
+                                bool? isIndependent = getUpdateMeetingRequest.IS_INDEPENDENT;
+                                dynamicParameters.Add($"@{column}", isIndependent);
+                            }
+                            break;
                     }
 
                 }

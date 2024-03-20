@@ -10,6 +10,7 @@
         public int? IdMeeting { get; set; }
         public int? IdAuthor { get; set; }
         public int? IdGroup { get; set; }
+        public bool? IsIndependent { get; set; }
 
     }
 }

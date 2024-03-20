@@ -4,7 +4,6 @@ using DataLibrary.Model.DTO.Response;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
-using Newtonsoft.Json.Linq;
 
 namespace DataLibrary.Helper.Notification
 {
@@ -37,7 +36,7 @@ namespace DataLibrary.Helper.Notification
 
             var androidNotificationObj = new Dictionary<string, string>
             {
-                { "Meeting", "1" }
+                { "NotificationId", "1" }
             };
             foreach (var token in tokens.GroupBy(x => x.TOKEN)
                 .Select(g => g.First())
@@ -66,7 +65,7 @@ namespace DataLibrary.Helper.Notification
 
             var androidNotificationObj = new Dictionary<string, string>
             {
-                { "Group", "2" }
+                { "NotificationId", "2" }
             };
             foreach (var token in tokens.GroupBy(x => x.TOKEN)
                 .Select(g => g.First())
@@ -96,7 +95,7 @@ namespace DataLibrary.Helper.Notification
             {
                 var androidNotificationObj = new Dictionary<string, string>
             {
-                { "Message", "3" }
+                { "MeetingNotificationId", Convert.ToString(meeting.IdMeeting?? throw new Exception("Meeting is null")) }
             };
                 string title;
                 foreach (var token in tokens.GroupBy(x => x.TOKEN)
@@ -143,12 +142,12 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
-        public async Task SendNotificationToUserTeamAsync(string? teamName, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendNotificationToUserTeamAsync(string? teamName, int? idMeeting, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>
             {
-                { "Team", "4" }
+                { "TeamNotificationId", Convert.ToString(idMeeting?? throw new Exception("Meeting is null")) }
             };
             string title;
             string body;
@@ -191,7 +190,7 @@ namespace DataLibrary.Helper.Notification
 
             var androidNotificationObj = new Dictionary<string, string>
             {
-                { "MeetingUpdate", "5" }
+                { "MeetingNotificationId", Convert.ToString(meeting.IdMeeting ?? throw new Exception("Meeting is null")) }
             };
             foreach (var token in tokens.GroupBy(x => x.TOKEN)
                 .Select(g => g.First())
@@ -233,6 +232,50 @@ namespace DataLibrary.Helper.Notification
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
                 }
                 catch { }
+            }
+        }
+
+
+        public async Task SendNotificationToAuthorTeamAsync(string? teamName, int? idMeeting, List<NOTIFICATION_TOKENS> tokens)
+        {
+
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "TeamNotificationId", Convert.ToString(idMeeting ?? throw new Exception("Meeting is null")) }
+            };
+            string title;
+            string body;
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
+            {
+                if (teamName != null)
+                {
+                    title = "Ktoś właśnie dołączył do drużyny!";
+                    body = "Użytkownik właśnie dołączył do drużyny " + teamName;
+                }
+                else
+                {
+                    title = "Ktoś właśnie opuścił drużynę!";
+                    body = "Użytkownik opuścił drużynę i przeszedł do rezerwy";
+                }
+
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = title,
+                        Body = body,
+                    },
+                    Data = androidNotificationObj
+                };
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
+
             }
         }
 

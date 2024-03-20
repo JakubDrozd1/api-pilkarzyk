@@ -21,5 +21,8 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
 
         [JsonPropertyName("IdAuthor")]
         public int? IDAUTHOR { get; set; }
+
+        [JsonPropertyName("IsIndependent")]
+        public bool? IS_INDEPENDENT {  get; set; }
     }
 }
