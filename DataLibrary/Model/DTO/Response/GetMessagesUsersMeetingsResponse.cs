@@ -22,6 +22,7 @@
         public int? IdAuthor { get; set; }
         public int? IdGroup { get; set; }
         public int? IdTeam { get; set; }
+        public int? IdGuest { get; set; }
         public bool? IsIndependent { get; set; }
     }
 }

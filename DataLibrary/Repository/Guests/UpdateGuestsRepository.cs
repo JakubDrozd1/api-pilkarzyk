@@ -2,17 +2,16 @@
 using System.Data;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
-using DataLibrary.IRepository.Teams;
+using DataLibrary.IRepository.Guests;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.Teams
+namespace DataLibrary.Repository.Guests
 {
-    internal class ReadTeamsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IReadTeamsRepository
+    public class UpdateGuestsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IUpdateGuestsRepository
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-
-        public async Task<List<TEAMS?>> GetTeamByMeetingIdAsync(int meetingId)
+        public async Task UpdateGuestsAsync(GUESTS guest)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -20,11 +19,11 @@ namespace DataLibrary.Repository.Teams
             }
             try
             {
-                var query = new QueryBuilder<TEAMS>()
-                    .Select("* ")
-                    .From($"{nameof(TEAMS)} ")
-                    .Where("IDMEETING = @MeetingId ");
-                return (await _dbConnection.QueryAsync<TEAMS?>(query.Build(), new { MeetingId = meetingId }, _fbTransaction)).AsList();
+                var updateBuilder = new QueryBuilder<GUESTS>()
+                    .Update("GUESTS ", guest)
+                    .Where("ID_GUEST = @ID_GUEST ");
+                string updateQuery = updateBuilder.Build();
+                await _dbConnection.ExecuteAsync(updateQuery, guest, _fbTransaction);
             }
             catch (Exception ex)
             {

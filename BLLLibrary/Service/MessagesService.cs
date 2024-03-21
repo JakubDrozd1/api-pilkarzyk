@@ -96,14 +96,28 @@ namespace BLLLibrary.Service
                             {
                                 var updated = getTeamTableMessageRequest.UpdatedTeams[team.ID_TEAM ?? 0];
                                 foreach (var user in updated)
+
                                     if (user.IdTeam != team.ID_TEAM)
                                     {
-                                        await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                        if (user.IdUser != null)
                                         {
-                                            IDMEETING = team.IDMEETING,
-                                            IDTEAM = team.ID_TEAM,
-                                            IDUSER = user.IdUser
-                                        });
+                                            await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                            {
+                                                IDMEETING = team.IDMEETING,
+                                                IDTEAM = team.ID_TEAM,
+                                                IDUSER = user.IdUser
+                                            });
+                                        }
+                                        else
+                                        {
+                                            await _unitOfWork.UpdateGuestsRepository.UpdateGuestsAsync(new GUESTS()
+                                            {
+                                                IDMEETING = team.IDMEETING ?? throw new Exception("Meeting is null"),
+                                                IDTEAM = team.ID_TEAM,
+                                                ID_GUEST = user.IdGuest ?? throw new Exception("Guest is null"),
+                                                NAME = user.Firstname
+                                            });
+                                        }
                                     }
                             }
                             if (getTeamTableMessageRequest.UpdatedTeams.TryGetValue(0, out List<GetMessagesUsersMeetingsResponse>? removeTeams))
@@ -115,12 +129,25 @@ namespace BLLLibrary.Service
                                     {
                                         if (user.IdTeam != null)
                                         {
-                                            await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                            if (user.IdUser != null)
                                             {
-                                                IDMEETING = team.IDMEETING,
-                                                IDTEAM = null,
-                                                IDUSER = user.IdUser
-                                            });
+                                                await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                                                {
+                                                    IDMEETING = team.IDMEETING,
+                                                    IDTEAM = null,
+                                                    IDUSER = user.IdUser
+                                                });
+                                            }
+                                            else
+                                            {
+                                                await _unitOfWork.UpdateGuestsRepository.UpdateGuestsAsync(new GUESTS()
+                                                {
+                                                    IDMEETING = team.IDMEETING ?? throw new Exception("Meeting is null"),
+                                                    IDTEAM = null,
+                                                    ID_GUEST = user.IdGuest ?? throw new Exception("Guest is null"),
+                                                    NAME = user.Firstname
+                                                });
+                                            }
                                         }
                                     }
                                 }
@@ -141,13 +168,16 @@ namespace BLLLibrary.Service
                                 foreach (var user in updated)
                                     if (user.IdTeam != team.ID_TEAM)
                                     {
-                                        if (user.IdUser != user.IdAuthor)
+                                        if (user.IdUser != null)
                                         {
-                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team.NAME);
-                                        }
-                                        if (meeting?.IdAuthor != user.IdAuthor)
-                                        {
-                                            await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team.NAME);
+                                            if (user.IdUser != user.IdAuthor)
+                                            {
+                                                await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team.NAME);
+                                            }
+                                            if (meeting?.IdAuthor != user.IdAuthor)
+                                            {
+                                                await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team.NAME);
+                                            }
                                         }
                                     }
                             }
@@ -163,13 +193,16 @@ namespace BLLLibrary.Service
                                 {
                                     if (user.IdTeam != null)
                                     {
-                                        if (user.IdUser != user.IdAuthor)
+                                        if (user.IdUser != null)
                                         {
-                                            await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), null);
-                                        }
-                                        if (meeting?.IdAuthor != user.IdAuthor)
-                                        {
-                                            await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), null);
+                                            if (user.IdUser != user.IdAuthor)
+                                            {
+                                                await SendNotificationToUserTeamAsync(user.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), null);
+                                            }
+                                            if (meeting?.IdAuthor != user.IdAuthor)
+                                            {
+                                                await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), null);
+                                            }
                                         }
                                     }
                                 }

@@ -3,6 +3,7 @@ using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.IRepository.GroupsUsers;
+using DataLibrary.IRepository.Guests;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
 using DataLibrary.IRepository.NotificationToken;
@@ -30,6 +31,7 @@ namespace DataLibrary.UoW
         ICreateChatMessagesRepository CreateChatMessagesRepository { get; }
         ICreateResetPasswordRepository CreateResetPasswordRepository { get; }
         ICreateTeamsRepository CreateTeamsRepository { get; }
+        ICreateGuestsRepository CreateGuestsRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
@@ -40,6 +42,7 @@ namespace DataLibrary.UoW
         IDeleteGroupInviteRepository DeleteGroupInviteRepository { get; }
         IDeleteNotificationTokenRepository DeleteNotificationTokenRepository { get; }
         IDeleteTeamsRepository DeleteTeamsRepository { get; }
+        IDeleteGuestsRepository DeleteGuestsRepository { get; }
 
         IReadGroupsRepository ReadGroupsRepository { get; }
         IReadMeetingsRepository ReadMeetingsRepository { get; }
@@ -55,6 +58,7 @@ namespace DataLibrary.UoW
         IReadChatMessagesRepository ReadChatMessagesRepository { get; }
         IReadResetPasswordRepository ReadResetPasswordRepository { get; }
         IReadTeamsRepository ReadTeamsRepository { get; }
+        IReadGuestsRepository ReadGuestsRepository { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }
@@ -63,6 +67,7 @@ namespace DataLibrary.UoW
         IUpdateUsersRepository UpdateUsersRepository { get; }
         IUpdateGroupsUsersRepository UpdateGroupUsersRepository { get; }
         IUpdateTeamsRepository UpdateTeamsRepository { get; }
+        IUpdateGuestsRepository UpdateGuestsRepository { get; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();

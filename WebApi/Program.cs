@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Net.Http.Headers;
 using DataLibrary.Helper.ConnectionProvider;
-using DataLibrary.Helper.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +26,7 @@ builder.Services.AddScoped<INotificationTokenService, NotificationTokenService>(
 builder.Services.AddScoped<IChatMessagesService, ChatMessagesService>();
 builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
 builder.Services.AddScoped<ITeamsService, TeamsService>();
+builder.Services.AddScoped<IGuestsService, GuestsService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>
