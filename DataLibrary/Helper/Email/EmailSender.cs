@@ -5,19 +5,22 @@ using MailKit.Security;
 using MimeKit;
 using System.Security.Cryptography;
 using DataLibrary.Model.DTO.Request.EmailRequest;
+using Microsoft.Extensions.Configuration;
 
 namespace DataLibrary.Helper.Email
 {
     public class EmailSender : IEmailSender
     {
+        private readonly IConfiguration _configuration;
         private readonly MimeMessage? mail = null;
         private readonly SmtpClient? smtp = null;
         private readonly CancellationToken ct;
         private readonly string host;
         private readonly string emailPassword;
         readonly EMAIL_SENDER _emailSender;
-        public EmailSender(EMAIL_SENDER emailSender, CancellationToken ct = default)
+        public EmailSender(EMAIL_SENDER emailSender, IConfiguration configuration, CancellationToken ct = default)
         {
+            _configuration = configuration;
             _emailSender = emailSender;
             mail = new MimeMessage();
             mail.From.Add(new MailboxAddress(_emailSender.DISPLAY_NAME, _emailSender.EMAIL));
@@ -37,8 +40,7 @@ namespace DataLibrary.Helper.Email
                     mail.To.Add(MailboxAddress.Parse(getEmailInvitationGroupRequest.To));
                     var body = new BodyBuilder();
                     string encodedGroupId = Convert.ToBase64String(BitConverter.GetBytes(getEmailInvitationGroupRequest.IdGroupInvite));
-                    //string link = "http://192.168.88.20:4200/register/" + encodedGroupId;
-                    string link = "https://jaball.manowski.pl/register/" + encodedGroupId;
+                    string link = _configuration["Angular"] + "/register/" + encodedGroupId;
                     string invateSubject = $"Zaproszenie do grupy {getEmailInvitationGroupRequest.GroupName}";
                     string bodySubject = $"<h1>Hej!</h1>" +
                                         $"<p>{getEmailInvitationGroupRequest.Name} {getEmailInvitationGroupRequest.Surname} wysłał ci zaproszenie do grupy {getEmailInvitationGroupRequest.GroupName}</p>" +
@@ -66,8 +68,7 @@ namespace DataLibrary.Helper.Email
                     mail.To.Add(MailboxAddress.Parse(getEmailResetPassword.To));
                     var body = new BodyBuilder();
                     string encodedResetPasswordId = Convert.ToBase64String(BitConverter.GetBytes(getEmailResetPassword.IdResetPassword));
-                    //string link = "http://192.168.88.20:4200/recovery/" + encodedResetPasswordId;
-                    string link = "https://jaball.manowski.pl/recovery/" + encodedResetPasswordId;
+                    string link = _configuration["Angular"] + "/recovery/" + encodedResetPasswordId;
                     string invateSubject = $"Przypomnienie hasła";
                     string bodySubject = $"<h1>Hej!</h1>" +
                                         $"<p>Kliknij poniższy link, aby zmienić hasło do swojego konta.</p>" +

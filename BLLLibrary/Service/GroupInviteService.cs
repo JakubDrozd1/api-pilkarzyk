@@ -63,7 +63,7 @@ namespace BLLLibrary.Service
 
                     string? email = _configuration["MailSettings:From"] ?? throw new Exception("Sender not found");
                     EMAIL_SENDER? emailSender = await _unitOfWork.ReadEmailSender.GetEmailDetailsAsync(email) ?? throw new Exception("Sender not found");
-                    EmailSender sendmail = new(emailSender, new CancellationToken());
+                    EmailSender sendmail = new(emailSender, configuration, new CancellationToken());
                     var result = await sendmail.SendInviteMessageAsync(new GetEmailInvitationGroupRequest()
                     {
                         GroupName = group.NAME,

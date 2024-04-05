@@ -76,8 +76,7 @@ builder.Services.AddSwaggerGen(
 
         options.AddServer(new OpenApiServer()
         {
-            // Url = "http://localhost:27884"
-            Url = "http://192.168.88.20:45455"
+            Url = builder.Configuration["OpenApiServer"]
         });
     }
     );
@@ -108,10 +107,10 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     });
 }
-app.UseCors(builder =>
+app.UseCors(builders =>
 {
-    builder
-        .WithOrigins("http://192.168.88.20:4200", "http://localhost:27884", "http://192.168.88.224:4200", "https://jaball.manowski.pl")
+    builders
+        .WithOrigins(builder.Configuration["Angular"] ?? string.Empty, builder.Configuration["Swagger"] ?? string.Empty)
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();

@@ -29,7 +29,7 @@ namespace BLLLibrary.Service
                 await _unitOfWork.SaveChangesAsync();
                 string? emailSend = _configuration["MailSettings:From"] ?? throw new Exception("Sender not found");
                 EMAIL_SENDER? emailSender = await _unitOfWork.ReadEmailSender.GetEmailDetailsAsync(emailSend) ?? throw new Exception("Sender not found");
-                EmailSender sendmail = new(emailSender, new CancellationToken());
+                EmailSender sendmail = new(emailSender, configuration, new CancellationToken());
                 await sendmail.SendRecoveryPasswordMessageAsync(new GetEmailResetPasswordRequest()
                 {
                     To = email,
