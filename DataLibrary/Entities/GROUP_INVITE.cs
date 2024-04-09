@@ -8,5 +8,6 @@
         public string? EMAIL { get; set; }
         public required int IDAUTHOR { get; set; }
         public DateTime? DATE_ADD { get; set; }
+        public int? PHONE_NUMBER { get; set; }
     }
 }

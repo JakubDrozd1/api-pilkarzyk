@@ -14,6 +14,9 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         public required int IDAUTHOR { get; set; }
 
         [JsonPropertyName("Email")]
-        public required string EMAIL { get; set; }
+        public string? EMAIL { get; set; }
+
+        [JsonPropertyName("PhoneNumber")]
+        public int? PHONE_NUMBER { get; set; }
     }
 }

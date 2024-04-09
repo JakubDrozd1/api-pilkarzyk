@@ -8,6 +8,7 @@ using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BLLLibrary.Service
 {
@@ -21,12 +22,71 @@ namespace BLLLibrary.Service
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL);
-                if (userEmail != null)
+                var group = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(getGroupInviteRequest.IDGROUP) ?? throw new Exception("Group is null");
+                var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(getGroupInviteRequest.IDAUTHOR) ?? throw new Exception("Author is null");
+
+                if (getGroupInviteRequest.EMAIL != null && !getGroupInviteRequest.EMAIL.IsNullOrEmpty())
                 {
-                    var group = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(getGroupInviteRequest.IDGROUP) ?? throw new Exception("Group is null");
-                    var user = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(userEmail.ID_USER);
-                    if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.IDGROUP, userEmail.ID_USER) != null)
+                    var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL);
+                    if (userEmail != null)
+                    {
+                        var user = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(userEmail.ID_USER);
+                        if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.IDGROUP, userEmail.ID_USER) != null)
+                        {
+                            throw new Exception("User is already in this group");
+                        }
+                        var invites = await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdUserAsync(
+                        new GetGroupInvitePaginationRequest()
+                        {
+                            OnPage = -1,
+                            Page = 0,
+                            IdGroup = getGroupInviteRequest.IDGROUP,
+                            IdUser = userEmail.ID_USER
+                        });
+                        if (invites.Count > 0) throw new Exception("Invitation alredy send");
+                        getGroupInviteRequest.IDUSER = userEmail.ID_USER;
+                        getGroupInviteRequest.PHONE_NUMBER = userEmail.PHONE_NUMBER;
+                        await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
+                        await _unitOfWork.SaveChangesAsync();
+                        await SendNotificationToUserAsync(group, userEmail.ID_USER);
+                    }
+                    else
+                    {
+                        var invites = await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdUserAsync(
+                            new GetGroupInvitePaginationRequest()
+                            {
+                                OnPage = -1,
+                                Page = 0,
+                                IdGroup = getGroupInviteRequest.IDGROUP,
+                                Email = getGroupInviteRequest.EMAIL
+                            });
+                        if (invites.Count > 0) throw new Exception("Invitation alredy send");
+                        await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
+                        var invite = await _unitOfWork.ReadGroupInviteRepository.GetLastAddedInvite(getGroupInviteRequest) ?? throw new Exception("Invite not found");
+                        await _unitOfWork.SaveChangesAsync();
+
+                        string? email = _configuration["MailSettings:From"] ?? throw new Exception("Sender not found");
+                        EMAIL_SENDER? emailSender = await _unitOfWork.ReadEmailSender.GetEmailDetailsAsync(email) ?? throw new Exception("Sender not found");
+                        EmailSender sendmail = new(emailSender, _configuration, new CancellationToken());
+                        var result = await sendmail.SendInviteMessageAsync(new GetEmailInvitationGroupRequest()
+                        {
+                            GroupName = group.NAME,
+                            To = getGroupInviteRequest.EMAIL,
+                            Name = author.FIRSTNAME,
+                            Surname = author.SURNAME,
+                            IdGroupInvite = invite.ID_GROUP_INVITE ?? throw new Exception("Sender not found"),
+                        });
+                        if (!result)
+                        {
+                            throw new Exception("Mails not send");
+                        }
+                    }
+                }
+                else if (getGroupInviteRequest.PHONE_NUMBER != null)
+                {
+                    var user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAsync(getGroupInviteRequest.PHONE_NUMBER ?? throw new Exception("Phone number is null")) ?? throw new Exception("User with this phone number dont exist");
+
+                    if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.IDGROUP, user.ID_USER) != null)
                     {
                         throw new Exception("User is already in this group");
                     }
@@ -36,46 +96,15 @@ namespace BLLLibrary.Service
                         OnPage = -1,
                         Page = 0,
                         IdGroup = getGroupInviteRequest.IDGROUP,
-                        IdUser = userEmail.ID_USER
+                        IdUser = user.ID_USER
                     });
                     if (invites.Count > 0) throw new Exception("Invitation alredy send");
-                    getGroupInviteRequest.IDUSER = userEmail.ID_USER;
+                    getGroupInviteRequest.IDUSER = user.ID_USER;
+                    getGroupInviteRequest.EMAIL = user.EMAIL;
                     await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
                     await _unitOfWork.SaveChangesAsync();
-                    await SendNotificationToUserAsync(group, userEmail.ID_USER);
-                }
-                else
-                {
-                    var group = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(getGroupInviteRequest.IDGROUP) ?? throw new Exception("Group is null");
-                    var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(getGroupInviteRequest.IDAUTHOR) ?? throw new Exception("Author is null");
-                    var invites = await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdUserAsync(
-                        new GetGroupInvitePaginationRequest()
-                        {
-                            OnPage = -1,
-                            Page = 0,
-                            IdGroup = getGroupInviteRequest.IDGROUP,
-                            Email = getGroupInviteRequest.EMAIL
-                        });
-                    if (invites.Count > 0) throw new Exception("Invitation alredy send");
-                    await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
-                    var invite = await _unitOfWork.ReadGroupInviteRepository.GetLastAddedInvite(getGroupInviteRequest) ?? throw new Exception("Invite not found");
-                    await _unitOfWork.SaveChangesAsync();
+                    await SendNotificationToUserAsync(group, user.ID_USER);
 
-                    string? email = _configuration["MailSettings:From"] ?? throw new Exception("Sender not found");
-                    EMAIL_SENDER? emailSender = await _unitOfWork.ReadEmailSender.GetEmailDetailsAsync(email) ?? throw new Exception("Sender not found");
-                    EmailSender sendmail = new(emailSender, configuration, new CancellationToken());
-                    var result = await sendmail.SendInviteMessageAsync(new GetEmailInvitationGroupRequest()
-                    {
-                        GroupName = group.NAME,
-                        To = getGroupInviteRequest.EMAIL,
-                        Name = author.FIRSTNAME,
-                        Surname = author.SURNAME,
-                        IdGroupInvite = invite.ID_GROUP_INVITE ?? throw new Exception("Sender not found"),
-                    });
-                    if (!result)
-                    {
-                        throw new Exception("Mails not send");
-                    }
                 }
             }
             catch (Exception ex)

@@ -13,6 +13,8 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public int OnPage { get; set; }
         public string? SortColumn { get; set; }
         public string? SortMode { get; set; }
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
         public int? IdUser { get; set; }
         public int? IdGroup { get; set;}
         public string? Email { get; set; }

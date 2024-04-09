@@ -25,6 +25,7 @@ namespace DataLibrary.Repository.GroupInvite
                 $"u1.{nameof(USERS.FIRSTNAME)} AS FirstnameAuthor, " +
                 $"u1.{nameof(USERS.SURNAME)} AS SurnameAuthor, " +
                 $"u2.{nameof(USERS.FIRSTNAME)}, " +
+                $"u2.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
                 $"u2.{nameof(USERS.SURNAME)} ";
         private static readonly string FROM
               = $"{nameof(GROUP_INVITE)} gi " +
@@ -57,6 +58,16 @@ namespace DataLibrary.Repository.GroupInvite
                 {
                     WHERE += $"AND gi.{nameof(GROUP_INVITE.EMAIL)} = @Email ";
                     dynamicParameters.Add("@Email", getGroupInvitePaginationRequest.Email);
+                }
+                if (getGroupInvitePaginationRequest.DateFrom is not null)
+                {
+                    WHERE += $"AND m.{nameof(GROUP_INVITE.DATE_ADD)} >= @DateFrom ";
+                    dynamicParameters.Add("@DateFrom", getGroupInvitePaginationRequest.DateFrom);
+                }
+                if (getGroupInvitePaginationRequest.DateTo is not null)
+                {
+                    WHERE += $"AND m.{nameof(GROUP_INVITE.DATE_ADD)} <= @DateTo ";
+                    dynamicParameters.Add("@DateTo", getGroupInvitePaginationRequest.DateTo);
                 }
                 var query = new QueryBuilder<GetGroupInviteResponse>()
                     .Select(SELECT)
