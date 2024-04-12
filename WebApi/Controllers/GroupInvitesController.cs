@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
@@ -66,10 +67,25 @@ namespace WebApi.Controllers
                 await _groupInviteService.SaveChangesAsync();
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, "Internal Server Error");
+                return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPost("multiple", Name = "AddMultipleGroupInvite")]
+        public async Task<ActionResult> AddMultipleGroupInvite([FromBody] GetMultipleGroupInviteRequest getMultipleGroupInviteRequest)
+        {
+            try
+            {
+                await _groupInviteService.AddMultipleGroupInviteAsync(getMultipleGroupInviteRequest);
+                return Ok(getMultipleGroupInviteRequest);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }

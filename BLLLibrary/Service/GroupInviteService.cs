@@ -2,6 +2,7 @@
 using DataLibrary.Entities;
 using DataLibrary.Helper.Email;
 using DataLibrary.Helper.Notification;
+using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.EmailRequest;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
@@ -145,6 +146,23 @@ namespace BLLLibrary.Service
         public async Task<GROUP_INVITE?> GetGroupInviteByIdAsync(int groupInviteId)
         {
             return await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdAsync(groupInviteId);
+        }
+
+        public async Task AddMultipleGroupInviteAsync(GetMultipleGroupInviteRequest getMultipleGroupInviteRequest)
+        {
+            if (getMultipleGroupInviteRequest.PhoneNumbers != null)
+            {
+                foreach (var number in getMultipleGroupInviteRequest.PhoneNumbers)
+                {
+                    var getGroupInviteRequest = new GetGroupInviteRequest()
+                    {
+                        IDAUTHOR = getMultipleGroupInviteRequest.IdAuthor,
+                        IDGROUP = getMultipleGroupInviteRequest.IdGroup,
+                        PHONE_NUMBER = number
+                    };
+                    await AddGroupInviteAsync(getGroupInviteRequest);
+                }
+            }
         }
     }
 }
