@@ -75,7 +75,8 @@ namespace BLLLibrary.Service
             GROUPS group = new()
             {
                 ID_GROUP = groupId,
-                NAME = groupRequest.NAME
+                NAME = groupRequest.NAME,
+                IS_MODERATED = groupRequest.IS_MODERATED
             };
             await _unitOfWork.UpdateGroupsRepository.UpdateGroupAsync(group);
         }
