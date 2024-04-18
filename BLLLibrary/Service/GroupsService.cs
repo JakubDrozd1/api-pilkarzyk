@@ -1,4 +1,5 @@
-﻿using BLLLibrary.IService;
+﻿using System.Xml.Linq;
+using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
@@ -72,13 +73,32 @@ namespace BLLLibrary.Service
 
         public async Task UpdateGroupAsync(GetGroupRequest groupRequest, int groupId)
         {
-            GROUPS group = new()
+            await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                ID_GROUP = groupId,
-                NAME = groupRequest.NAME,
-                IS_MODERATED = groupRequest.IS_MODERATED
-            };
-            await _unitOfWork.UpdateGroupsRepository.UpdateGroupAsync(group);
+                var groupTemp = await _unitOfWork.ReadGroupsRepository.GetGroupByNameAsync(groupRequest.NAME);
+                if (groupTemp != null)
+                {
+                    var groupTest = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(groupId);
+                    if (groupRequest.NAME != groupTest?.NAME)
+                    {
+                        throw new Exception("Group with this name already exists");
+                    }
+                }
+                GROUPS group = new()
+                {
+                    ID_GROUP = groupId,
+                    NAME = groupRequest.NAME,
+                    IS_MODERATED = groupRequest.IS_MODERATED
+                };
+                await _unitOfWork.UpdateGroupsRepository.UpdateGroupAsync(group);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
         }
 
         public async Task DeleteGroupAsync(int groupId)
