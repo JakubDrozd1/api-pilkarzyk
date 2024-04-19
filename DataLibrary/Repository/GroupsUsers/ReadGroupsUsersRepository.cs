@@ -17,6 +17,7 @@ namespace DataLibrary.Repository.GroupsUsers
               = $"g.{nameof(GROUPS.NAME)}, " +
                 $"g.{nameof(GROUPS.ID_GROUP)} AS IdGroup, " +
                 $"g.{nameof(GROUPS.IS_MODERATED)} AS IsModerated, " +
+                $"g.{nameof(GROUPS.DESCRIPTION)}, " +
                 $"gu.{nameof(GROUPS_USERS.ACCOUNT_TYPE)} AS AccountType, " +
                 $"u.{nameof(USERS.LOGIN)}, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +

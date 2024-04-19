@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using BLLLibrary.IService;
+﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
@@ -89,7 +88,8 @@ namespace BLLLibrary.Service
                 {
                     ID_GROUP = groupId,
                     NAME = groupRequest.NAME,
-                    IS_MODERATED = groupRequest.IS_MODERATED
+                    IS_MODERATED = groupRequest.IS_MODERATED,
+                    DESCRIPTION = groupRequest.DESCRIPTION,
                 };
                 await _unitOfWork.UpdateGroupsRepository.UpdateGroupAsync(group);
                 await _unitOfWork.SaveChangesAsync();

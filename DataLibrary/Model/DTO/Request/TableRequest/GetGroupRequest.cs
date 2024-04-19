@@ -9,5 +9,9 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
 
         [JsonPropertyName("IsModerated")]
         public bool IS_MODERATED { get; set; }
+
+        [JsonPropertyName("Description")]
+        public string? DESCRIPTION { get; set; }
+
     }
 }

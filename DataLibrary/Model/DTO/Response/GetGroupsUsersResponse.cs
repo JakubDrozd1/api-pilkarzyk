@@ -15,5 +15,6 @@
         public string? Avatar { get; set; }
         public int? GroupCounter { get; set; }
         public bool IsModerated { get; set; }
+        public string? Description { get; set; }
     }
 }
