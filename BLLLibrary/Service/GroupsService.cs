@@ -79,7 +79,7 @@ namespace BLLLibrary.Service
                 if (groupTemp != null)
                 {
                     var groupTest = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(groupId);
-                    if (groupRequest.NAME != groupTest?.NAME)
+                    if (groupRequest.NAME != groupTest?.NAME.Trim())
                     {
                         throw new Exception("Group with this name already exists");
                     }
