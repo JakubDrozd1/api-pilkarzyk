@@ -14,7 +14,7 @@ namespace DataLibrary.Repository.Meetings
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-        private static readonly string SELECT
+        private string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
                 $"g.{nameof(GROUPS.ID_GROUP)} AS IdGroup, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
@@ -70,6 +70,7 @@ namespace DataLibrary.Repository.Meetings
                 }
                 if (getMeetingsRequest.WithMessages)
                 {
+                    SELECT += $", msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
                     FROM += $"JOIN {nameof(MESSAGES)} msg ON m.{nameof(MEETINGS.ID_MEETING)} = msg.{nameof(MESSAGES.IDMEETING)} ";
                 }
                 var query = new QueryBuilder<GetMeetingGroupsResponse>()

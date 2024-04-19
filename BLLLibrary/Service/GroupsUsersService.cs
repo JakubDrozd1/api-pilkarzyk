@@ -65,7 +65,36 @@ namespace BLLLibrary.Service
 
         public async Task DeleteUsersFromGroupAsync(int[] usersId, int groupId)
         {
-            await _unitOfWork.DeleteGroupsUsersRepository.DeleteUsersFromGroupAsync(usersId, groupId);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _unitOfWork.DeleteGroupsUsersRepository.DeleteUsersFromGroupAsync(usersId, groupId);
+                foreach (int userId in usersId)
+                {
+                    var meetings = await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsAsync(new GetMeetingsGroupsPaginationRequest()
+                    {
+                        IdUser = userId,
+                        IdGroup = groupId,
+                        DateFrom = DateTime.Now,
+                        WithMessages = true,
+                        OnPage = -1,
+                        Page = 0
+                    });
+                    if (meetings.Count > 0)
+                    {
+                        foreach (var meeting in meetings)
+                        {
+                            await _unitOfWork.DeleteMessagesRepository.DeleteMessageAsync(meeting.IdMessage ?? 0);
+                        }
+                    }
+                }
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
         }
 
         public async Task<List<GetGroupsUsersResponse>> GetListGroupsUserAsync(GetUsersGroupsPaginationRequest getUsersGroupsPaginationRequest)
