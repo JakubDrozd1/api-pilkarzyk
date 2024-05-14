@@ -15,5 +15,7 @@ namespace DataLibrary.Helper.Notification
         Task SendNotificationToUserTeamAsync(string? teamName, int? idMeeting, List<NOTIFICATION_TOKENS> tokens);
         Task SendUpdateMeetingNotification(GetMeetingGroupsResponse updated, GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens);
         Task SendNotificationToAuthorTeamAsync(string? teamName, int? idMeeting, List<NOTIFICATION_TOKENS> tokens);
+        Task SendGroupAddUserNotification(GROUPS group, List<NOTIFICATION_TOKENS> tokens, USERS author);
+
     }
 }

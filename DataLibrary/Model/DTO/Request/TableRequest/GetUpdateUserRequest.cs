@@ -28,6 +28,9 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("GroupCounter")]
         public int? GROUP_COUNTER { get; set; }
 
+        [JsonPropertyName("SendInvite")]
+        public bool? SEND_INVITE { get; set; }
+
         [JsonPropertyName("Avatar")]
         [JsonConverter(typeof(JsonToByteArrayConverter))]
         public byte[]? AVATAR { get; set; }

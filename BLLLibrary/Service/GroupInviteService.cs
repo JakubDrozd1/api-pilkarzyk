@@ -31,11 +31,13 @@ namespace BLLLibrary.Service
                     var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL);
                     if (userEmail != null)
                     {
+
                         var user = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(userEmail.ID_USER);
                         if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.IDGROUP, userEmail.ID_USER) != null)
                         {
                             throw new Exception("User is already in this group");
                         }
+
                         var invites = await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdUserAsync(
                         new GetGroupInvitePaginationRequest()
                         {
@@ -45,11 +47,21 @@ namespace BLLLibrary.Service
                             IdUser = userEmail.ID_USER
                         });
                         if (invites.Count > 0) throw new Exception("Invitation alredy send");
-                        getGroupInviteRequest.IDUSER = userEmail.ID_USER;
-                        getGroupInviteRequest.PHONE_NUMBER = userEmail.PHONE_NUMBER;
-                        await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
-                        await _unitOfWork.SaveChangesAsync();
-                        await SendNotificationToUserAsync(group, userEmail.ID_USER);
+                        if (user?.SEND_INVITE ?? false)
+                        {
+                            getGroupInviteRequest.IDUSER = userEmail.ID_USER;
+                            getGroupInviteRequest.PHONE_NUMBER = userEmail.PHONE_NUMBER;
+                            await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
+                            await _unitOfWork.SaveChangesAsync();
+                            await SendNotificationToUserAsync(group, userEmail.ID_USER);
+                        }
+                        else
+                        {
+                            await AddUserToGroup(userEmail.ID_USER, getGroupInviteRequest.IDGROUP);
+                            await _unitOfWork.SaveChangesAsync();
+                            await SendNotificationAddUserToGroupAsync(group, userEmail.ID_USER, author);
+
+                        }
                     }
                     else
                     {
@@ -100,12 +112,20 @@ namespace BLLLibrary.Service
                         IdUser = user.ID_USER
                     });
                     if (invites.Count > 0) throw new Exception("Invitation alredy send");
-                    getGroupInviteRequest.IDUSER = user.ID_USER;
-                    getGroupInviteRequest.EMAIL = user.EMAIL;
-                    await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
-                    await _unitOfWork.SaveChangesAsync();
-                    await SendNotificationToUserAsync(group, user.ID_USER);
-
+                    if (user?.SEND_INVITE ?? false)
+                    {
+                        getGroupInviteRequest.IDUSER = user.ID_USER;
+                        getGroupInviteRequest.EMAIL = user.EMAIL;
+                        await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
+                        await _unitOfWork.SaveChangesAsync();
+                        await SendNotificationToUserAsync(group, user.ID_USER);
+                    }
+                    else
+                    {
+                        await AddUserToGroup(user?.ID_USER ?? throw new Exception("User is null"), getGroupInviteRequest.IDGROUP);
+                        await _unitOfWork.SaveChangesAsync();
+                        await SendNotificationAddUserToGroupAsync(group, user.ID_USER, author);
+                    }
                 }
             }
             catch (Exception ex)
@@ -125,6 +145,47 @@ namespace BLLLibrary.Service
             if (tokens != null)
             {
                 await notificationHub.SendGroupNotification(group, tokens);
+            }
+        }
+
+        private async Task SendNotificationAddUserToGroupAsync(GROUPS group, int idUser, USERS author)
+        {
+            FirebaseNotification notificationHub = new();
+
+            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
+
+            if (tokens != null)
+            {
+                await notificationHub.SendGroupAddUserNotification(group, tokens, author);
+            }
+        }
+        private async Task AddUserToGroup(int idUser, int idGroup)
+        {
+            await _unitOfWork.CreateGroupsUsersRepository.AddUserToGroupAsync(new GetUserGroupRequest()
+            {
+                IDGROUP = idGroup,
+                IDUSER = idUser,
+                ACCOUNT_TYPE = 0
+            });
+            var meetings = await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsAsync(new GetMeetingsGroupsPaginationRequest()
+            {
+                OnPage = -1,
+                Page = 0,
+                DateFrom = DateTime.Now,
+                IdGroup = idGroup,
+                WithMessages = false,
+            });
+            if (meetings != null)
+            {
+                foreach (var meeting in meetings)
+                {
+                    await _unitOfWork.CreateUsersMeetingRepository.AddUserToMeetingAsync(meeting, idUser);
+                    await _unitOfWork.CreateMessagesRepository.AddMessageAsync(new GetMessageRequest()
+                    {
+                        IDUSER = idUser,
+                        IDMEETING = meeting.IdMeeting
+                    });
+                }
             }
         }
 

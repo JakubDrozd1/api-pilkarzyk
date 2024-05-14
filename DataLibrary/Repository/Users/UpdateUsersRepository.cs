@@ -102,6 +102,12 @@ namespace DataLibrary.Repository.Users
                                 dynamicParameters.Add($"@{column}", groupCounter);
                             }
                             break;
+                        case "SEND_INVITE":
+                            {
+                                bool sendInvite = getUpdateUserRequest.SEND_INVITE ?? throw new Exception("Send Invite is null");
+                                dynamicParameters.Add($"@{column}", sendInvite);
+                            }
+                            break;
                     }
 
                 }

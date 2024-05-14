@@ -135,7 +135,6 @@ namespace DataLibrary.Helper.Notification
                     {
                         FirebaseMessaging messaging = FirebaseMessaging.GetMessaging(app);
                         await messaging.SendAsync(obj);
-                        //await FirebaseMessaging.DefaultInstance.SendAsync(obj);
                     }
                     catch { }
                 }
@@ -276,6 +275,35 @@ namespace DataLibrary.Helper.Notification
                 }
                 catch { }
 
+            }
+        }
+
+        public async Task SendGroupAddUserNotification(GROUPS group, List<NOTIFICATION_TOKENS> tokens, USERS author)
+        {
+
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "GroupId", Convert.ToString(group.ID_GROUP?? throw new Exception("Group is null")) }
+            };
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
+            {
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = "Właśnie zostałeś dodany do grupy!",
+                        Body = author.FIRSTNAME + " " + author.SURNAME + " dodał cię do grupy " + group.NAME,
+                    },
+                    Data = androidNotificationObj
+                };
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
             }
         }
 
