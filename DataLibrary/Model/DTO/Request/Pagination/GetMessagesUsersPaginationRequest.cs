@@ -19,6 +19,7 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public int? IdMeeting { get; set; }
         public DateTime? WaitingTime { get; set; }
         public bool IsAvatar { get; set; }
+        public string? Answer { get; set; }
 
     }
 }

@@ -185,7 +185,47 @@ namespace BLLLibrary.Service
 
         public async Task DeleteMeetingAsync(int meetingId)
         {
-            await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var messages = await _unitOfWork.ReadMessagesRepository.GetAllMessagesAsync(new GetMessagesUsersPaginationRequest()
+                {
+                    OnPage = -1,
+                    Page = 0,
+                    DateFrom = DateTime.Now,
+                    IdMeeting = meetingId,
+                    Answer = "yes",
+                });
+
+                var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
+                await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
+                await _unitOfWork.SaveChangesAsync();
+                await SendCancelMeetingNotificationToUserAsync(messages, meeting ?? throw new Exception("Meetings is null"));
+
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        private async Task SendCancelMeetingNotificationToUserAsync(List<GetMessagesUsersMeetingsResponse> messages, GetMeetingGroupsResponse meeting)
+        {
+            FirebaseNotification notificationHub = new();
+
+            foreach (var user in messages)
+            {
+                if (user.IdUser != meeting.IdAuthor)
+                {
+                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
+
+                    if (tokens != null)
+                    {
+                        await notificationHub.SendCancelMeetingNotificationToUser(messages, meeting, tokens);
+                    }
+                }
+            }
         }
 
         public async Task SaveChangesAsync()

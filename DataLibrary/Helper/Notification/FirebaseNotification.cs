@@ -307,6 +307,33 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
+        public async Task SendCancelMeetingNotificationToUser(List<GetMessagesUsersMeetingsResponse> messages, GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens)
+        {
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "GroupId", Convert.ToString(meeting.IdGroup?? throw new Exception("Group is null")) }
+            };
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
+            {
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = "Organizator właśnie anulował spotkanie",
+                        Body = "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",
+                    },
+                    Data = androidNotificationObj
+                };
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
+            }
+        }
     }
 
 

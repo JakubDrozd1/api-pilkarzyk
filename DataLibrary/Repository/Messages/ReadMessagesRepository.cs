@@ -75,6 +75,11 @@ namespace DataLibrary.Repository.Messages
                     WHERE += $"AND m.{nameof(MESSAGES.WAITING_TIME)} <= @WaitingTime ";
                     dynamicParameters.Add("@WaitingTime", getMessagesUsersPaginationRequest.WaitingTime);
                 }
+                if (getMessagesUsersPaginationRequest.WaitingTime is not null)
+                {
+                    WHERE += $"AND m.{nameof(MESSAGES.ANSWER)} = @Answer";
+                    dynamicParameters.Add("@Answer", getMessagesUsersPaginationRequest.Answer);
+                }
                 if (getMessagesUsersPaginationRequest.IsAvatar)
                 {
                     SELECT += $", u.{nameof(USERS.AVATAR)} ";
