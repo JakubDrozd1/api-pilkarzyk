@@ -105,16 +105,22 @@ namespace BLLLibrary.Service
         {
             FirebaseNotification notificationHub = new();
             var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(idMeeting) ?? throw new Exception("Meeting is null");
-
             foreach (var user in users)
             {
-                if (user.IdUser != idAuthor)
+                NOTIFICATION? userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(user.IdUser ?? 0);
+                if (userDetails != null)
                 {
-                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
-
-                    if (tokens != null)
+                    if (userDetails.MEETING_NOTIFICATION)
                     {
-                        await notificationHub.SendMeetingNotification(meeting, tokens);
+                        if (user.IdUser != idAuthor)
+                        {
+                            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
+
+                            if (tokens != null)
+                            {
+                                await notificationHub.SendMeetingNotification(meeting, tokens);
+                            }
+                        }
                     }
                 }
             }
@@ -174,10 +180,13 @@ namespace BLLLibrary.Service
                 if (user.IdUser != meeting.IdAuthor)
                 {
                     var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
-
-                    if (tokens != null)
+                    var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(user.IdUser ?? throw new Exception("User is null"));
+                    if (tokens != null && userDetails != null)
                     {
-                        await notificationHub.SendUpdateMeetingNotification(updated, meeting, tokens);
+                        if (userDetails.UPDATE_MEETING_NOTIFICATION)
+                        {
+                            await notificationHub.SendUpdateMeetingNotification(updated, meeting, tokens);
+                        }
                     }
                 }
             }
@@ -219,10 +228,13 @@ namespace BLLLibrary.Service
                 if (user.IdUser != meeting.IdAuthor)
                 {
                     var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
-
-                    if (tokens != null)
+                    var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(user.IdUser ?? throw new Exception("User is null"));
+                    if (tokens != null && userDetails != null)
                     {
-                        await notificationHub.SendCancelMeetingNotificationToUser(messages, meeting, tokens);
+                        if (userDetails.MEETING_CANCEL_NOTIFICATION)
+                        {
+                            await notificationHub.SendCancelMeetingNotificationToUser(messages, meeting, tokens);
+                        }
                     }
                 }
             }

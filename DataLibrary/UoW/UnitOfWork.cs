@@ -8,6 +8,7 @@ using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Guests;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.Notification;
 using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
 using DataLibrary.IRepository.ResetPassword;
@@ -23,6 +24,7 @@ using DataLibrary.Repository.GroupsUsers;
 using DataLibrary.Repository.Guests;
 using DataLibrary.Repository.Meetings;
 using DataLibrary.Repository.Messages;
+using DataLibrary.Repository.Notification;
 using DataLibrary.Repository.NotificationToken;
 using DataLibrary.Repository.Rankings;
 using DataLibrary.Repository.ResetPassword;
@@ -53,6 +55,7 @@ namespace DataLibrary.UoW
         public ICreateResetPasswordRepository CreateResetPasswordRepository => new CreateResetPasswordRepository(dbConnection, dbTransaction);
         public ICreateTeamsRepository CreateTeamsRepository => new CreateTeamsRopository(dbConnection, dbTransaction);
         public ICreateGuestsRepository CreateGuestsRepository => new CreateGuestsRepository(dbConnection, dbTransaction);
+        public ICreateNotificationRepository CreateNotificationRepository => new CreateNotificationRepository(dbConnection, dbTransaction);
 
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);
@@ -65,6 +68,7 @@ namespace DataLibrary.UoW
         public IDeleteNotificationTokenRepository DeleteNotificationTokenRepository => new DeleteNotificationTokenRepository(dbConnection, dbTransaction);
         public IDeleteTeamsRepository DeleteTeamsRepository => new DeleteTeamsRepository(dbConnection, dbTransaction);
         public IDeleteGuestsRepository DeleteGuestsRepository => new DeleteGuestsRepository(dbConnection, dbTransaction);
+        public IDeleteNotificationRepository DeleteNotificationRepository => new DeleteNotificationRepository(dbConnection, dbTransaction);
 
 
         public IReadGroupsRepository ReadGroupsRepository => new ReadGroupsRepository(dbConnection, dbTransaction);
@@ -82,6 +86,7 @@ namespace DataLibrary.UoW
         public IReadResetPasswordRepository ReadResetPasswordRepository => new ReadResetPasswordRepository(dbConnection, dbTransaction);
         public IReadTeamsRepository ReadTeamsRepository => new ReadTeamsRepository(dbConnection, dbTransaction);
         public IReadGuestsRepository ReadGuestsRepository => new ReadGuestsRepository(dbConnection, dbTransaction);
+        public IReadNotificationRepository ReadNotificationRepository => new ReadNotificationRepository(dbConnection, dbTransaction);
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection, dbTransaction);
@@ -92,6 +97,7 @@ namespace DataLibrary.UoW
         public IUpdateGroupsUsersRepository UpdateGroupUsersRepository => new UpdateGroupsUsersRepository(dbConnection, dbTransaction);
         public IUpdateTeamsRepository UpdateTeamsRepository => new UpdateTeamsRepository(dbConnection, dbTransaction);
         public IUpdateGuestsRepository UpdateGuestsRepository => new UpdateGuestsRepository(dbConnection, dbTransaction);
+        public IUpdateNotificationRepository UpdateNotificationRepository => new UpdateNotificationRepository(dbConnection, dbTransaction);
 
         public async Task SaveChangesAsync()
         {

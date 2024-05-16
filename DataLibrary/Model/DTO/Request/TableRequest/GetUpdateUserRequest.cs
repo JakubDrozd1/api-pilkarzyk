@@ -1,6 +1,5 @@
 ﻿
 using System.Text.Json.Serialization;
-using DataLibrary.Entities;
 using DataLibrary.Helper;
 
 namespace DataLibrary.Model.DTO.Request.TableRequest

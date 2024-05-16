@@ -10,6 +10,7 @@ using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit.Cryptography;
 
 namespace BLLLibrary.Service
 {
@@ -141,10 +142,13 @@ namespace BLLLibrary.Service
             FirebaseNotification notificationHub = new();
 
             var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
-
-            if (tokens != null)
+            var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
+            if (tokens != null && userDetails != null)
             {
-                await notificationHub.SendGroupNotification(group, tokens);
+                if (userDetails.GROUP_INV_NOTIFICATION)
+                {
+                    await notificationHub.SendGroupNotification(group, tokens);
+                }
             }
         }
 
@@ -153,10 +157,13 @@ namespace BLLLibrary.Service
             FirebaseNotification notificationHub = new();
 
             var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
-
-            if (tokens != null)
+            var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
+            if (tokens != null && userDetails != null)
             {
-                await notificationHub.SendGroupAddUserNotification(group, tokens, author);
+                if (userDetails.GROUP_ADD_NOTIFICATION)
+                {
+                    await notificationHub.SendGroupAddUserNotification(group, tokens, author);
+                }
             }
         }
         private async Task AddUserToGroup(int idUser, int idGroup)

@@ -6,6 +6,7 @@ using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Guests;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.Notification;
 using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
 using DataLibrary.IRepository.ResetPassword;
@@ -32,6 +33,7 @@ namespace DataLibrary.UoW
         ICreateResetPasswordRepository CreateResetPasswordRepository { get; }
         ICreateTeamsRepository CreateTeamsRepository { get; }
         ICreateGuestsRepository CreateGuestsRepository { get; }
+        ICreateNotificationRepository CreateNotificationRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
@@ -43,6 +45,7 @@ namespace DataLibrary.UoW
         IDeleteNotificationTokenRepository DeleteNotificationTokenRepository { get; }
         IDeleteTeamsRepository DeleteTeamsRepository { get; }
         IDeleteGuestsRepository DeleteGuestsRepository { get; }
+        IDeleteNotificationRepository DeleteNotificationRepository { get; }
 
         IReadGroupsRepository ReadGroupsRepository { get; }
         IReadMeetingsRepository ReadMeetingsRepository { get; }
@@ -59,6 +62,7 @@ namespace DataLibrary.UoW
         IReadResetPasswordRepository ReadResetPasswordRepository { get; }
         IReadTeamsRepository ReadTeamsRepository { get; }
         IReadGuestsRepository ReadGuestsRepository { get; }
+        IReadNotificationRepository ReadNotificationRepository { get; }
 
         IUpdateGroupsRepository UpdateGroupsRepository { get; }
         IUpdateMeetingsRepository UpdateMeetingsRepository { get; }
@@ -68,6 +72,7 @@ namespace DataLibrary.UoW
         IUpdateGroupsUsersRepository UpdateGroupUsersRepository { get; }
         IUpdateTeamsRepository UpdateTeamsRepository { get; }
         IUpdateGuestsRepository UpdateGuestsRepository { get; }
+        IUpdateNotificationRepository UpdateNotificationRepository { get; }
 
         Task SaveChangesAsync();
         Task BeginTransactionAsync();

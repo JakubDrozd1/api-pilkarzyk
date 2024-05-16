@@ -12,7 +12,7 @@ namespace BLLLibrary.Service
     public class ResetPasswordService(IUnitOfWork unitOfWork, IConfiguration configuration) : IResetPasswordService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IConfiguration _configuration = configuration;
+        private readonly IConfiguration _configuration = configuration ?? throw new Exception("Configuration is null");
 
 
         public async Task AddResetPasswordAsync(string email)
