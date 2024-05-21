@@ -156,7 +156,6 @@ namespace BLLLibrary.Service
                     OnPage = -1
                 });
                 await _unitOfWork.UpdateMeetingsRepository.UpdateColumnMeetingAsync(getUpdateMeetingRequest, meetingId);
-                await _unitOfWork.UpdateMessagesRepository.UpdateAnswerMessageAsync(getUpdateMeetingRequest.Message);
                 var updated = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId) ?? throw new Exception("Meeting is null");
                 await _unitOfWork.SaveChangesAsync();
                 if (updated.DateMeeting != meeting.DateMeeting || updated.Place != meeting.Place || updated.Quantity != meeting.Quantity || updated.Description != meeting.Description)

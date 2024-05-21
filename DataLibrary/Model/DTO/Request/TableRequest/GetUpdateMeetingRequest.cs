@@ -19,6 +19,5 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("IsIndependent")]
         public bool? IS_INDEPENDENT { get; set; }
         public required string[] Column { get; set; }
-        public required GetMessageRequest Message { get; set; }
     }
 }
