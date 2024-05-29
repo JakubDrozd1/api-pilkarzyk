@@ -203,19 +203,19 @@ namespace DataLibrary.Helper.Notification
                 if (updated.Place != meeting.Place)
                 {
                     body += meeting.Place + " => " + updated.Place + "\n";
-
                 }
                 if (updated.Quantity != meeting.Quantity)
                 {
                     body += meeting.Quantity + " => " + updated.Quantity + "\n";
-
                 }
                 if (updated.Description != meeting.Description)
                 {
                     body += meeting.Description + " => " + updated.Description + "\n";
-
                 }
-
+                if (updated.WaitingTimeDecision != meeting.WaitingTimeDecision)
+                {
+                    body += "Czas na odpowiedź: " + meeting.WaitingTimeDecision + " => " + updated.WaitingTimeDecision + "\n";
+                }
                 var obj = new Message
                 {
                     Token = token.TOKEN,

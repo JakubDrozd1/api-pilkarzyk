@@ -10,5 +10,6 @@
         public int? IDGROUP { get; set; }
         public int? IDAUTHOR { get; set; }
         public bool? IS_INDEPENDENT { get; set; }
+        public int? WAITING_TIME_DECISION { get; set; }
     }
 }

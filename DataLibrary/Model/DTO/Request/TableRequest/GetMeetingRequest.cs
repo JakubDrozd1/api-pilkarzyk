@@ -24,5 +24,8 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
 
         [JsonPropertyName("IsIndependent")]
         public bool? IS_INDEPENDENT {  get; set; }
+
+        [JsonPropertyName("WaitingTimeDecision")]
+        public int? WAITING_TIME_DECISION {  get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.IDAUTHOR)}, " +
                 $"m.{nameof(MEETINGS.IDGROUP)}, " +
                 $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
+                $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.ANSWER)}, " +

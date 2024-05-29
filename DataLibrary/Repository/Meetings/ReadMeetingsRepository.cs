@@ -23,6 +23,7 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.IDAUTHOR)}, " +
                 $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
+                $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
               = $"{nameof(MEETINGS)} m " +

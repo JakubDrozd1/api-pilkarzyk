@@ -12,5 +12,6 @@
         public int? IdGroup { get; set; }
         public bool? IsIndependent { get; set; }
         public int? IdMessage { get; set; }
+        public int? WaitingTimeDecision { get; set; }
     }
 }

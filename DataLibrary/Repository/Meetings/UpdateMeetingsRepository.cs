@@ -82,6 +82,12 @@ namespace DataLibrary.Repository.Meetings
                                 dynamicParameters.Add($"@{column}", isIndependent);
                             }
                             break;
+                        case "WAITING_TIME_DECISION":
+                            {
+                                int? waitingTimeDecision = getUpdateMeetingRequest.WAITING_TIME_DECISION;
+                                dynamicParameters.Add($"@{column}", waitingTimeDecision);
+                            }
+                            break;
                     }
 
                 }
