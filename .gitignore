@@ -365,3 +365,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /WebApi/Resources/admin_sdk.json
 /WebApi/appsettings.Production.json
+/WebApi/Properties/launchSettings.json
