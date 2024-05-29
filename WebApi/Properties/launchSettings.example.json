@@ -1,0 +1,31 @@
+{
+    "$schema": "",
+    "iisSettings": {
+        "windowsAuthentication": false,
+        "anonymousAuthentication": true,
+        "iisExpress": {
+            "applicationUrl": "",
+            "sslPort": 0
+        }
+    },
+    "profiles": {
+        "http": {
+            "commandName": "",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "launchUrl": "",
+            "applicationUrl": "",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": ""
+            }
+        },
+        "IIS Express": {
+            "commandName": "",
+            "launchBrowser": true,
+            "launchUrl": "",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": ""
+            }
+        }
+    }
+}
