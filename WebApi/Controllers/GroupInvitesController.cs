@@ -45,7 +45,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost(Name = "AddGroupInvite")]
-        public async Task<ActionResult> AddGroupInvite([FromBody] GetGroupInviteRequest getGroupInviteRequest)
+        public async Task<ActionResult> AddGroupInvite([FromBody] GetGroupInviteWithEmailOrPhoneRequest getGroupInviteRequest)
         {
             try
             {

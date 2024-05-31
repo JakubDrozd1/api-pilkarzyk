@@ -19,7 +19,7 @@ namespace BLLLibrary.Service
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task AddGroupInviteAsync(GetGroupInviteRequest getGroupInviteRequest)
+        public async Task AddGroupInviteAsync(GetGroupInviteWithEmailOrPhoneRequest getGroupInviteRequest)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
@@ -27,9 +27,11 @@ namespace BLLLibrary.Service
                 var group = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(getGroupInviteRequest.IDGROUP) ?? throw new Exception("Group is null");
                 var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(getGroupInviteRequest.IDAUTHOR) ?? throw new Exception("Author is null");
 
-                if (getGroupInviteRequest.EMAIL != null && !getGroupInviteRequest.EMAIL.IsNullOrEmpty())
+                var isEmail = !(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER?.Length == 9 && int.TryParse(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER, out _));
+
+                if (isEmail)
                 {
-                    var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL);
+                    var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER);
                     if (userEmail != null)
                     {
 
@@ -51,7 +53,8 @@ namespace BLLLibrary.Service
                         if (user?.SEND_INVITE ?? false)
                         {
                             getGroupInviteRequest.IDUSER = userEmail.ID_USER;
-                            getGroupInviteRequest.PHONE_NUMBER = userEmail.PHONE_NUMBER;
+                            getGroupInviteRequest.PHONE_NUMBER = user.PHONE_NUMBER;
+                            getGroupInviteRequest.EMAIL = userEmail.EMAIL;
                             await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
                             await _unitOfWork.SaveChangesAsync();
                             await SendNotificationToUserAsync(group, userEmail.ID_USER);
@@ -72,11 +75,21 @@ namespace BLLLibrary.Service
                                 OnPage = -1,
                                 Page = 0,
                                 IdGroup = getGroupInviteRequest.IDGROUP,
-                                Email = getGroupInviteRequest.EMAIL
+                                Email = getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER
                             });
                         if (invites.Count > 0) throw new Exception("Invitation alredy send");
-                        await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
-                        var invite = await _unitOfWork.ReadGroupInviteRepository.GetLastAddedInvite(getGroupInviteRequest) ?? throw new Exception("Invite not found");
+
+                        var newGetGroupInviteRequest = new GetGroupInviteRequest
+                        {
+                            IDUSER = getGroupInviteRequest.IDUSER,
+                            IDAUTHOR = getGroupInviteRequest.IDAUTHOR,
+                            EMAIL = getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER,
+                            IDGROUP = getGroupInviteRequest.IDGROUP,
+
+                        };
+
+                        await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(newGetGroupInviteRequest);
+                        var invite = await _unitOfWork.ReadGroupInviteRepository.GetLastAddedInvite(newGetGroupInviteRequest) ?? throw new Exception("Invite not found");
                         await _unitOfWork.SaveChangesAsync();
 
                         string? email = _configuration["MailSettings:From"] ?? throw new Exception("Sender not found");
@@ -85,7 +98,7 @@ namespace BLLLibrary.Service
                         var result = await sendmail.SendInviteMessageAsync(new GetEmailInvitationGroupRequest()
                         {
                             GroupName = group.NAME,
-                            To = getGroupInviteRequest.EMAIL,
+                            To = newGetGroupInviteRequest.EMAIL,
                             Name = author.FIRSTNAME,
                             Surname = author.SURNAME,
                             IdGroupInvite = invite.ID_GROUP_INVITE ?? throw new Exception("Sender not found"),
@@ -96,9 +109,19 @@ namespace BLLLibrary.Service
                         }
                     }
                 }
-                else if (getGroupInviteRequest.PHONE_NUMBER != null)
+                else
                 {
-                    var user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAsync(getGroupInviteRequest.PHONE_NUMBER ?? throw new Exception("Phone number is null")) ?? throw new Exception("User with this phone number dont exist");
+                    var PhoneNumber = 0;
+                    try
+                    {
+                        PhoneNumber = int.Parse(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER);
+
+                    }catch(Exception ex)
+                    {
+                        throw new Exception("Phone number is null");
+                    }
+
+                    var user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAsync(PhoneNumber) ?? throw new Exception("User with this phone number dont exist");
 
                     if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.IDGROUP, user.ID_USER) != null)
                     {
@@ -116,6 +139,7 @@ namespace BLLLibrary.Service
                     if (user?.SEND_INVITE ?? false)
                     {
                         getGroupInviteRequest.IDUSER = user.ID_USER;
+                        getGroupInviteRequest.PHONE_NUMBER = user.PHONE_NUMBER;
                         getGroupInviteRequest.EMAIL = user.EMAIL;
                         await _unitOfWork.CreateGroupInviteRepository.AddGroupInviteAsync(getGroupInviteRequest);
                         await _unitOfWork.SaveChangesAsync();
@@ -222,11 +246,11 @@ namespace BLLLibrary.Service
             {
                 foreach (var number in getMultipleGroupInviteRequest.PhoneNumbers)
                 {
-                    var getGroupInviteRequest = new GetGroupInviteRequest()
+                    var getGroupInviteRequest = new GetGroupInviteWithEmailOrPhoneRequest()
                     {
                         IDAUTHOR = getMultipleGroupInviteRequest.IdAuthor,
                         IDGROUP = getMultipleGroupInviteRequest.IdGroup,
-                        PHONE_NUMBER = number
+                        EMAIL_OR_PHONE_NUMBER = $"{number}"
                     };
                     await AddGroupInviteAsync(getGroupInviteRequest);
                 }
