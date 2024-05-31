@@ -21,6 +21,7 @@ namespace DataLibrary.Repository.Messages
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
+                $"t.{nameof(TEAMS.COLOR)} AS TeamColor, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
                 $"m.{nameof(MEETINGS.PLACE)}, " +
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
@@ -32,13 +33,14 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
-                $"msg.{nameof(MESSAGES.ANSWER)}, " +
                 $"msg.{nameof(MESSAGES.IDTEAM)}, " +
+                $"msg.{nameof(MESSAGES.ANSWER)}, " +
                 $"msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
         private static readonly string FROM
               = $"{nameof(MESSAGES)} msg " +
                 $"JOIN {nameof(MEETINGS)} m ON msg.{nameof(MESSAGES.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +
-                $"JOIN {nameof(USERS)} u ON msg.{nameof(MESSAGES.IDUSER)} = u.{nameof(USERS.ID_USER)} ";
+                $"JOIN {nameof(USERS)} u ON msg.{nameof(MESSAGES.IDUSER)} = u.{nameof(USERS.ID_USER)} " +
+                $"LEFT JOIN {nameof(TEAMS)} t ON msg.{nameof(MESSAGES.IDTEAM)} = t.{nameof(TEAMS.ID_TEAM)} ";
 
         public async Task<List<GetMessagesUsersMeetingsResponse>> GetAllMessagesAsync(GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest)
         {
