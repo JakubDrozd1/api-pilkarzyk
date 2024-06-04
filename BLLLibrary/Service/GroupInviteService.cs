@@ -31,7 +31,7 @@ namespace BLLLibrary.Service
 
                 if (isEmail)
                 {
-                    var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER);
+                    var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER ?? throw new Exception("Phone number is null"));
                     if (userEmail != null)
                     {
 
@@ -112,15 +112,7 @@ namespace BLLLibrary.Service
                 else
                 {
                     var PhoneNumber = 0;
-                    try
-                    {
-                        PhoneNumber = int.Parse(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER);
-
-                    }catch(Exception ex)
-                    {
-                        throw new Exception("Phone number is null");
-                    }
-
+                    PhoneNumber = int.Parse(getGroupInviteRequest.EMAIL_OR_PHONE_NUMBER ?? throw new Exception("Phone number is null"));
                     var user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAsync(PhoneNumber) ?? throw new Exception("User with this phone number dont exist");
 
                     if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.IDGROUP, user.ID_USER) != null)
