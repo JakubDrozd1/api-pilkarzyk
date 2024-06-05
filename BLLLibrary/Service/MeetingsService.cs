@@ -180,11 +180,12 @@ namespace BLLLibrary.Service
                 {
                     var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
                     var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(user.IdUser ?? throw new Exception("User is null"));
+                    var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(meeting.IdAuthor ?? throw new Exception("User is null"));
                     if (tokens != null && userDetails != null)
                     {
                         if (userDetails.UPDATE_MEETING_NOTIFICATION)
                         {
-                            await notificationHub.SendUpdateMeetingNotification(updated, meeting, tokens);
+                            await notificationHub.SendUpdateMeetingNotification(updated, meeting, author, tokens);
                         }
                     }
                 }

@@ -2,10 +2,9 @@
 
 namespace DataLibrary.Model.DTO.Request.TableRequest
 {
-    public class GetGroupInviteWithEmailOrPhoneRequest : GetGroupInviteRequest
+    public class GetGroupInviteWithEmailOrPhoneRequest 
     {
-
-        [JsonPropertyName("EmailOrPhoneNumber")]
-        public string? EMAIL_OR_PHONE_NUMBER { get; set; }
+        public required GetGroupInviteRequest GroupInvite {  get; set; }
+        public string? EmailOrPhoneNumber { get; set; }
     }
 }

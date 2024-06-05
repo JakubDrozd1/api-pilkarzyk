@@ -60,7 +60,7 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
-        public async Task SendGroupNotification(GROUPS group, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendGroupNotification(GROUPS group, USERS? user, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>
@@ -76,7 +76,7 @@ namespace DataLibrary.Helper.Notification
                     Token = token.TOKEN,
                     Notification = new FirebaseAdmin.Messaging.Notification
                     {
-                        Title = "Ktoś właśnie wysłał ci zaproszenie do grupy!",
+                        Title = user?.FIRSTNAME + " " + user?.SURNAME + " wysłał ci zaproszenie do grupy!",
                         Body = "Nowe zaproszenie do grupy " + group.NAME,
                     },
                     Data = androidNotificationObj
@@ -89,7 +89,7 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
-        public async Task SendMessageNotificationAsync(GetMeetingGroupsResponse meeting, GetMessageRequest getMessageRequest, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendMessageNotificationAsync(GetMeetingGroupsResponse meeting, GetMessageRequest getMessageRequest, USERS? author, List<NOTIFICATION_TOKENS> tokens)
         {
             if (getMessageRequest.IDUSER != meeting.IdAuthor)
             {
@@ -97,7 +97,7 @@ namespace DataLibrary.Helper.Notification
             {
                 { "MeetingNotificationId", Convert.ToString(meeting.IdMeeting?? throw new Exception("Meeting is null")) }
             };
-                string title;
+                string title = "";
                 foreach (var token in tokens.GroupBy(x => x.TOKEN)
                     .Select(g => g.First())
                     .ToList())
@@ -106,42 +106,44 @@ namespace DataLibrary.Helper.Notification
                     {
                         case "yes":
                             {
-                                title = "Ktoś właśnie zaakceptował twoje zaproszenie do spotkania!";
+                                title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie zaakceptował twoje zaproszenie do spotkania!";
                             }
                             break;
                         case "no":
                             {
-                                title = "Ktoś właśnie odrzucił twoje zaproszenie do spotkania!";
+                                title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie odrzucił twoje zaproszenie do spotkania!";
                             }
                             break;
-                        default:
+                        case "wait":
                             {
-                                title = "Ktoś właśnie odpowiedział na twoje zaproszenie do spotkania!";
-
+                                title = author?.FIRSTNAME + " " + author?.SURNAME + " potrzebuje więcej czasu na odpowiedź!";
                             };
                             break;
                     }
-                    var obj = new Message
+                    if (!String.IsNullOrEmpty(title))
                     {
-                        Token = token.TOKEN,
-                        Notification = new FirebaseAdmin.Messaging.Notification
+                        var obj = new Message
                         {
-                            Title = title,
-                            Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
-                        },
-                        Data = androidNotificationObj
-                    };
-                    try
-                    {
-                        FirebaseMessaging messaging = FirebaseMessaging.GetMessaging(app);
-                        await messaging.SendAsync(obj);
+                            Token = token.TOKEN,
+                            Notification = new FirebaseAdmin.Messaging.Notification
+                            {
+                                Title = title,
+                                Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
+                            },
+                            Data = androidNotificationObj
+                        };
+                        try
+                        {
+                            FirebaseMessaging messaging = FirebaseMessaging.GetMessaging(app);
+                            await messaging.SendAsync(obj);
+                        }
+                        catch { }
                     }
-                    catch { }
                 }
             }
         }
 
-        public async Task SendNotificationToUserTeamAsync(string? teamName, int? idMeeting, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendNotificationToUserTeamAsync(string? teamName, int? idMeeting, USERS? user, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>
@@ -157,12 +159,12 @@ namespace DataLibrary.Helper.Notification
                 if (teamName != null)
                 {
                     title = "Zostałeś dodany do drużyny!";
-                    body = "Organizator właśnie dodał cię do drużyny " + teamName;
+                    body = user?.FIRSTNAME + " " + user?.SURNAME + " właśnie dodał Cię do drużyny " + teamName;
                 }
                 else
                 {
                     title = "Zostałeś usuniety z drużyny!";
-                    body = "Organizator właśnie usunął cie z druzyny i przeniósł do rezerwy";
+                    body = user?.FIRSTNAME + " " + user?.SURNAME + " właśnie usunął Cię z drużyny i przeniósł do rezerwy";
                 }
 
                 var obj = new Message
@@ -184,7 +186,7 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
-        public async Task SendUpdateMeetingNotification(GetMeetingGroupsResponse updated, GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendUpdateMeetingNotification(GetMeetingGroupsResponse updated, GetMeetingGroupsResponse meeting, USERS? user, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>
@@ -221,7 +223,7 @@ namespace DataLibrary.Helper.Notification
                     Token = token.TOKEN,
                     Notification = new FirebaseAdmin.Messaging.Notification
                     {
-                        Title = "Organizator zaaktualizował spotkanie w grupie " + meeting.Name,
+                        Title = user?.FIRSTNAME + " " + user?.SURNAME + " zaaktualizował spotkanie w grupie " + meeting.Name,
                         Body = body
                     },
                     Data = androidNotificationObj
@@ -235,7 +237,7 @@ namespace DataLibrary.Helper.Notification
         }
 
 
-        public async Task SendNotificationToAuthorTeamAsync(string? teamName, int? idMeeting, List<NOTIFICATION_TOKENS> tokens)
+        public async Task SendNotificationToAuthorTeamAsync(string? teamName, int? idMeeting, USERS? author, List<NOTIFICATION_TOKENS> tokens)
         {
 
             var androidNotificationObj = new Dictionary<string, string>
@@ -251,12 +253,12 @@ namespace DataLibrary.Helper.Notification
                 if (teamName != null)
                 {
                     title = "Ktoś właśnie dołączył do drużyny!";
-                    body = "Użytkownik właśnie dołączył do drużyny " + teamName;
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dołączył do drużyny " + teamName;
                 }
                 else
                 {
                     title = "Ktoś właśnie opuścił drużynę!";
-                    body = "Użytkownik opuścił drużynę i przeszedł do rezerwy";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " opuścił drużynę i przeszedł do rezerwy";
                 }
 
                 var obj = new Message
