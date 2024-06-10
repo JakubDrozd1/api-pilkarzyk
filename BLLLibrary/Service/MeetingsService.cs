@@ -72,6 +72,14 @@ namespace BLLLibrary.Service
                         await _unitOfWork.CreateTeamsRepository.AddTeamsAsync(team);
                     }
                 }
+                if(getUsersMeetingsRequest.DateQuest?.Length > 0)
+                {
+                    foreach (var dateQuest in getUsersMeetingsRequest.DateQuest)
+                    {
+                        dateQuest.IDMEETING = meeetingAdded?.ID_MEETING ?? throw new Exception("Meeting is null");
+                        await _unitOfWork.CreateDateQuestsRepository.AddDateQuestAsync(dateQuest);
+                    }
+                }
                 await _unitOfWork.SaveChangesAsync();
                 await SendNotificationToUserAsync(meeetingAdded?.ID_MEETING ?? 0, users, getUsersMeetingsRequest.Message.IDUSER);
             }

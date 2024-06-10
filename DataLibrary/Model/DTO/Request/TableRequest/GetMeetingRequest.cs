@@ -27,5 +27,11 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
 
         [JsonPropertyName("WaitingTimeDecision")]
         public int? WAITING_TIME_DECISION {  get; set; }
+
+        [JsonPropertyName("DateQuestOpen")]
+        public bool? DATE_QUEST_OPEN { get; set; }
+
+        [JsonPropertyName("DateQuestEnd")]
+        public DateTime? DATE_QUEST_END { get; set; }
     }
 }

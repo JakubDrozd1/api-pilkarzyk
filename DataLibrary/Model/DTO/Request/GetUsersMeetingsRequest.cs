@@ -7,5 +7,6 @@ namespace DataLibrary.Model.DTO.Request
         public required GetMeetingRequest Meeting { get; set; }
         public required GetMessageRequest Message { get; set; }
         public GetTeamRequest[]? Team { get; set; }
+        public GetDateQuestRequest[]? DateQuest { get; set; }
     }
 }
