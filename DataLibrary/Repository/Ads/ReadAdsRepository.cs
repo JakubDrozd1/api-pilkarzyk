@@ -45,7 +45,7 @@ namespace DataLibrary.Repository.Ads
 
                 if(ads != null)
                 {
-                    return new GetAdResponse { Content = ads[r].CONTENT! };
+                    return new GetAdResponse { Content = ads[r].CONTENT!, Url = ads[r].URL ?? "" };
                 }
 
                 return null;

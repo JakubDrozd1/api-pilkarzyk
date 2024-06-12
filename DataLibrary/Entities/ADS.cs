@@ -6,5 +6,6 @@
         public DateTime? DATE_START { get; set; }
         public DateTime? DATE_END { get; set; }
         public string? CONTENT { get; set; }
+        public string? URL { get; set; }
     }
 }

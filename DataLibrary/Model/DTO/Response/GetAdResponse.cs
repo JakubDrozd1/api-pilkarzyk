@@ -8,6 +8,10 @@ namespace DataLibrary.Model.DTO.Response
         [JsonPropertyName("content")]
         [JsonProperty(PropertyName = "content")]
         public required string Content { get; set; }
- 
+
+        [JsonPropertyName("url")]
+        [JsonProperty(PropertyName = "url")]
+        public required string Url { get; set; }
+
     }
 }
