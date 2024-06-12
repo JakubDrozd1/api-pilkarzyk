@@ -52,6 +52,7 @@ namespace DataLibrary.UoW
         IReadMessagesRepository ReadMessagesRepository { get; }
         IReadRankingsRepository ReadRankingsRepository { get; }
         IReadUsersRepository ReadUsersRepository { get; }
+        IReadAdsRepository ReadAdsRepository { get; }
         IReadGroupsUsersRepository ReadGroupsUsersRepository { get; }
         IReadEmailSender ReadEmailSender { get; }
         IReadUsersMeetingsRepository ReadUsersMeetingsRepository { get; }

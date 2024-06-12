@@ -29,6 +29,7 @@ builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
 builder.Services.AddScoped<ITeamsService, TeamsService>();
 builder.Services.AddScoped<IGuestsService, GuestsService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAdsService, AdsService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>
