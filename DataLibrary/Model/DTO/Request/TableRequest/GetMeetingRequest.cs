@@ -31,7 +31,11 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("DateQuestOpen")]
         public bool? DATE_QUEST_OPEN { get; set; }
 
+        [JsonPropertyName("IsQuest")]
+        public bool? IS_QUEST { get; set; }
+
         [JsonPropertyName("DateQuestEnd")]
         public DateTime? DATE_QUEST_END { get; set; }
+
     }
 }

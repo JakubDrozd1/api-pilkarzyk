@@ -7,6 +7,7 @@ using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
+using Xamarin.Essentials;
 
 namespace DataLibrary.Repository.Meetings
 {
@@ -83,6 +84,35 @@ namespace DataLibrary.Repository.Meetings
                     .OrderBy(getMeetingsRequest)
                     .Limit(getMeetingsRequest);
                 return (await _dbConnection.QueryAsync<GetMeetingGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public List<GetMeetingGroupsResponse> GetAllMeetingsWithQuest()
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                _dbConnection.Open();
+            }
+            try
+            {
+                DynamicParameters dynamicParameters = new();
+
+                var WHERE = $"m.{nameof(MEETINGS.DATE_QUEST_END)} <= @Date ";
+                dynamicParameters.Add("@Date", DateTime.Now);
+
+                WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} <= @IsQuest ";
+                dynamicParameters.Add("@IsQuest", true);
+
+                var query = new QueryBuilder<GetMeetingGroupsResponse>()
+                    .Select(SELECT)
+                    .From(FROM)
+                    .Where(WHERE);
+
+                return _dbConnection.Query<GetMeetingGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction).AsList();
             }
             catch (Exception ex)
             {

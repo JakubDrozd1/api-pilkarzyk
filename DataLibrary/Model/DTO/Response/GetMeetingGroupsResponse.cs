@@ -15,7 +15,5 @@
         public int? WaitingTimeDecision { get; set; }
         public DateTime? DateQuestEnd { get; set; }
         public bool? DateQuestOpen { get; set; }
-
-
     }
 }

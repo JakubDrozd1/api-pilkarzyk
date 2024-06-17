@@ -18,6 +18,11 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsAsync(getMeetingsPaginationRequest);
         }
 
+        public List<GetMeetingGroupsResponse> GetAllMeetingsWithQuest()
+        {
+            return _unitOfWork.ReadMeetingsRepository.GetAllMeetingsWithQuest();
+        }
+
         public async Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId)
         {
             return await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
@@ -72,7 +77,7 @@ namespace BLLLibrary.Service
                         await _unitOfWork.CreateTeamsRepository.AddTeamsAsync(team);
                     }
                 }
-                if(getUsersMeetingsRequest.DateQuest?.Length > 0)
+                if((bool)getUsersMeetingsRequest.Meeting.IS_QUEST! && getUsersMeetingsRequest.DateQuest?.Length > 0)
                 {
                     foreach (var dateQuest in getUsersMeetingsRequest.DateQuest)
                     {

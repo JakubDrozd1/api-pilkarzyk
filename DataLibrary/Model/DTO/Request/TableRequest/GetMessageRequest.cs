@@ -18,5 +18,6 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
 
         [JsonPropertyName("DateResponse")]
         public DateTime? DATE_RESPONSE { get; set; }
+
     }
 }
