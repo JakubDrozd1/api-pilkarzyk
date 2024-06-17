@@ -80,6 +80,10 @@ namespace DataLibrary.UoW
         IUpdateGuestsRepository UpdateGuestsRepository { get; }
         IUpdateNotificationRepository UpdateNotificationRepository { get; }
 
+        IToggleDateQuestsRepository ToggleDateQuestsRepository { get; }
+
+
+
         Task SaveChangesAsync();
         Task BeginTransactionAsync();
         Task RollBackTransactionAsync();

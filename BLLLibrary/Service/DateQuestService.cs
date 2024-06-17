@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service
@@ -18,6 +19,13 @@ namespace BLLLibrary.Service
         {
             await _unitOfWork.CreateDateQuestsRepository.AddDateQuestAsync(getDateQuestRequest);
         }
+        
+        public async Task ToggleQuestAsync(int dateQuestId,  ToggleDateQuestRequest toggleDateQuestRequest)
+        {
+            await _unitOfWork.ToggleDateQuestsRepository.ToggleDateQuests(dateQuestId, toggleDateQuestRequest);
+        }
+
+
 
         public async Task UpdateDateQuestAsync(int dateQuestionaryId, GetDateQuestRequest getDateQuestionaryRequest)
         {

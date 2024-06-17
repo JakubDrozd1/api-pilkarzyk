@@ -105,6 +105,8 @@ namespace DataLibrary.UoW
         public IUpdateGuestsRepository UpdateGuestsRepository => new UpdateGuestsRepository(dbConnection, dbTransaction);
         public IUpdateNotificationRepository UpdateNotificationRepository => new UpdateNotificationRepository(dbConnection, dbTransaction);
 
+        public IToggleDateQuestsRepository ToggleDateQuestsRepository => new ToggleDateQuestsRepository(dbConnection, dbTransaction);
+
         public async Task SaveChangesAsync()
         {
             if (dbTransaction != null)

@@ -1,5 +1,6 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Response;
 
 namespace DataLibrary.IRepository.DateQuest
 {

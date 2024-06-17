@@ -3,6 +3,7 @@ using BLLLibrary.IService;
 using BLLLibrary.Service;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -32,11 +33,25 @@ namespace WebApi.Controllers
 
 
         [HttpPost(Name = "AddDateQuest")]
-        public async Task<ActionResult> AddTeams([FromQuery] GetDateQuestRequest getDateQuestRequest)
+        public async Task<ActionResult> AddDateQuest([FromQuery] GetDateQuestRequest getDateQuestRequest)
         {
             try
             {
                 await _dateQuestsService.AddDateQuestAsync(getDateQuestRequest);
+                return Ok(getDateQuestRequest);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("{dateQuestId}", Name = "ToogleDateQuestUser")]
+        public async Task<ActionResult> ToogleDateQuestUser([FromRoute] int dateQuestId, [FromBody] ToggleDateQuestRequest getDateQuestRequest)
+        {
+            try
+            {
+                await _dateQuestsService.ToggleQuestAsync(dateQuestId, getDateQuestRequest);
                 return Ok(getDateQuestRequest);
             }
             catch (Exception ex)

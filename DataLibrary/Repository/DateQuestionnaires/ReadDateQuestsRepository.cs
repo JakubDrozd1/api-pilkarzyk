@@ -5,6 +5,7 @@ using DataLibrary.Helper;
 using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.Groups;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
 namespace DataLibrary.Repository.DateQuests
@@ -42,11 +43,24 @@ namespace DataLibrary.Repository.DateQuests
             }
             try
             {
-                var query = new QueryBuilder<DATE_QUESTS>()
-                    .Select("* ")
-                    .From($"{nameof(DATE_QUESTS)} ")
+                var query = new QueryBuilder<GetDateQuestsResponse>()
+                    .Select("dq.ID_DATE_QUEST ,dq.DATE_MEETING, dq.IDMEETING, dq.DATE_MEETING, udq.IDDATE_QUESTS, udq.IDUSER ")
+                    .From($"{nameof(DATE_QUESTS)} dq " +
+                          $"LEFT JOIN {nameof(USERS_DATE_QUESTS)} udq ON dq.{nameof(DATE_QUESTS.ID_DATE_QUEST)} = udq.{nameof(USERS_DATE_QUESTS.IDDATE_QUESTS)}")
                     .Where("IDMEETING = @MeetingId ");
-                return (await _dbConnection.QueryAsync<DATE_QUESTS?>(query.Build(), new { MeetingId = meetingId }, _fbTransaction)).AsList();
+                    var res =(await _dbConnection.QueryAsync<DATE_QUESTS, USERS_DATE_QUESTS, DATE_QUESTS>(query.Build(), (dateQuest, userDateQuest) => {
+                        if(userDateQuest!= null)
+                        {
+                            dateQuest.USERS_DATE_QUESTS.Add(userDateQuest);
+                        }
+                        return dateQuest;
+                    },
+                    new { MeetingId = meetingId },
+                    _fbTransaction,
+                    splitOn: "IDUSER"
+                    ))
+                    .AsList();
+                return res;
             }
             catch (Exception ex)
             {
