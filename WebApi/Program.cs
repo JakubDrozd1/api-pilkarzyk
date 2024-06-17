@@ -8,6 +8,8 @@ using System.Text;
 using Microsoft.Net.Http.Headers;
 using DataLibrary.Helper.ConnectionProvider;
 using WebApi.Controllers;
+using JobsConfig.Configurations;
+using Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -101,6 +103,10 @@ builder.Services
     });
 builder.Services.AddSignalR();
 
+
+builder.Services.Configure<JobSettings>(builder.Configuration.GetSection("JobSetting"));
+
+builder.Services.RegisterBackgroundServices(builder.Configuration.GetSection("JobSetting").Get<JobSettings>() ?? new JobSettings());
 
 
 var app = builder.Build();

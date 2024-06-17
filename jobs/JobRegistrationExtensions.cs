@@ -2,7 +2,7 @@
 using Quartz;
 using JobsConfig.Configurations;
 
-namespace QuartzInfrastructure
+namespace Jobs
 {
     public static class JobRegistrationExtensions
     {

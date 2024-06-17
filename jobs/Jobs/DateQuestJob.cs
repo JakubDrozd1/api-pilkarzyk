@@ -2,7 +2,7 @@
 using Quartz;
 
 
-namespace QuartzInfrastructure.Jobs
+namespace Jobs.Jobs
 {
     [DisallowConcurrentExecution]
     public class DateQuestJob : IJob
