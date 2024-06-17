@@ -40,11 +40,12 @@ namespace DataLibrary.Repository.Ads
 
 
                 var ads =  (await _dbConnection.QueryAsync<ADS>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
-                Random rnd = new Random();
-                int r = rnd.Next(ads.Count);
 
-                if(ads != null)
+
+                if(ads != null && ads.Count > 0)
                 {
+                    Random rnd = new Random();
+                    int r = rnd.Next(ads.Count);
                     return new GetAdResponse { Content = ads[r].CONTENT!, Url = ads[r].URL ?? "" };
                 }
 
