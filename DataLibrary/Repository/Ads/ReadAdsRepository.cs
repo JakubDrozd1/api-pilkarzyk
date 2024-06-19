@@ -46,7 +46,7 @@ namespace DataLibrary.Repository.Ads
                 {
                     Random rnd = new Random();
                     int r = rnd.Next(ads.Count);
-                    return new GetAdResponse { Content = ads[r].CONTENT!, Url = ads[r].URL ?? "" };
+                    return new GetAdResponse { Content = ads[r].CONTENT!, Url = ads[r].URL ?? "", Color = ads[r].COLOR ?? "" };
                 }
 
                 return null;

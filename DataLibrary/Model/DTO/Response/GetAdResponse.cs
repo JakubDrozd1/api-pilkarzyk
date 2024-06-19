@@ -13,5 +13,9 @@ namespace DataLibrary.Model.DTO.Response
         [JsonProperty(PropertyName = "url")]
         public required string Url { get; set; }
 
+        [JsonPropertyName("color")]
+        [JsonProperty(PropertyName = "color")]
+        public required string Color { get; set; }
+
     }
 }

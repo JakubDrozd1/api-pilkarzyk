@@ -7,5 +7,6 @@
         public DateTime? DATE_END { get; set; }
         public string? CONTENT { get; set; }
         public string? URL { get; set; }
+        public string? COLOR { get; set; }
     }
 }
