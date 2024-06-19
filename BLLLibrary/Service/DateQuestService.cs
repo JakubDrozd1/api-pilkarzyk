@@ -10,9 +10,14 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public Task<List<DATE_QUESTS?>> GetDateQuestByMeetingIdAsync(int meetingId)
+        public async Task<List<DATE_QUESTS>> GetDateQuestByMeetingIdAsync(int meetingId)
         {
-            return _unitOfWork.ReadDateQuestsRepository.GetDateQuestsByMeetingIdAsync(meetingId);
+            return  await _unitOfWork.ReadDateQuestsRepository.GetDateQuestsByMeetingIdAsync(meetingId);
+        }
+
+        public List<DATE_QUESTS> GetDateQuestByMeetingId(int meetingId)
+        {
+            return _unitOfWork.ReadDateQuestsRepository.GetDateQuestByMeetingId(meetingId);
         }
 
         public async Task AddDateQuestAsync(GetDateQuestRequest getDateQuestRequest)

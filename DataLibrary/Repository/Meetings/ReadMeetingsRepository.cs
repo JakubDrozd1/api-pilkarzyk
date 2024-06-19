@@ -104,7 +104,7 @@ namespace DataLibrary.Repository.Meetings
                 var WHERE = $"m.{nameof(MEETINGS.DATE_QUEST_END)} <= @Date ";
                 dynamicParameters.Add("@Date", DateTime.Now);
 
-                WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} <= @IsQuest ";
+                WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
                 dynamicParameters.Add("@IsQuest", true);
 
                 var query = new QueryBuilder<GetMeetingGroupsResponse>()
