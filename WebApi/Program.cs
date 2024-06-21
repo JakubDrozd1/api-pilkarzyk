@@ -32,6 +32,7 @@ builder.Services.AddScoped<ITeamsService, TeamsService>();
 builder.Services.AddScoped<IGuestsService, GuestsService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IDateQuestsService, DateQuestService>();
+builder.Services.AddScoped<IAdsService, AdsService>();
 
 builder.Services.AddControllers().
                 AddJsonOptions(options =>

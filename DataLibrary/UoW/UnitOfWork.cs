@@ -17,6 +17,7 @@ using DataLibrary.IRepository.Teams;
 using DataLibrary.IRepository.Tokens;
 using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
+using DataLibrary.Repository.Ads;
 using DataLibrary.Repository.ChatMessages;
 using DataLibrary.Repository.DateQuests;
 using DataLibrary.Repository.EmailSender;
@@ -92,6 +93,7 @@ namespace DataLibrary.UoW
         public IReadDateQuestsRepository ReadDateQuestsRepository => new ReadDateQuestsRepository(dbConnection, dbTransaction);
         public IReadGuestsRepository ReadGuestsRepository => new ReadGuestsRepository(dbConnection, dbTransaction);
         public IReadNotificationRepository ReadNotificationRepository => new ReadNotificationRepository(dbConnection, dbTransaction);
+        public IReadAdsRepository ReadAdsRepository => new ReadAdsRepository(dbConnection, dbTransaction);
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection, dbTransaction);
