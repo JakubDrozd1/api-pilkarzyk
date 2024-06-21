@@ -26,6 +26,7 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
                 $"m.{nameof(MEETINGS.DATE_QUEST_OPEN)} AS DateQuestOpen, " +
                 $"m.{nameof(MEETINGS.DATE_QUEST_END)} AS DateQuestEnd, " +
+                $"m.{nameof(MEETINGS.IS_QUEST)} AS IsQuest, " +
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
@@ -77,6 +78,11 @@ namespace DataLibrary.Repository.Meetings
                     SELECT += $", msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
                     FROM += $"JOIN {nameof(MESSAGES)} msg ON m.{nameof(MEETINGS.ID_MEETING)} = msg.{nameof(MESSAGES.IDMEETING)} ";
                 }
+                if (getMeetingsRequest.IsQuest != null)
+                {
+                    WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
+                    dynamicParameters.Add("@IsQuest", getMeetingsRequest.IsQuest);
+                }
                 var query = new QueryBuilder<GetMeetingGroupsResponse>()
                     .Select(SELECT)
                     .From(FROM)
@@ -91,11 +97,11 @@ namespace DataLibrary.Repository.Meetings
             }
         }
 
-        public List<GetMeetingGroupsResponse> GetAllMeetingsWithQuest()
+        public async Task<List<GetMeetingGroupsResponse>> GetAllMeetingsWithQuestAsync()
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
-                _dbConnection.Open();
+                await _dbConnection.OpenAsync();
             }
             try
             {
@@ -112,7 +118,7 @@ namespace DataLibrary.Repository.Meetings
                     .From(FROM)
                     .Where(WHERE);
 
-                return _dbConnection.Query<GetMeetingGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction).AsList();
+                return (await _dbConnection.QueryAsync<GetMeetingGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
             }
             catch (Exception ex)
             {

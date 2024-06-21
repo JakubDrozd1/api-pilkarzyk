@@ -8,7 +8,7 @@ namespace DataLibrary.IRepository.Meetings
     public interface IReadMeetingsRepository
     {
         Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsRequest);
-        List<GetMeetingGroupsResponse> GetAllMeetingsWithQuest();
+        Task<List<GetMeetingGroupsResponse>> GetAllMeetingsWithQuestAsync();
         Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId);
         Task<MEETINGS?> GetMeeting(GetMeetingRequest meetings);
     }

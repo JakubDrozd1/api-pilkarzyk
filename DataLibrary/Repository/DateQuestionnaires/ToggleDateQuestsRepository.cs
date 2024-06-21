@@ -23,18 +23,38 @@ namespace DataLibrary.Repository.DateQuests
             try
             {
 
+
                 var query = new QueryBuilder<USERS_DATE_QUESTS>()
                    .Select("*")
                    .From("USERS_DATE_QUESTS ")
                    .Where("IDUSER = @IdUser AND IDDATE_QUESTS = @IdQuest ");
 
-                 var UserDateQuest =  await _dbConnection.QuerySingleOrDefaultAsync<USERS_DATE_QUESTS>(
-                         query.Build(),
-                         new { IdUser = toggledateQuest.IdUser, IdQuest= dateQuestId },
-                         _fbTransaction
-                     );
+                var UserDateQuest = await _dbConnection.QuerySingleOrDefaultAsync<USERS_DATE_QUESTS>(
+                     query.Build(),
+                     new { IdUser = toggledateQuest.IdUser, IdQuest = dateQuestId },
+                     _fbTransaction
+                 );
 
-                if( UserDateQuest != null )
+                var queryMeatting = new QueryBuilder<MEETINGS>()
+                   .Select("ID_MEETING, DATE_QUEST_END ")
+                   .From("MEETINGS ")
+                   .Where("ID_MEETING = @IdMeeting ");
+
+                var Meeting = await _dbConnection.QuerySingleOrDefaultAsync<MEETINGS>(
+                     queryMeatting.Build(),
+                     new { IdMeeting = toggledateQuest.IdMeeting },
+                     _fbTransaction
+                 );
+
+
+
+                if (Meeting == null ||  Meeting.DATE_QUEST_END <= DateTime.Now)
+                {
+                    throw new Exception("Questionnaire is ended");
+                }
+
+
+                if ( UserDateQuest != null )
                 {
                     var deleteBuilder = new QueryBuilder<USERS_DATE_QUESTS>()
                        .Delete("USERS_DATE_QUESTS ")

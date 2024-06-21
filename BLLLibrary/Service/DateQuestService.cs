@@ -15,11 +15,6 @@ namespace BLLLibrary.Service
             return  await _unitOfWork.ReadDateQuestsRepository.GetDateQuestsByMeetingIdAsync(meetingId);
         }
 
-        public List<DATE_QUESTS> GetDateQuestByMeetingId(int meetingId)
-        {
-            return _unitOfWork.ReadDateQuestsRepository.GetDateQuestByMeetingId(meetingId);
-        }
-
         public async Task AddDateQuestAsync(GetDateQuestRequest getDateQuestRequest)
         {
             await _unitOfWork.CreateDateQuestsRepository.AddDateQuestAsync(getDateQuestRequest);

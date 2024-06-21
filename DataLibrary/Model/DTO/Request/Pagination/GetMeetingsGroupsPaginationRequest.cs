@@ -20,5 +20,6 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public int? IdAuthor { get; set; }
         public string? Answer { get; set; }
         public bool WithMessages {  get; set; }
+        public bool? IsQuest {  get; set; }
     }
 }

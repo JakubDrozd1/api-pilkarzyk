@@ -7,5 +7,8 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
     {
         [JsonPropertyName("IdUser")]
         public int?  IdUser { get; set; }
+
+        [JsonPropertyName("IdMeeting")]
+        public int? IdMeeting { get; set; }
     }
 }

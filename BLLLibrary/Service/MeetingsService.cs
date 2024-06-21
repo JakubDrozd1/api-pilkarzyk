@@ -18,9 +18,9 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsAsync(getMeetingsPaginationRequest);
         }
 
-        public List<GetMeetingGroupsResponse> GetAllMeetingsWithQuest()
+        public async Task<List<GetMeetingGroupsResponse>> GetAllMeetingsWithQuestAsync()
         {
-            return _unitOfWork.ReadMeetingsRepository.GetAllMeetingsWithQuest();
+            return await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsWithQuestAsync();
         }
 
         public async Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId)
@@ -53,24 +53,21 @@ namespace BLLLibrary.Service
                     IsAvatar = false
                 });
 
-                if (!(bool)getUsersMeetingsRequest.Meeting.IS_QUEST!)
+                foreach (var user in users)
                 {
-                    foreach (var user in users)
+                    await AddUserToMeetingAsync(meeetingAdded?.ID_MEETING ?? throw new Exception("Meeting is null"), user.IdUser ?? throw new Exception("User is null"));
+                    if (user.IdUser != getUsersMeetingsRequest.Message.IDUSER)
                     {
-                        await AddUserToMeetingAsync(meeetingAdded?.ID_MEETING ?? throw new Exception("Meeting is null"), user.IdUser ?? throw new Exception("User is null"));
-                        if (user.IdUser != getUsersMeetingsRequest.Message.IDUSER)
+                        await _unitOfWork.CreateMessagesRepository.AddMessageAsync(new GetMessageRequest()
                         {
-                            await _unitOfWork.CreateMessagesRepository.AddMessageAsync(new GetMessageRequest()
-                            {
-                                IDUSER = user.IdUser,
-                                IDMEETING = meeetingAdded?.ID_MEETING ?? throw new Exception("Meeting is null")
-                            });
-                        }
-                        else
-                        {
-                            getUsersMeetingsRequest.Message.IDMEETING = meeetingAdded?.ID_MEETING;
-                            await _unitOfWork.CreateMessagesRepository.AddMessageAsync(getUsersMeetingsRequest.Message);
-                        }
+                            IDUSER = user.IdUser,
+                            IDMEETING = meeetingAdded?.ID_MEETING ?? throw new Exception("Meeting is null")
+                        });
+                    }
+                    else
+                    {
+                        getUsersMeetingsRequest.Message.IDMEETING = meeetingAdded?.ID_MEETING;
+                        await _unitOfWork.CreateMessagesRepository.AddMessageAsync(getUsersMeetingsRequest.Message);
                     }
                 }
                 if (getUsersMeetingsRequest.Team?.Length > 0)
@@ -159,9 +156,9 @@ namespace BLLLibrary.Service
             await _unitOfWork.UpdateMeetingsRepository.UpdateMeetingAsync(meeting);
         }
 
-        public void UpdateMeeting(MEETINGS meeting)
+        public async Task UpdateMeetingJobAsync(MEETINGS meeting)
         {
-            _unitOfWork.UpdateMeetingsRepository.UpdateMeeting(meeting);
+            await _unitOfWork.UpdateMeetingsRepository.UpdateMeetingAsync(meeting);
         }
 
         public async Task UpdateColumnMeetingAsync(GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId)
