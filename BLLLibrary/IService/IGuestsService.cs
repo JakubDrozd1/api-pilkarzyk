@@ -1,5 +1,6 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 
 namespace BLLLibrary.IService
 {
@@ -7,7 +8,7 @@ namespace BLLLibrary.IService
     {
         Task AddGuestsAsync(GetGuestRequest getGuestRequest);
         Task DeleteGuestsAsync(int guestsId);
-        Task<List<GUESTS?>> GetAllGuestFromMeetingAsync(int meetingId);
+        Task<List<GetGuestsMeetingsResponse?>> GetAllGuestFromMeetingAsync(int meetingId);
         Task<GUESTS?> GetGuestByIdAsync(int guestId);
         Task UpdateGuestsAsync(GetGuestRequest getGuestRequest, int guestId);
         Task SaveChangesAsync();
