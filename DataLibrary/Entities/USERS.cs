@@ -16,5 +16,6 @@ namespace DataLibrary.Entities
         public string? AVATAR { get; set; }
         public required int GROUP_COUNTER { get; set; }
         public bool SEND_INVITE { get; set; }
+        public bool IS_ACTIVE { get; set; }
     }
 }

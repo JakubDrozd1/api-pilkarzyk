@@ -108,6 +108,12 @@ namespace DataLibrary.Repository.Users
                                 dynamicParameters.Add($"@{column}", sendInvite);
                             }
                             break;
+                        case "IS_ACTIVE":
+                            {
+                                bool isActive = getUpdateUserRequest.IS_ACTIVE ?? throw new Exception("Is Active is null");
+                                dynamicParameters.Add($"@{column}", isActive);
+                            }
+                            break;
                     }
 
                 }

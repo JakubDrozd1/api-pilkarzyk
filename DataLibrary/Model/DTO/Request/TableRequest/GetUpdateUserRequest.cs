@@ -30,6 +30,9 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("SendInvite")]
         public bool? SEND_INVITE { get; set; }
 
+        [JsonPropertyName("IsActive")]
+        public bool? IS_ACTIVE { get; set; }
+
         [JsonPropertyName("Avatar")]
         [JsonConverter(typeof(JsonToByteArrayConverter))]
         public byte[]? AVATAR { get; set; }

@@ -45,7 +45,7 @@ namespace DataLibrary.Repository.ResetPassword
                 var query = new QueryBuilder<RESET_PASSWORD>()
                     .Select("* ")
                     .From($"{nameof(RESET_PASSWORD)} ")
-                    .Where("IDUSER = @UserId ")
+                    .Where("IDUSER = @UserId AND u.IS_ACTIVE = true ")
                     .OrderBy(pagination)
                     .Limit(pagination);
                 return await _dbConnection.QuerySingleOrDefaultAsync<RESET_PASSWORD>(query.Build(), new { UserId = userId }, _fbTransaction);

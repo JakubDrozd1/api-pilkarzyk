@@ -69,6 +69,9 @@ namespace DataLibrary.Repository.GroupInvite
                     WHERE += $"AND m.{nameof(GROUP_INVITE.DATE_ADD)} <= @DateTo ";
                     dynamicParameters.Add("@DateTo", getGroupInvitePaginationRequest.DateTo);
                 }
+                WHERE += $"AND u2.{nameof(USERS.IS_ACTIVE)} = true ";
+                WHERE += $"AND u1.{nameof(USERS.IS_ACTIVE)} = true ";
+
                 var query = new QueryBuilder<GetGroupInviteResponse>()
                     .Select(SELECT)
                     .From(FROM)

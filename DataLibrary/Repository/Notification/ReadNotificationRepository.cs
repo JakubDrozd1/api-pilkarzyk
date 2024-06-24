@@ -35,7 +35,7 @@ namespace DataLibrary.Repository.Notification
                 var query = new QueryBuilder<NOTIFICATION>()
                     .Select(SELECT)
                     .From(" NOTIFICATION n RIGHT JOIN USERS u ON u.ID_USER = n.IDUSER ")
-                    .Where("ID_USER = @IdUser ");
+                    .Where("ID_USER = @IdUser AND u.IS_ACTIVE = true ");
                 return await _dbConnection.QuerySingleOrDefaultAsync<NOTIFICATION>(query.Build(), new { IdUser = userId }, _fbTransaction);
             }
             catch (Exception ex)
