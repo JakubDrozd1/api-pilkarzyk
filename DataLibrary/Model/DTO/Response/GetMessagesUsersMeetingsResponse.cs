@@ -27,5 +27,6 @@
         public bool? IsIndependent { get; set; }
         public int? WaitingTimeDecision { get; set; }
         public int? MaxGiveMeTime { get; set; }
+        public bool? GiveMeTimeClicked { get; set; }
     }
 }
