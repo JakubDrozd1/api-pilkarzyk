@@ -26,5 +26,6 @@
         public int? IdGuest { get; set; }
         public bool? IsIndependent { get; set; }
         public int? WaitingTimeDecision { get; set; }
+        public int? MaxGiveMeTime { get; set; }
     }
 }
