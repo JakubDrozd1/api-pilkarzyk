@@ -29,7 +29,7 @@ namespace DataLibrary.Repository.DateQuests
                    .From("USERS_DATE_QUESTS ")
                    .Where("IDUSER = @IdUser AND IDDATE_QUESTS = @IdQuest ");
 
-                var UserDateQuest = await _dbConnection.QuerySingleOrDefaultAsync<USERS_DATE_QUESTS>(
+                var UserDateQuest = await _dbConnection.QueryFirstOrDefaultAsync<USERS_DATE_QUESTS>(
                      query.Build(),
                      new { IdUser = toggledateQuest.IdUser, IdQuest = dateQuestId },
                      _fbTransaction
@@ -40,19 +40,16 @@ namespace DataLibrary.Repository.DateQuests
                    .From("MEETINGS ")
                    .Where("ID_MEETING = @IdMeeting ");
 
-                var Meeting = await _dbConnection.QuerySingleOrDefaultAsync<MEETINGS>(
+                var Meeting = await _dbConnection.QueryFirstOrDefaultAsync<MEETINGS>(
                      queryMeatting.Build(),
                      new { IdMeeting = toggledateQuest.IdMeeting },
                      _fbTransaction
                  );
 
-
-
                 if (Meeting == null ||  Meeting.DATE_QUEST_END <= DateTime.Now)
                 {
                     throw new Exception("Questionnaire is ended");
                 }
-
 
                 if ( UserDateQuest != null )
                 {
