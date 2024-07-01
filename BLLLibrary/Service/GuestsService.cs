@@ -1,6 +1,7 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
 namespace BLLLibrary.Service
@@ -19,7 +20,7 @@ namespace BLLLibrary.Service
             await _unitOfWork.DeleteGuestsRepository.DeleteGuestsAsync(guestsId);
         }
 
-        public async Task<List<GUESTS?>> GetAllGuestFromMeetingAsync(int meetingId)
+        public async Task<List<GetGuestsMeetingsResponse?>> GetAllGuestFromMeetingAsync(int meetingId)
         {
             return await _unitOfWork.ReadGuestsRepository.GetAllGuestFromMeetingAsync(meetingId);
         }
