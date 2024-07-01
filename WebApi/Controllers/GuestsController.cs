@@ -5,6 +5,7 @@ using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Request;
 using Microsoft.AspNetCore.Mvc;
+using DataLibrary.Model.DTO.Response;
 
 namespace WebApi.Controllers
 {
@@ -16,7 +17,7 @@ namespace WebApi.Controllers
 
         [HttpGet(Name = "GetAllGuestFromMeeting")]
 
-        public async Task<ActionResult<List<GUESTS>>> GetAllGuestFromMeeting(int meetingId)
+        public async Task<ActionResult<List<GetGuestsMeetingsResponse>>> GetAllGuestFromMeeting(int meetingId)
         {
             try
             {

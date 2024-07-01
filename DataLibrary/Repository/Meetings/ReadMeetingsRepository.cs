@@ -30,8 +30,9 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
-              = $"{nameof(MEETINGS)} m " +
-                $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} ";
+              = $"{nameof(MEETINGS)} m "  +
+                $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
+                $"JOIN {nameof(USERS)} u ON m.{nameof(MEETINGS.IDAUTHOR)} = u.{nameof(USERS.ID_USER)} ";
 
         public async Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsRequest)
         {
@@ -83,6 +84,8 @@ namespace DataLibrary.Repository.Meetings
                     WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
                     dynamicParameters.Add("@IsQuest", getMeetingsRequest.IsQuest);
                 }
+                WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
+
                 var query = new QueryBuilder<GetMeetingGroupsResponse>()
                     .Select(SELECT)
                     .From(FROM)

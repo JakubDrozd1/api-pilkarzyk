@@ -40,6 +40,7 @@ namespace DataLibrary.Repository.Messages
               = $"{nameof(MESSAGES)} msg " +
                 $"JOIN {nameof(MEETINGS)} m ON msg.{nameof(MESSAGES.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +
                 $"JOIN {nameof(USERS)} u ON msg.{nameof(MESSAGES.IDUSER)} = u.{nameof(USERS.ID_USER)} " +
+                $"JOIN {nameof(USERS)} u2 ON m.{nameof(MEETINGS.IDAUTHOR)} = u2.{nameof(USERS.ID_USER)} " +
                 $"LEFT JOIN {nameof(TEAMS)} t ON msg.{nameof(MESSAGES.IDTEAM)} = t.{nameof(TEAMS.ID_TEAM)} ";
 
         public async Task<List<GetMessagesUsersMeetingsResponse>> GetAllMessagesAsync(GetMessagesUsersPaginationRequest getMessagesUsersPaginationRequest)
@@ -87,6 +88,9 @@ namespace DataLibrary.Repository.Messages
                 {
                     SELECT += $", u.{nameof(USERS.AVATAR)} ";
                 }
+                WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
+                WHERE += $"AND u2.{nameof(USERS.IS_ACTIVE)} = true ";
+
                 var query = new QueryBuilder<MESSAGES>()
                     .Select(SELECT)
                     .From(FROM)

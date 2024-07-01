@@ -12,7 +12,7 @@ namespace DataLibrary.Repository.Guests
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-        public async Task<List<GUESTS?>> GetAllGuestFromMeetingAsync(int meetingId)
+        public async Task<List<GetGuestsMeetingsResponse?>> GetAllGuestFromMeetingAsync(int meetingId)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -20,11 +20,14 @@ namespace DataLibrary.Repository.Guests
             }
             try
             {
-                var query = new QueryBuilder<GUESTS>()
-                    .Select("* ")
-                    .From($"{nameof(GUESTS)} ")
-                    .Where("IDMEETING = @MeetingId ");
-                return (await _dbConnection.QueryAsync<GUESTS?>(query.Build(), new { MeetingId = meetingId }, _fbTransaction)).AsList();
+                var query = new QueryBuilder<GetGuestsMeetingsResponse>()
+                    .Select($"gue.*, t.{nameof(TEAMS.ID_TEAM)}, t.{nameof(TEAMS.COLOR)} AS TeamColor ")
+                    .From(
+                        $"{nameof(GUESTS)} gue " +
+                        $"LEFT JOIN {nameof(TEAMS)} t ON gue.{nameof(GUESTS.IDTEAM)} = t.{nameof(TEAMS.ID_TEAM)} ")
+                    .Where("gue.IDMEETING = @MeetingId ");
+
+                return (await _dbConnection.QueryAsync<GetGuestsMeetingsResponse?>(query.Build(), new { MeetingId = meetingId }, _fbTransaction)).AsList();
             }
             catch (Exception ex)
             {

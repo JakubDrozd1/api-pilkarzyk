@@ -31,6 +31,7 @@ namespace DataLibrary.Repository.Users
                 var query = new QueryBuilder<USERS>()
                     .Select(SELECT)
                     .From("USERS ")
+                    .Where("IS_ACTIVE = true ")
                     .OrderBy(getUsersPaginationRequest)
                     .Limit(getUsersPaginationRequest);
                 return (await _dbConnection.QueryAsync<USERS>(query.Build(), _fbTransaction)).AsList();
@@ -52,7 +53,7 @@ namespace DataLibrary.Repository.Users
                 var query = new QueryBuilder<USERS>()
                     .Select("* ")
                     .From("USERS ")
-                    .Where("ID_USER = @UserId ");
+                    .Where("ID_USER = @UserId AND IS_ACTIVE = true ");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { UserId = userId }, _fbTransaction);
             }
             catch (Exception ex)
@@ -72,7 +73,7 @@ namespace DataLibrary.Repository.Users
                 var query = new QueryBuilder<USERS>()
                     .Select("* ")
                     .From("USERS ")
-                    .Where("LOGIN = @Login ");
+                    .Where("LOGIN = @Login AND IS_ACTIVE = true ");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Login = login }, _fbTransaction);
             }
             catch (Exception ex)
@@ -108,6 +109,7 @@ namespace DataLibrary.Repository.Users
                     WHERE += $"AND {nameof(USERS.USER_PASSWORD)} = @Password ";
                     dynamicParameters.Add("@Password", user?.USER_PASSWORD);
                 }
+                WHERE += $"AND {nameof(USERS.IS_ACTIVE)} = true ";
 
                 var query = new QueryBuilder<USERS>()
                     .Select("* ")
@@ -137,6 +139,7 @@ namespace DataLibrary.Repository.Users
                     WHERE += $"AND u.{nameof(USERS.ID_USER)} <> @UserId{item.IdUser} ";
                     dynamicParameters.Add($"@UserId{item.IdUser}", item.IdUser);
                 }
+                WHERE += $"AND u.IS_ACTIVE = true ";
 
                 var query = new QueryBuilder<USERS>()
                     .Select($"DISTINCT u.{nameof(USERS.ID_USER)}, " +
@@ -173,7 +176,7 @@ namespace DataLibrary.Repository.Users
                 var query = new QueryBuilder<USERS>()
                     .Select("* ")
                     .From("USERS ")
-                    .Where("Email = @Email ");
+                    .Where("Email = @Email AND IS_ACTIVE = true");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Email = email }, _fbTransaction);
             }
             catch (Exception ex)
@@ -193,7 +196,7 @@ namespace DataLibrary.Repository.Users
                 var query = new QueryBuilder<USERS>()
                     .Select("* ")
                     .From("USERS ")
-                    .Where("PHONE_NUMBER = @PhoneNumber ");
+                    .Where("PHONE_NUMBER = @PhoneNumber AND IS_ACTIVE = true");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, _fbTransaction);
             }
             catch (Exception ex)
@@ -213,7 +216,7 @@ namespace DataLibrary.Repository.Users
                 var query = new QueryBuilder<USERS>()
                     .Select("* ")
                     .From("USERS ")
-                    .Where("ID_USER = @IdUser ");
+                    .Where("ID_USER = @IdUser AND IS_ACTIVE = true");
                 USERS? user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { IdUser = userId }, _fbTransaction);
                 return user == null ? throw new Exception("Salt is null") : user.SALT;
             }

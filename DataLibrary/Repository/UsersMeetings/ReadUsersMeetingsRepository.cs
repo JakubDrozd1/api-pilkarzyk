@@ -75,6 +75,8 @@ namespace DataLibrary.Repository.UsersMeetings
                     WHERE += $"AND msg.{nameof(MESSAGES.ANSWER)} = @Answer ";
                     dynamicParameters.Add("@Answer", getMeetingsUsersPaginationRequest.Answer);
                 }
+                WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = @UserId ";
+
                 var query = new QueryBuilder<GetMeetingUsersResponse>()
                         .Select(SELECT)
                         .From(FROM)

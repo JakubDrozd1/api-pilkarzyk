@@ -62,4 +62,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Scripts\old\" />
+  </ItemGroup>
+
 </Project>

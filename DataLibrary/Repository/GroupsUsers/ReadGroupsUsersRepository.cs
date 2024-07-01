@@ -57,6 +57,7 @@ namespace DataLibrary.Repository.GroupsUsers
                 {
                     SELECT += $", u.{nameof(USERS.AVATAR)} ";
                 }
+                WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
 
                 var query = new QueryBuilder<GetGroupsUsersResponse>()
                     .Select(SELECT)
@@ -83,7 +84,7 @@ namespace DataLibrary.Repository.GroupsUsers
                 var query = new QueryBuilder<GetGroupsUsersResponse>()
                     .Select(SELECT)
                     .From(FROM)
-                    .Where("gu.IDGROUP = @GroupId AND gu.IDUSER = @UserId ");
+                    .Where("gu.IDGROUP = @GroupId AND gu.IDUSER = @UserId AND u.IS_ACTIVE = true");
                 return await _dbConnection.QuerySingleOrDefaultAsync<GetGroupsUsersResponse?>(query.Build(), new { UserId = userId, GroupId = groupId }, _fbTransaction);
             }
             catch (Exception ex)
