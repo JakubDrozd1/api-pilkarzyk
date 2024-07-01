@@ -6,6 +6,7 @@
         public int? IDMEETING { get; set; }
         public int? IDUSER { get; set; }
         public string? ANSWER { get; set; }
+        public bool? GIVE_ME_A_TIME_CLICKED { get; set; }
         public DateTime? DATE_ADD { get; set; }
         public DateTime? WAITING_TIME { get; set; }
         public DateTime? DATE_RESPONSE { get; set; }

@@ -88,6 +88,12 @@ namespace DataLibrary.Repository.Meetings
                                 dynamicParameters.Add($"@{column}", waitingTimeDecision);
                             }
                             break;
+                        case "MAX_GIVE_ME_TIME":
+                            {
+                                int? maxGiveMeTime = getUpdateMeetingRequest.MAX_GIVE_ME_TIME;
+                                dynamicParameters.Add($"@{column}", maxGiveMeTime);
+                            }
+                            break;
                     }
 
                 }

@@ -4,6 +4,7 @@ using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Messages;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
@@ -31,10 +32,12 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.IDGROUP)}, " +
                 $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
+                $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.IDTEAM)}, " +
                 $"msg.{nameof(MESSAGES.ANSWER)}, " +
+                $"msg.{nameof(MESSAGES.GIVE_ME_A_TIME_CLICKED)} AS GiveMeTimeClicked, " +
                 $"msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
         private static readonly string FROM
               = $"{nameof(MESSAGES)} msg " +
@@ -124,5 +127,6 @@ namespace DataLibrary.Repository.Messages
                 throw new Exception($"{ex.Message}");
             }
         }
+
     }
 }

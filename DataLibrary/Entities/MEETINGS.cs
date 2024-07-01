@@ -11,5 +11,6 @@
         public int? IDAUTHOR { get; set; }
         public bool? IS_INDEPENDENT { get; set; }
         public int? WAITING_TIME_DECISION { get; set; }
+        public int? MAX_GIVE_ME_TIME { get; set; }
     }
 }

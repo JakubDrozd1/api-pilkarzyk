@@ -22,5 +22,9 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("WaitingTimeDecision")]
         public int? WAITING_TIME_DECISION { get; set; }
         public required string[] Column { get; set; }
+
+        [JsonPropertyName("MaxGiveMeTime")]
+        public int? MAX_GIVE_ME_TIME { get; set; }
+
     }
 }
