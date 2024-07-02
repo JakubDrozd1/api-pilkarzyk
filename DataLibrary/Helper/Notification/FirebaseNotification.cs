@@ -33,11 +33,19 @@ namespace DataLibrary.Helper.Notification
 
         public async Task SendMeetingNotification(GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens)
         {
-
-            var androidNotificationObj = new Dictionary<string, string>
+            var androidNotificationObj = new Dictionary<string, string> { };
+            if (meeting.IsQuest != null && meeting.IsQuest == true)
             {
-                { "NotificationId", "1" }
-            };
+                androidNotificationObj.Add("MeetingNotificationId", Convert.ToString(meeting.IdMeeting ?? throw new Exception("Meeting is null")));
+            }
+            else
+            {
+                androidNotificationObj = new Dictionary<string, string>
+                    {
+                        { "NotificationId", "1" }
+                    };
+            }
+
             foreach (var token in tokens.GroupBy(x => x.TOKEN)
                 .Select(g => g.First())
                 .ToList())
@@ -48,8 +56,8 @@ namespace DataLibrary.Helper.Notification
                     Token = token.TOKEN,
                     Notification = new FirebaseAdmin.Messaging.Notification
                     {
-                        Title = meeting.IsQuest != null && meeting.IsQuest == true ? 
-                            "Nowa ankieta spotkania w grupie " + meeting.Name:
+                        Title = meeting.IsQuest != null && meeting.IsQuest == true ?
+                            "Nowa ankieta spotkania w grupie " + meeting.Name :
                             "Nowe zaproszenie do spotkania w grupie " + meeting.Name,
                         Body = meeting.Place + " " + meeting.Description
                     },
@@ -67,7 +75,7 @@ namespace DataLibrary.Helper.Notification
         {
             var androidNotificationObj = new Dictionary<string, string>
             {
-                { "NotificationId", "1" }
+                { "MeetingNotificationId", Convert.ToString(meeting.IdMeeting?? throw new Exception("Meeting is null")) }
             };
             foreach (var token in tokens.GroupBy(x => x.TOKEN)
                 .Select(g => g.First())

@@ -14,5 +14,7 @@ namespace DataLibrary.Helper.Notification
         Task SendNotificationToAuthorTeamAsync(string? teamName, int? idMeeting, USERS author, List<NOTIFICATION_TOKENS> tokens);
         Task SendGroupAddUserNotification(GROUPS group, List<NOTIFICATION_TOKENS> tokens, USERS author);
         Task SendCancelMeetingNotificationToUser(List<GetMessagesUsersMeetingsResponse> messages, GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens);
+        Task SendMeetingQuestEndNotification(GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens);
+
     }
 }

@@ -47,13 +47,14 @@ namespace DataLibrary.Repository.DateQuests
                           $"LEFT JOIN {nameof(USERS_DATE_QUESTS)} udq ON dq.{nameof(DATE_QUESTS.ID_DATE_QUEST)} = udq.{nameof(USERS_DATE_QUESTS.IDDATE_QUESTS)}")
                     .Where("IDMEETING = @MeetingId ");
 
-                var dateQuests = (await _dbConnection.QueryAsync<DATE_QUESTS, USERS_DATE_QUESTS, DATE_QUESTS>(query.Build(), (dateQuest, userDateQuest) => {
-                        if(userDateQuest!= null)
-                        {
-                            dateQuest.USERS_DATE_QUESTS.Add(userDateQuest);
-                        }
-                        return dateQuest;
-                    },
+                var dateQuests = (await _dbConnection.QueryAsync<DATE_QUESTS, USERS_DATE_QUESTS, DATE_QUESTS>(query.Build(), (dateQuest, userDateQuest) =>
+                {
+                    if (userDateQuest != null)
+                    {
+                        dateQuest.USERS_DATE_QUESTS.Add(userDateQuest);
+                    }
+                    return dateQuest;
+                },
                     new { MeetingId = meetingId },
                     _fbTransaction,
                     splitOn: "IDUSER"
