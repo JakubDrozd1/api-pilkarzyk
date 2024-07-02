@@ -3,7 +3,6 @@ using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.DateQuest;
-using DataLibrary.IRepository.Groups;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using FirebirdSql.Data.FirebirdClient;
 

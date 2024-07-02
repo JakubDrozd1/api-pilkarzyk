@@ -40,6 +40,8 @@ namespace DataLibrary.Repository.Meetings
                 dynamicParameters.Add("@DATE_QUEST_OPEN", getMeetingRequest.DATE_QUEST_OPEN);
                 dynamicParameters.Add("@IS_QUEST", getMeetingRequest.IS_QUEST);
                 dynamicParameters.Add("@DATE_QUEST_END", getMeetingRequest.DATE_QUEST_END);
+                dynamicParameters.Add("@MAX_GIVE_ME_TIME", getMeetingRequest.MAX_GIVE_ME_TIME);
+
 
                 var result = await _dbConnection.QueryAsync<int>(insertQuery, dynamicParameters, _fbTransaction);
 
