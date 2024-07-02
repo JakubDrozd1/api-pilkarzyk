@@ -37,5 +37,7 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("DateQuestEnd")]
         public DateTime? DATE_QUEST_END { get; set; }
 
+        [JsonPropertyName("MaxGiveMeTime")]
+        public int? MAX_GIVE_ME_TIME { get; set; }
     }
 }

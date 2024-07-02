@@ -16,5 +16,6 @@
         public DateTime? DateQuestEnd { get; set; }
         public bool? DateQuestOpen { get; set; }
         public bool? IsQuest { get; set; }
+        public int? MaxGiveMeTime { get; set; }
     }
 }

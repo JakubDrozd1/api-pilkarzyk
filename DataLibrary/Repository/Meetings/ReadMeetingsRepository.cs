@@ -28,6 +28,7 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.DATE_QUEST_END)} AS DateQuestEnd, " +
                 $"m.{nameof(MEETINGS.IS_QUEST)} AS IsQuest, " +
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
+                $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
               = $"{nameof(MEETINGS)} m "  +
