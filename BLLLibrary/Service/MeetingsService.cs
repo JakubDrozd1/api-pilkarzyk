@@ -33,7 +33,7 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMeetingsRepository.GetMeeting(getMeetingRequest);
         }
 
-        public async Task AddMeetingAsync(GetUsersMeetingsRequest getUsersMeetingsRequest)
+        public async Task<int> AddMeetingAsync(GetUsersMeetingsRequest getUsersMeetingsRequest)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
@@ -83,6 +83,7 @@ namespace BLLLibrary.Service
                 }
                 await _unitOfWork.SaveChangesAsync();
                 await SendNotificationToUserAsync(meetingAddedId , users, getUsersMeetingsRequest.Message.IDUSER);
+                return meetingAddedId;
             }
             catch (Exception ex)
             {
