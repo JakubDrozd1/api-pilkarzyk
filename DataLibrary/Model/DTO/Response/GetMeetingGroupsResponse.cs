@@ -13,6 +13,9 @@
         public bool? IsIndependent { get; set; }
         public int? IdMessage { get; set; }
         public int? WaitingTimeDecision { get; set; }
+        public DateTime? DateQuestEnd { get; set; }
+        public bool? DateQuestOpen { get; set; }
+        public bool? IsQuest { get; set; }
         public int? MaxGiveMeTime { get; set; }
     }
 }

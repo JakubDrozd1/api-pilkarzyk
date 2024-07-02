@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using DataLibrary.Helper.ConnectionProvider;
 using DataLibrary.IRepository.ChatMessages;
+using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
@@ -18,6 +19,7 @@ using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
 using DataLibrary.Repository.Ads;
 using DataLibrary.Repository.ChatMessages;
+using DataLibrary.Repository.DateQuests;
 using DataLibrary.Repository.EmailSender;
 using DataLibrary.Repository.GroupInvite;
 using DataLibrary.Repository.Groups;
@@ -42,6 +44,7 @@ namespace DataLibrary.UoW
         private readonly FbConnection dbConnection = _connectionProvider.GetConnection();
         private FbTransaction? dbTransaction = null;
 
+        public ICreateDateQuestsRepository CreateDateQuestsRepository => new CreateDateQuestsRepository(dbConnection, dbTransaction);
         public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection, dbTransaction);
         public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection, dbTransaction);
         public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection, dbTransaction);
@@ -60,6 +63,7 @@ namespace DataLibrary.UoW
 
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);
+        public IDeleteDateQuestsRepository DeleteDateQuestsRepository => new DeleteDateQuestsRepository(dbConnection, dbTransaction);
         public IDeleteMeetingsRepository DeleteMeetingsRepository => new DeleteMeetingsRepository(dbConnection, dbTransaction);
         public IDeleteMessagesRepository DeleteMessagesRepository => new DeleteMessagesRepository(dbConnection, dbTransaction);
         public IDeleteRankingsRepository DeleteRankingsRepository => new DeleteRankingsRepository(dbConnection, dbTransaction);
@@ -86,12 +90,14 @@ namespace DataLibrary.UoW
         public IReadChatMessagesRepository ReadChatMessagesRepository => new ReadChatMessagesRepository(dbConnection, dbTransaction);
         public IReadResetPasswordRepository ReadResetPasswordRepository => new ReadResetPasswordRepository(dbConnection, dbTransaction);
         public IReadTeamsRepository ReadTeamsRepository => new ReadTeamsRepository(dbConnection, dbTransaction);
+        public IReadDateQuestsRepository ReadDateQuestsRepository => new ReadDateQuestsRepository(dbConnection, dbTransaction);
         public IReadGuestsRepository ReadGuestsRepository => new ReadGuestsRepository(dbConnection, dbTransaction);
         public IReadNotificationRepository ReadNotificationRepository => new ReadNotificationRepository(dbConnection, dbTransaction);
         public IReadAdsRepository ReadAdsRepository => new ReadAdsRepository(dbConnection, dbTransaction);
 
 
         public IUpdateGroupsRepository UpdateGroupsRepository => new UpdateGroupsRepository(dbConnection, dbTransaction);
+        public IUpdateDateQuestsRepository UpdateDateQuestsRepository => new UpdateDateQuestsRepository(dbConnection, dbTransaction);
         public IUpdateMeetingsRepository UpdateMeetingsRepository => new UpdateMeetingsRepository(dbConnection, dbTransaction);
         public IUpdateMessagesRepository UpdateMessagesRepository => new UpdateMessagesRepository(dbConnection, dbTransaction);
         public IUpdateRankingsRepository UpdateRankingsRepository => new UpdateRankingsRepository(dbConnection, dbTransaction);
@@ -100,6 +106,8 @@ namespace DataLibrary.UoW
         public IUpdateTeamsRepository UpdateTeamsRepository => new UpdateTeamsRepository(dbConnection, dbTransaction);
         public IUpdateGuestsRepository UpdateGuestsRepository => new UpdateGuestsRepository(dbConnection, dbTransaction);
         public IUpdateNotificationRepository UpdateNotificationRepository => new UpdateNotificationRepository(dbConnection, dbTransaction);
+
+        public IToggleDateQuestsRepository ToggleDateQuestsRepository => new ToggleDateQuestsRepository(dbConnection, dbTransaction);
 
         public async Task SaveChangesAsync()
         {

@@ -55,9 +55,9 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _meetingsService.AddMeetingAsync(meetingRequest);
+                var meetingAddedId =  await _meetingsService.AddMeetingAsync(meetingRequest);
                 await _meetingsService.SaveChangesAsync();
-                return Ok(await _meetingsService.GetMeeting(meetingRequest.Meeting));
+                return Ok(await _meetingsService.GetMeetingByIdAsync(meetingAddedId));
             }
             catch (Exception ex)
             {

@@ -52,6 +52,8 @@
   <ItemGroup>
     <ProjectReference Include="..\BLLLibrary\BLLLibrary.csproj" />
     <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
+    <ProjectReference Include="..\JobsConfig\JobsConfig.csproj" />
+    <ProjectReference Include="..\jobs\Jobs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

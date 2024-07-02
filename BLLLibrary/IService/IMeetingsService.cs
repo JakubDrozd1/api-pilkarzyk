@@ -9,9 +9,11 @@ namespace BLLLibrary.IService
     public interface IMeetingsService
     {
         Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsPaginationRequest);
+        Task<List<GetMeetingGroupsResponse>> GetAllMeetingsWithQuestAsync();
         Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId);
-        Task AddMeetingAsync(GetUsersMeetingsRequest getMeetingRequest);
+        Task<int> AddMeetingAsync(GetUsersMeetingsRequest getMeetingRequest);
         Task UpdateMeetingAsync(GetMeetingRequest getMeetingRequest, int meetingId);
+        Task UpdateMeetingJobAsync(MEETINGS meeting);
         Task UpdateColumnMeetingAsync(GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId);
         Task DeleteMeetingAsync(int meetingId);
         Task<MEETINGS?> GetMeeting(GetMeetingRequest getMeetingRequest);

@@ -8,6 +8,8 @@ using System.Text;
 using Microsoft.Net.Http.Headers;
 using DataLibrary.Helper.ConnectionProvider;
 using WebApi.Controllers;
+using JobsConfig.Configurations;
+using Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,7 @@ builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
 builder.Services.AddScoped<ITeamsService, TeamsService>();
 builder.Services.AddScoped<IGuestsService, GuestsService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IDateQuestsService, DateQuestService>();
 builder.Services.AddScoped<IAdsService, AdsService>();
 
 builder.Services.AddControllers().
@@ -100,6 +103,12 @@ builder.Services
         options.IncludeErrorDetails = true;
     });
 builder.Services.AddSignalR();
+
+
+builder.Services.Configure<JobSettings>(builder.Configuration.GetSection("JobSetting"));
+
+builder.Services.RegisterBackgroundServices(builder.Configuration.GetSection("JobSetting").Get<JobSettings>() ?? new JobSettings());
+
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

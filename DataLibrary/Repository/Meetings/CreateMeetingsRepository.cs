@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.Common;
 using Dapper;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Meetings;
@@ -12,7 +13,7 @@ namespace DataLibrary.Repository.Meetings
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
 
-        public async Task AddMeetingAsync(GetMeetingRequest getMeetingRequest)
+        public async Task<int> AddMeetingAsync(GetMeetingRequest getMeetingRequest)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -23,7 +24,26 @@ namespace DataLibrary.Repository.Meetings
                 var insertBuilder = new QueryBuilder<GetMeetingRequest>()
                     .Insert("MEETINGS ", getMeetingRequest);
                 string insertQuery = insertBuilder.Build();
-                await _dbConnection.ExecuteAsync(insertQuery, getMeetingRequest, _fbTransaction);
+
+                insertQuery += "returning ID_MEETING";
+
+                DynamicParameters dynamicParameters = new();
+
+                dynamicParameters.Add("@DATE_MEETING", getMeetingRequest.DATE_MEETING);
+                dynamicParameters.Add("@PLACE", getMeetingRequest.PLACE);
+                dynamicParameters.Add("@QUANTITY", getMeetingRequest.QUANTITY);
+                dynamicParameters.Add("@DESCRIPTION", getMeetingRequest.DESCRIPTION);
+                dynamicParameters.Add("@IDGROUP", getMeetingRequest.IDGROUP);
+                dynamicParameters.Add("@IDAUTHOR", getMeetingRequest.IDAUTHOR);
+                dynamicParameters.Add("@IS_INDEPENDENT", getMeetingRequest.IS_INDEPENDENT);
+                dynamicParameters.Add("@WAITING_TIME_DECISION", getMeetingRequest.WAITING_TIME_DECISION);
+                dynamicParameters.Add("@DATE_QUEST_OPEN", getMeetingRequest.DATE_QUEST_OPEN);
+                dynamicParameters.Add("@IS_QUEST", getMeetingRequest.IS_QUEST);
+                dynamicParameters.Add("@DATE_QUEST_END", getMeetingRequest.DATE_QUEST_END);
+
+                var result = await _dbConnection.QueryAsync<int>(insertQuery, dynamicParameters, _fbTransaction);
+
+                return result.Single();
             }
             catch (Exception ex)
             {

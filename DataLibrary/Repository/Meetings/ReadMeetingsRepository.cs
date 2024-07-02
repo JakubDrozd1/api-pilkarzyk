@@ -7,6 +7,7 @@ using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
+using Xamarin.Essentials;
 
 namespace DataLibrary.Repository.Meetings
 {
@@ -23,6 +24,9 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.DESCRIPTION)}, " +
                 $"m.{nameof(MEETINGS.IDAUTHOR)}, " +
                 $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
+                $"m.{nameof(MEETINGS.DATE_QUEST_OPEN)} AS DateQuestOpen, " +
+                $"m.{nameof(MEETINGS.DATE_QUEST_END)} AS DateQuestEnd, " +
+                $"m.{nameof(MEETINGS.IS_QUEST)} AS IsQuest, " +
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
@@ -76,6 +80,11 @@ namespace DataLibrary.Repository.Meetings
                     SELECT += $", msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
                     FROM += $"JOIN {nameof(MESSAGES)} msg ON m.{nameof(MEETINGS.ID_MEETING)} = msg.{nameof(MESSAGES.IDMEETING)} ";
                 }
+                if (getMeetingsRequest.IsQuest != null)
+                {
+                    WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
+                    dynamicParameters.Add("@IsQuest", getMeetingsRequest.IsQuest);
+                }
                 WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
 
                 var query = new QueryBuilder<GetMeetingGroupsResponse>()
@@ -84,6 +93,35 @@ namespace DataLibrary.Repository.Meetings
                     .Where(WHERE)
                     .OrderBy(getMeetingsRequest)
                     .Limit(getMeetingsRequest);
+                return (await _dbConnection.QueryAsync<GetMeetingGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task<List<GetMeetingGroupsResponse>> GetAllMeetingsWithQuestAsync()
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                DynamicParameters dynamicParameters = new();
+
+                var WHERE = $"m.{nameof(MEETINGS.DATE_QUEST_END)} <= @Date ";
+                dynamicParameters.Add("@Date", DateTime.Now);
+
+                WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
+                dynamicParameters.Add("@IsQuest", true);
+
+                var query = new QueryBuilder<GetMeetingGroupsResponse>()
+                    .Select(SELECT)
+                    .From(FROM)
+                    .Where(WHERE);
+
                 return (await _dbConnection.QueryAsync<GetMeetingGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
             }
             catch (Exception ex)

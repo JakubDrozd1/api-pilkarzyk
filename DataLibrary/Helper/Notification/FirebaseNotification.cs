@@ -42,12 +42,44 @@ namespace DataLibrary.Helper.Notification
                 .Select(g => g.First())
                 .ToList())
             {
+
                 var obj = new Message
                 {
                     Token = token.TOKEN,
                     Notification = new FirebaseAdmin.Messaging.Notification
                     {
-                        Title = "Nowe zaproszenie do spotkania w grupie " + meeting.Name,
+                        Title = meeting.IsQuest != null && meeting.IsQuest == true ? 
+                            "Nowa ankieta spotkania w grupie " + meeting.Name:
+                            "Nowe zaproszenie do spotkania w grupie " + meeting.Name,
+                        Body = meeting.Place + " " + meeting.Description
+                    },
+                    Data = androidNotificationObj
+                };
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
+            }
+        }
+
+        public async Task SendMeetingQuestEndNotification(GetMeetingGroupsResponse meeting, List<NOTIFICATION_TOKENS> tokens)
+        {
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "NotificationId", "1" }
+            };
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
+            {
+
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = "Ustalono Datę spotkania z ankiety dla " + meeting.Name,
                         Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
                     },
                     Data = androidNotificationObj

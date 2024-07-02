@@ -33,6 +33,26 @@ namespace DataLibrary.Repository.Meetings
             }
         }
 
+        public void UpdateMeeting(MEETINGS meeting)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                 _dbConnection.Open();
+            }
+            try
+            {
+                var updateBuilder = new QueryBuilder<MEETINGS>()
+                    .Update("MEETINGS ", meeting)
+                    .Where("ID_MEETING = @ID_MEETING ");
+                string updateQuery = updateBuilder.Build();
+                _dbConnection.Execute(updateQuery, meeting, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
         public async Task UpdateColumnMeetingAsync(GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId)
         {
             if (_dbConnection.State != ConnectionState.Open)
