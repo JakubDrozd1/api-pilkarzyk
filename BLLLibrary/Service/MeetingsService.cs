@@ -23,6 +23,11 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadMeetingsRepository.GetAllMeetingsWithQuestAsync();
         }
 
+        public async Task<List<GetMeetingReminderResponse>> GetAllActualMeetingsAsync()
+        {
+            return await _unitOfWork.ReadMeetingsRepository.GetAllActualMeetingsAsync();
+        }
+
         public async Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId)
         {
             return await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);

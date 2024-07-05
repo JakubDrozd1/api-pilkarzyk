@@ -29,6 +29,8 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.IS_QUEST)} AS IsQuest, " +
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
+                $"m.{nameof(MEETINGS.LAST_REMINDER_MESSAGES_TIME)} AS LastReminderMessagesTime, " +
+                $"m.{nameof(MEETINGS.REMINDER_MESSAGES_TIME)} AS ReminderMessagesTime, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
               = $"{nameof(MEETINGS)} m "  +
@@ -123,6 +125,60 @@ namespace DataLibrary.Repository.Meetings
                     .Where(WHERE);
 
                 return (await _dbConnection.QueryAsync<GetMeetingGroupsResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task<List<GetMeetingReminderResponse>> GetAllActualMeetingsAsync()
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+
+                string SELECT =
+                   $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
+                   $"m.{nameof(MEETINGS.ID_MEETING)} AS IdMeeting, " +
+                   $"m.{nameof(MEETINGS.IS_QUEST)} AS IsQuest, " +
+                   $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +
+                   $"m.{nameof(MEETINGS.PLACE)} AS Place, " +
+                   $"m.{nameof(MEETINGS.DESCRIPTION)} AS Description, " +
+                   $"m.{nameof(MEETINGS.QUANTITY)} AS Quantity, " +
+                   $"m.{nameof(MEETINGS.IDGROUP)} AS IdGroup, " +
+                   $"m.{nameof(MEETINGS.IDAUTHOR)} AS IdAuthor, " +
+                   $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
+                   $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
+                   $"m.{nameof(MEETINGS.REMINDER_MESSAGES_TIME)} AS ReminderMessagesTime, " +
+                   $"m.{nameof(MEETINGS.LAST_REMINDER_MESSAGES_TIME)} AS LastReminderMessagesTime, " +
+                   $"ms.{nameof(MESSAGES.ANSWER)} AS Answer, " +
+                   $"us.{nameof(USERS.ID_USER)} AS IdUser ";
+
+
+                string FROM = $"{nameof(MEETINGS)} m " +
+                    $"JOIN {nameof(MESSAGES)} ms ON m.{nameof(MEETINGS.ID_MEETING)} = ms.{nameof(MESSAGES.IDMEETING)} " +
+                    $"JOIN {nameof(USERS)} us ON ms.{nameof(MESSAGES.IDUSER)} = us.{nameof(USERS.ID_USER)} ";
+
+                DynamicParameters dynamicParameters = new();
+
+                var WHERE = $"m.{nameof(MEETINGS.DATE_MEETING)} >= @Date ";
+                dynamicParameters.Add("@Date", DateTime.Now);
+
+                WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
+                dynamicParameters.Add("@IsQuest", false);
+
+                WHERE += $"AND ms.{nameof(MESSAGES.ANSWER)} IS NULL ";
+
+                var query = new QueryBuilder<GetMeetingGroupsResponse>()
+                    .Select(SELECT)
+                    .From(FROM)
+                    .Where(WHERE);
+
+                return (await _dbConnection.QueryAsync<GetMeetingReminderResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
             }
             catch (Exception ex)
             {

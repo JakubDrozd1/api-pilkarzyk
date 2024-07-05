@@ -67,7 +67,7 @@ namespace DataLibrary.Repository.DateQuests
                     grupedDateQuest.USERS_DATE_QUESTS = dateQuest
                     .Where(userDateQuests => userDateQuests.USERS_DATE_QUESTS.SingleOrDefault() != null)
                     .Select(userDateQuests => userDateQuests.USERS_DATE_QUESTS.SingleOrDefault())
-                    .ToList();
+                    .ToList()!;
 
                     return grupedDateQuest;
                 }).ToList();

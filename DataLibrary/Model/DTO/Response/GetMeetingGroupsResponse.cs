@@ -17,5 +17,8 @@
         public bool? DateQuestOpen { get; set; }
         public bool? IsQuest { get; set; }
         public int? MaxGiveMeTime { get; set; }
+        public int? ReminderMessagesTime { get; set; }
+        public DateTime? LastReminderMessagesTime { get; set; }
+
     }
 }
