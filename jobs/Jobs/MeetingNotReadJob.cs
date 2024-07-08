@@ -34,51 +34,81 @@ namespace Jobs.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
 
-            var mettings = await _meetingsService.GetAllActualMeetingsAsync();
+            var meetings = await _meetingsService.GetAllActualMeetingsAsync();
             var meetingsDictionary = new Dictionary<int, GetMeetingReminderResponse>();
 
 
             FirebaseNotification notificationHub = new();
 
-            foreach (var mettingUser in mettings)
+            foreach (var meetingUser in meetings)
             {
-                if (mettingUser.IdMeeting != null &&
-                    mettingUser.LastReminderMessagesTime != null &&
-                    mettingUser.ReminderMessagesTime != null &&
-                    ((DateTime)mettingUser.LastReminderMessagesTime).AddMinutes((int)mettingUser.ReminderMessagesTime) <= DateTime.Now)
+                if (meetingUser != null &&
+                    meetingUser.IdMeeting != null &&
+                    meetingUser.LastReminderMessagesTime != null &&
+                    meetingUser.ReminderMessagesTime != null &&
+                    ((DateTime)meetingUser.LastReminderMessagesTime).AddMinutes((int)meetingUser.ReminderMessagesTime) <= DateTime.Now &&
+                    meetingUser.WaitingTimeDecision != null &&
+                    meetingUser.DateMeeting != null &&
+                    ((DateTime)meetingUser.DateMeeting).AddMinutes(-(int)meetingUser.WaitingTimeDecision) >= DateTime.Now
+                    )
                 {
-                    NOTIFICATION? userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(mettingUser.IdUser ?? 0);
+                    NOTIFICATION? userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(meetingUser.IdUser ?? 0);
                     if (userDetails != null)
                     {
-                        if (userDetails.MEETING_NOTIFICATION)
+                        var actualTime = (DateTime.Now).TimeOfDay;
+                        if (userDetails.MEETING_REMINDER_NOTIFICATION && (
+                                (
+                                    userDetails.TIME_SILENT_START > userDetails.TIME_SILENT_END &&
+                                    (userDetails.TIME_SILENT_START >= actualTime &&
+                                    userDetails.TIME_SILENT_END <= actualTime)
+                                ) ||
+                                (
+                                    userDetails.TIME_SILENT_START < userDetails.TIME_SILENT_END &&
+                                    (userDetails.TIME_SILENT_START >= actualTime ||
+                                    userDetails.TIME_SILENT_END <= actualTime)
+                                ) || 
+                                userDetails.TIME_SILENT_START == userDetails.TIME_SILENT_END
+                            ))
                         {
-                            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(mettingUser.IdUser ?? throw new Exception("User is null"));
+                            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(meetingUser.IdUser ?? throw new Exception("User is null"));
 
                             if (tokens != null)
                             {
-                                await notificationHub.SendMeetingReminderNotification(mettingUser, tokens);
+                                await notificationHub.SendMeetingReminderNotification(meetingUser, tokens);
                             }
                         }
                     }
-                    meetingsDictionary[(int)mettingUser.IdMeeting] = mettingUser;
+                    meetingsDictionary[(int)meetingUser.IdMeeting] = meetingUser;
                 }
             }
 
             foreach (var meeting in meetingsDictionary)
             {
-                MEETINGS meetingToJob = new()
-                {
-                    ID_MEETING = meeting.Key,
-                    DESCRIPTION = meeting.Value.Description,
-                    QUANTITY = meeting.Value.Quantity,
-                    DATE_MEETING = meeting.Value.DateMeeting,
-                    PLACE = meeting.Value.Place,
-                    IDGROUP = meeting.Value.IdGroup,
-                    IDAUTHOR = meeting.Value.IdAuthor,
-                    IS_INDEPENDENT = meeting.Value.IsIndependent,
-                };
+                var meetingToUpdate = await _meetingsService.GetMeetingByIdAsync(meeting.Key);
 
-                _meetingsService.UpdateMeetingJobAsync(meetingToJob);
+                if (meetingToUpdate != null)
+                {
+                    MEETINGS meetingToJob = new()
+                    {
+                        ID_MEETING = meeting.Key,
+                        DESCRIPTION = meeting.Value.Description,
+                        QUANTITY = meeting.Value.Quantity,
+                        DATE_MEETING = meeting.Value.DateMeeting,
+                        PLACE = meeting.Value.Place,
+                        IDGROUP = meeting.Value.IdGroup,
+                        IDAUTHOR = meeting.Value.IdAuthor,
+                        IS_INDEPENDENT = meeting.Value.IsIndependent,
+                        LAST_REMINDER_MESSAGES_TIME = DateTime.Now,
+                        WAITING_TIME_DECISION = meeting.Value.WaitingTimeDecision,
+                        DATE_QUEST_END = meetingToUpdate.DateQuestEnd,
+                        DATE_QUEST_OPEN = meetingToUpdate.DateQuestOpen,
+                        IS_QUEST = meetingToUpdate.IsQuest,
+                        MAX_GIVE_ME_TIME = meetingToUpdate.MaxGiveMeTime,
+                        REMINDER_MESSAGES_TIME = meetingToUpdate.ReminderMessagesTime,
+                    };
+
+                    await _meetingsService.UpdateMeetingJobAsync(meetingToJob);
+                }
 
             }
         }

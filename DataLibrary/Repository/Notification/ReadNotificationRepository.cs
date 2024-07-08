@@ -20,6 +20,9 @@ namespace DataLibrary.Repository.Notification
             $"COALESCE({nameof(NOTIFICATION.TEAM_ORGANIZER_NOTIFICATION)}, true) AS TEAM_ORGANIZER_NOTIFICATION, " +
             $"COALESCE({nameof(NOTIFICATION.GROUP_ADD_NOTIFICATION)}, true) AS GROUP_ADD_NOTIFICATION, " +
             $"COALESCE({nameof(NOTIFICATION.MEETING_CANCEL_NOTIFICATION)}, true) AS MEETING_CANCEL_NOTIFICATION, " +
+            $"COALESCE({nameof(NOTIFICATION.MEETING_REMINDER_NOTIFICATION)}, true) AS MEETING_REMINDER_NOTIFICATION, " +
+            $"{nameof(NOTIFICATION.TIME_SILENT_START)} AS TIME_SILENT_START, " +
+            $"{nameof(NOTIFICATION.TIME_SILENT_END)} AS TIME_SILENT_END, " +
             $"COALESCE({nameof(NOTIFICATION.IDUSER)}, 0) AS IDUSER, " +
             $"COALESCE({nameof(NOTIFICATION.ID_NOTIFICATION)}, 0) AS ID_NOTIFICATION ";
 
@@ -36,6 +39,7 @@ namespace DataLibrary.Repository.Notification
                     .Select(SELECT)
                     .From(" NOTIFICATION n RIGHT JOIN USERS u ON u.ID_USER = n.IDUSER ")
                     .Where("ID_USER = @IdUser AND u.IS_ACTIVE = true ");
+
                 return await _dbConnection.QuerySingleOrDefaultAsync<NOTIFICATION>(query.Build(), new { IdUser = userId }, _fbTransaction);
             }
             catch (Exception ex)

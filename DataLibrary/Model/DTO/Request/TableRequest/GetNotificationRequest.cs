@@ -30,5 +30,14 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
 
         [JsonPropertyName("MeetingCancelNotification")]
         public bool MEETING_CANCEL_NOTIFICATION { get; set; }
+
+        [JsonPropertyName("MeetingReminderNotification")]
+        public bool MEETING_REMINDER_NOTIFICATION { get; set; }
+
+        [JsonPropertyName("TimeSilentStart")]
+        public string? TIME_SILENT_START { get; set; }
+
+        [JsonPropertyName("TimeSilentEnd")]
+        public string? TIME_SILENT_END { get; set; }
     }
 }
