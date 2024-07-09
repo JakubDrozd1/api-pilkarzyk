@@ -171,7 +171,9 @@ namespace DataLibrary.Repository.Meetings
                 WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
                 dynamicParameters.Add("@IsQuest", false);
 
-                WHERE += $"AND ms.{nameof(MESSAGES.ANSWER)} IS NULL ";
+                WHERE += $"AND (ms.{nameof(MESSAGES.ANSWER)} IS NULL OR  ms.{nameof(MESSAGES.ANSWER)} = @Answer )";
+                dynamicParameters.Add("@Answer", "yes");
+
 
                 var query = new QueryBuilder<GetMeetingGroupsResponse>()
                     .Select(SELECT)

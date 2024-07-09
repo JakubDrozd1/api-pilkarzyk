@@ -15,6 +15,7 @@
         public int? IdGroup { get; set; }
         public int? IdAuthor { get; set; }
         public bool? IsIndependent { get; set; }
+        public string? Answer { get; set; }
 
     }
 }

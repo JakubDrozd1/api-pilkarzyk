@@ -7,6 +7,7 @@ using DataLibrary.Model.DTO.Response;
 using DataLibrary.Entities;
 using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using Quartz.Util;
 
 
 namespace Jobs.Jobs
@@ -36,14 +37,30 @@ namespace Jobs.Jobs
 
             var meetings = await _meetingsService.GetAllActualMeetingsAsync();
             var meetingsDictionary = new Dictionary<int, GetMeetingReminderResponse>();
-
+            var meetingsToFilterDictionary = new Dictionary<int, int>();
 
             FirebaseNotification notificationHub = new();
 
             foreach (var meetingUser in meetings)
             {
-                if (meetingUser != null &&
+                if (meetingUser != null && meetingUser.IdMeeting != null && meetingUser.Answer == "yes")
+                {
+                    if (!meetingsToFilterDictionary.ContainsKey((int)meetingUser.IdMeeting))
+                    {
+                        meetingsToFilterDictionary[(int)meetingUser.IdMeeting] = 0;
+
+                    }
+                    meetingsToFilterDictionary[(int)meetingUser.IdMeeting] += 1;
+                }
+            }
+
+            foreach (var meetingUser in meetings)
+            {
+                if (
+                    meetingUser != null &&
+                    meetingUser.Answer != "yes" &&
                     meetingUser.IdMeeting != null &&
+                    meetingsToFilterDictionary[(int)meetingUser.IdMeeting] < meetingUser.Quantity &&
                     meetingUser.LastReminderMessagesTime != null &&
                     meetingUser.ReminderMessagesTime != null &&
                     ((DateTime)meetingUser.LastReminderMessagesTime).AddMinutes((int)meetingUser.ReminderMessagesTime) <= DateTime.Now &&
