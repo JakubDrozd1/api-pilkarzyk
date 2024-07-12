@@ -25,7 +25,16 @@ namespace BLLLibrary.Service
                 var group = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(getGroupInviteRequest.GroupInvite.IDGROUP) ?? throw new Exception("Group is null");
                 var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(getGroupInviteRequest.GroupInvite.IDAUTHOR) ?? throw new Exception("Author is null");
 
-                var isEmail = !(getGroupInviteRequest.EmailOrPhoneNumber?.Length == 9 && int.TryParse(getGroupInviteRequest.EmailOrPhoneNumber, out _));
+                var isEmail = !(
+                    (
+                        getGroupInviteRequest.EmailOrPhoneNumber?.Length == 9 &&
+                        int.TryParse(getGroupInviteRequest.EmailOrPhoneNumber, out _)
+                    ) || (
+                        getGroupInviteRequest.EmailOrPhoneNumber?.Length == 12 &&
+                        getGroupInviteRequest.EmailOrPhoneNumber[0] == '+' &&
+                        !getGroupInviteRequest.EmailOrPhoneNumber.Contains("@")
+                    )
+                );
 
                 if (isEmail)
                 {
@@ -109,8 +118,13 @@ namespace BLLLibrary.Service
                 }
                 else
                 {
-                    var PhoneNumber = 0;
-                    PhoneNumber = int.Parse(getGroupInviteRequest.EmailOrPhoneNumber ?? throw new Exception("Phone number is null"));
+                    var PhoneNumber = "000000000";
+                    if(getGroupInviteRequest.EmailOrPhoneNumber == null)
+                    {
+                        throw new Exception("Phone number is null");
+                    }
+
+                    PhoneNumber = getGroupInviteRequest.EmailOrPhoneNumber;
                     var user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAsync(PhoneNumber) ?? throw new Exception("User with this phone number dont exist");
 
                     if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.GroupInvite.IDGROUP, user.ID_USER) != null)

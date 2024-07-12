@@ -17,6 +17,6 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         public string? EMAIL { get; set; }
 
         [JsonPropertyName("PhoneNumber")]
-        public int? PHONE_NUMBER { get; set; }
+        public string? PHONE_NUMBER { get; set; }
     }
 }

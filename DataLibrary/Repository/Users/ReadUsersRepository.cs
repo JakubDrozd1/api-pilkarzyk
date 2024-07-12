@@ -185,7 +185,7 @@ namespace DataLibrary.Repository.Users
             }
         }
 
-        public async Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber)
+        public async Task<USERS?> GetUserByPhoneNumberAsync(string phoneNumber)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {

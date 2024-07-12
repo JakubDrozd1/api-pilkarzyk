@@ -86,7 +86,7 @@ namespace DataLibrary.Repository.Users
                             break;
                         case "PHONE_NUMBER":
                             {
-                                int phoneNumber = getUpdateUserRequest.PHONE_NUMBER ?? throw new Exception("Phone Number is null");
+                                string phoneNumber = getUpdateUserRequest.PHONE_NUMBER ?? throw new Exception("Phone Number is null");
                                 dynamicParameters.Add($"@{column}", phoneNumber);
                             }
                             break;

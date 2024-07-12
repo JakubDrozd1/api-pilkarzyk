@@ -7,7 +7,7 @@
         public string? Email { get; set; }
         public string? Firstname { get; set; }
         public string? Surname { get; set; }
-        public int? PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
         public bool? IsAdmin { get; set; }
         public int? AccountType { get; set; }
         public int? IdGroup { get; set; }
