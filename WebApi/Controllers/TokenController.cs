@@ -25,6 +25,10 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
+                if(ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
                 return BadRequest(new { message = ex.Message });
             }
         }
@@ -45,7 +49,11 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
