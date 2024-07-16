@@ -17,18 +17,15 @@ namespace Jobs.Jobs
     {
         private readonly ILogger<MeetingNotReadJob> _logger;
         private readonly IMeetingsService _meetingsService;
-        private readonly IMessagesService _messageService;
         IUnitOfWork _unitOfWork;
 
         public MeetingNotReadJob(
             ILogger<MeetingNotReadJob> logger,
             IMeetingsService meetingsService,
-            IMessagesService messagesService,
             IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _meetingsService = meetingsService;
-            _messageService = messagesService;
             _unitOfWork = unitOfWork;
         }
 
@@ -60,7 +57,7 @@ namespace Jobs.Jobs
                     meetingUser != null &&
                     meetingUser.Answer != "yes" &&
                     meetingUser.IdMeeting != null &&
-                    meetingsToFilterDictionary[(int)meetingUser.IdMeeting] < meetingUser.Quantity &&
+                    (!meetingsToFilterDictionary.ContainsKey((int)meetingUser.IdMeeting) || meetingsToFilterDictionary[(int)meetingUser.IdMeeting] < meetingUser.Quantity) &&
                     meetingUser.LastReminderMessagesTime != null &&
                     meetingUser.ReminderMessagesTime != null &&
                     ((DateTime)meetingUser.LastReminderMessagesTime).AddMinutes((int)meetingUser.ReminderMessagesTime) <= DateTime.Now &&
