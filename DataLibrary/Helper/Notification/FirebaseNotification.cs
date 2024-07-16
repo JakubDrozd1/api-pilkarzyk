@@ -100,6 +100,35 @@ namespace DataLibrary.Helper.Notification
             }
         }
 
+        public async Task SendMeetingReminderNotification(GetMeetingReminderResponse meeting, List<NOTIFICATION_TOKENS> tokens)
+        {
+            var androidNotificationObj = new Dictionary<string, string>
+            {
+                { "MeetingNotificationId", Convert.ToString(meeting.IdMeeting?? throw new Exception("Meeting is null")) }
+            };
+            foreach (var token in tokens.GroupBy(x => x.TOKEN)
+                .Select(g => g.First())
+                .ToList())
+            {
+
+                var obj = new Message
+                {
+                    Token = token.TOKEN,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = "Nie zapomnij o spodkaniu w " + meeting.Place,
+                        Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
+                    },
+                    Data = androidNotificationObj
+                };
+                try
+                {
+                    await FirebaseMessaging.DefaultInstance.SendAsync(obj);
+                }
+                catch { }
+            }
+        }
+
         public async Task SendGroupNotification(GROUPS group, USERS? user, List<NOTIFICATION_TOKENS> tokens)
         {
 
