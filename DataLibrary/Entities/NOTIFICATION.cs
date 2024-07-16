@@ -12,5 +12,8 @@
         public bool TEAM_ORGANIZER_NOTIFICATION { get; set; }
         public bool GROUP_ADD_NOTIFICATION { get; set; }
         public bool MEETING_CANCEL_NOTIFICATION { get; set; }
+        public bool MEETING_REMINDER_NOTIFICATION { get; set; }
+        public TimeSpan TIME_SILENT_START { get; set; }
+        public TimeSpan TIME_SILENT_END { get; set; }
     }
 }
