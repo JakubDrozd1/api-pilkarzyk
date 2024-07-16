@@ -8,5 +8,7 @@
         public string? CONTENT { get; set; }
         public string? URL { get; set; }
         public string? COLOR { get; set; }
+        public int? TIME_START { get; set; }
+        public int? TIME_END { get; set; }
     }
 }
