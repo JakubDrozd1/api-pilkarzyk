@@ -44,8 +44,14 @@ namespace DataLibrary.Repository.Ads
 
                 if(ads != null && ads.Count > 0)
                 {
-                    Random rnd = new Random();
-                    int r = rnd.Next(ads.Count);
+                    int r = ads.FindIndex(ad => ad.TIME_START <= DateTime.Now.Minute && ad.TIME_END >= DateTime.Now.Minute);
+
+                    if(r == -1)
+                    {
+                        Random rnd = new Random();
+                         r = rnd.Next(ads.Count);
+                    }
+
                     return new GetAdResponse { Content = ads[r].CONTENT!, Url = ads[r].URL ?? "", Color = ads[r].COLOR ?? "" };
                 }
 
