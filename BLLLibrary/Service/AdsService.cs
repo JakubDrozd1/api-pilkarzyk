@@ -1,8 +1,4 @@
 ﻿using BLLLibrary.IService;
-using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Request;
-using DataLibrary.Model.DTO.Request.Pagination;
-using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 
@@ -15,6 +11,11 @@ namespace BLLLibrary.Service
         public async Task<GetAdResponse?> GetAdsAsync()
         {
             return await _unitOfWork.ReadAdsRepository.GetAdsAsync();
+        }
+
+        public async Task<List<GetAdResponse>> GetAllAdsAsync()
+        {
+            return await _unitOfWork.ReadAdsRepository.GetAllAdsAsync();
         }
 
     }

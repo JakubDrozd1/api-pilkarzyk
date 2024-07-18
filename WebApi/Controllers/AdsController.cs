@@ -1,8 +1,4 @@
 ﻿using BLLLibrary.IService;
-using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Request;
-using DataLibrary.Model.DTO.Request.Pagination;
-using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +26,21 @@ namespace WebApi.Controllers
                 {
                     return StatusCode(500);
                 }
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("all", Name = "GetAds")]
+        public async Task<ActionResult<List<GetAdResponse>>> GetAds()
+        {
+            try
+            {
+                var ad = await _adsService.GetAllAdsAsync();
+                return Ok(ad);
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(new { message = ex.Message });
             }
         }

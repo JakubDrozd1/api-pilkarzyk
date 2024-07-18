@@ -66,7 +66,6 @@ namespace DataLibrary.UoW
         IReadResetPasswordRepository ReadResetPasswordRepository { get; }
         IReadTeamsRepository ReadTeamsRepository { get; }
         IReadDateQuestsRepository ReadDateQuestsRepository { get; }
-
         IReadGuestsRepository ReadGuestsRepository { get; }
         IReadNotificationRepository ReadNotificationRepository { get; }
 
