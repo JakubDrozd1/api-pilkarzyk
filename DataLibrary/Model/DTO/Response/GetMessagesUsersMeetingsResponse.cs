@@ -1,4 +1,6 @@
-﻿namespace DataLibrary.Model.DTO.Response
+﻿using System.Text.Json.Serialization;
+
+namespace DataLibrary.Model.DTO.Response
 {
     public class GetMessagesUsersMeetingsResponse
     {
@@ -28,5 +30,6 @@
         public int? WaitingTimeDecision { get; set; }
         public int? MaxGiveMeTime { get; set; }
         public bool? GiveMeTimeClicked { get; set; }
+        public int? ReminderMessagesTime { get; set; }
     }
 }
