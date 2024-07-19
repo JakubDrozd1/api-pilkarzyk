@@ -7,6 +7,7 @@ using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataLibrary.Repository.Users
 {
@@ -193,11 +194,26 @@ namespace DataLibrary.Repository.Users
             }
             try
             {
-                var query = new QueryBuilder<USERS>()
-                    .Select("* ")
-                    .From("USERS ")
-                    .Where("PHONE_NUMBER = @PhoneNumber AND IS_ACTIVE = true");
-                return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, _fbTransaction);
+                var count = 0;
+                USERS? user = null;
+                var searchingPhone = phoneNumber;
+
+                while (count <= 4)
+                {
+                    var query = new QueryBuilder<USERS>()
+                        .Select("* ")
+                        .From("USERS ")
+                        .Where("PHONE_NUMBER = @PhoneNumber AND IS_ACTIVE = true");
+                    user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = searchingPhone }, _fbTransaction);
+                    if(user != null)
+                    {
+                        break;
+                    }
+                    searchingPhone = searchingPhone.Substring(1);
+                    count++;
+                }
+
+                return user;
             }
             catch (Exception ex)
             {
