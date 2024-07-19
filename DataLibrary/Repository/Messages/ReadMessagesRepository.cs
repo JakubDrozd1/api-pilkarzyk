@@ -4,7 +4,6 @@ using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Messages;
 using DataLibrary.Model.DTO.Request.Pagination;
-using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
