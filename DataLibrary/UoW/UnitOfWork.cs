@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using DataLibrary.Helper.ConnectionProvider;
+using DataLibrary.IRepository.ADS;
 using DataLibrary.IRepository.ChatMessages;
 using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.EmailSender;
@@ -60,6 +61,7 @@ namespace DataLibrary.UoW
         public ICreateTeamsRepository CreateTeamsRepository => new CreateTeamsRopository(dbConnection, dbTransaction);
         public ICreateGuestsRepository CreateGuestsRepository => new CreateGuestsRepository(dbConnection, dbTransaction);
         public ICreateNotificationRepository CreateNotificationRepository => new CreateNotificationRepository(dbConnection, dbTransaction);
+        public ICreateAdsRepository CreateAdsRepository => new CreateAdsRepository(dbConnection, dbTransaction);
 
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);
