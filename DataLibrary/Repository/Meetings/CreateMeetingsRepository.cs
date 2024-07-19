@@ -41,6 +41,8 @@ namespace DataLibrary.Repository.Meetings
                 dynamicParameters.Add("@IS_QUEST", getMeetingRequest.IS_QUEST);
                 dynamicParameters.Add("@DATE_QUEST_END", getMeetingRequest.DATE_QUEST_END);
                 dynamicParameters.Add("@MAX_GIVE_ME_TIME", getMeetingRequest.MAX_GIVE_ME_TIME);
+                dynamicParameters.Add("@REMINDER_MESSAGES_TIME", getMeetingRequest.REMINDER_MESSAGES_TIME);
+                dynamicParameters.Add("@LAST_REMINDER_MESSAGES_TIME", DateTime.Now);
 
 
                 var result = await _dbConnection.QueryAsync<int>(insertQuery, dynamicParameters, _fbTransaction);

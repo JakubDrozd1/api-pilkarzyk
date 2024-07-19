@@ -39,5 +39,11 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
 
         [JsonPropertyName("MaxGiveMeTime")]
         public int? MAX_GIVE_ME_TIME { get; set; }
+
+        [JsonPropertyName("LastReminderMessagesTime")]
+        public DateTime? LAST_REMINDER_MESSAGES_TIME { get; set; }
+
+        [JsonPropertyName("ReminderMessagesTime")]
+        public int? REMINDER_MESSAGES_TIME { get; set; }
     }
 }

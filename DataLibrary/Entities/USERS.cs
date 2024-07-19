@@ -4,7 +4,7 @@ namespace DataLibrary.Entities
 {
     public class USERS
     {
-        public int ID_USER { get; set; }
+        public required int ID_USER { get; set; }
         public required string LOGIN { get; set; }
         public required string USER_PASSWORD { get; set; }
         public required string EMAIL { get; set; }

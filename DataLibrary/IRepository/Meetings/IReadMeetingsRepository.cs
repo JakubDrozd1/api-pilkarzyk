@@ -9,6 +9,7 @@ namespace DataLibrary.IRepository.Meetings
     {
         Task<List<GetMeetingGroupsResponse>> GetAllMeetingsAsync(GetMeetingsGroupsPaginationRequest getMeetingsRequest);
         Task<List<GetMeetingGroupsResponse>> GetAllMeetingsWithQuestAsync();
+        Task<List<GetMeetingReminderResponse>> GetAllActualMeetingsAsync();
         Task<GetMeetingGroupsResponse?> GetMeetingByIdAsync(int meetingId);
         Task<MEETINGS?> GetMeeting(GetMeetingRequest meetings);
     }
