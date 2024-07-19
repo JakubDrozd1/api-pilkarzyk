@@ -25,16 +25,7 @@ namespace BLLLibrary.Service
                 var group = await _unitOfWork.ReadGroupsRepository.GetGroupByIdAsync(getGroupInviteRequest.GroupInvite.IDGROUP) ?? throw new Exception("Group is null");
                 var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(getGroupInviteRequest.GroupInvite.IDAUTHOR) ?? throw new Exception("Author is null");
 
-                var isEmail = !(
-                    (
-                        getGroupInviteRequest.EmailOrPhoneNumber?.Length == 9 &&
-                        int.TryParse(getGroupInviteRequest.EmailOrPhoneNumber, out _)
-                    ) || (
-                        getGroupInviteRequest.EmailOrPhoneNumber?.Length == 12 &&
-                        getGroupInviteRequest.EmailOrPhoneNumber[0] == '+' &&
-                        !getGroupInviteRequest.EmailOrPhoneNumber.Contains("@")
-                    )
-                );
+                var isEmail = getGroupInviteRequest.EmailOrPhoneNumber.Contains("@");
 
                 if (isEmail)
                 {
