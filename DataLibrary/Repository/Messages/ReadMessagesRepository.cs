@@ -4,6 +4,7 @@ using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Messages;
 using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
@@ -120,6 +121,32 @@ namespace DataLibrary.Repository.Messages
                     .From("MESSAGES ")
                     .Where("ID_MESSAGE = @MessageId ");
                 return await _dbConnection.QuerySingleOrDefaultAsync<MESSAGES>(query.Build(), new { MessageId = messageId }, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task<MESSAGES?> GetMessageByMeetingIdAndUserIdAsync(int IdMeeting, int IdUser)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                DynamicParameters dynamicParametersMeeting = new();
+
+                dynamicParametersMeeting.Add("@UserId", IdUser);
+                dynamicParametersMeeting.Add("@MeetingId", IdMeeting);
+
+                var query = new QueryBuilder<MESSAGES>()
+                    .Select("GIVE_ME_A_TIME_CLICKED, ANSWER, ID_MESSAGE ")
+                    .From("MESSAGES ")
+                    .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
+                return await _dbConnection.QuerySingleOrDefaultAsync<MESSAGES>(query.Build(), dynamicParametersMeeting, _fbTransaction);
+
             }
             catch (Exception ex)
             {
