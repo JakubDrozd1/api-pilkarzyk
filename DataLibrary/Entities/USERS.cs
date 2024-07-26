@@ -11,6 +11,7 @@ namespace DataLibrary.Entities
         public required string FIRSTNAME { get; set; }
         public required string SURNAME { get; set; }
         public required string PHONE_NUMBER { get; set; }
+        public required string PHONE_COUNTRY_CODE { get; set; }
         public bool IS_ADMIN { get; set; }
         public string? SALT { get; set; }
         public string? AVATAR { get; set; }

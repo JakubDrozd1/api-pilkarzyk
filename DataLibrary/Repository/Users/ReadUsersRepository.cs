@@ -15,7 +15,7 @@ namespace DataLibrary.Repository.Users
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-        private string SELECT = " ID_USER, LOGIN, USER_PASSWORD, FIRSTNAME, SURNAME, EMAIL, PHONE_NUMBER, SALT, IS_ADMIN, GROUP_COUNTER ";
+        private string SELECT = " ID_USER, LOGIN, USER_PASSWORD, FIRSTNAME, SURNAME, EMAIL, PHONE_NUMBER, PHONE_COUNTRY_CODE, SALT, IS_ADMIN, GROUP_COUNTER ";
         public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest)
         {
 
@@ -150,6 +150,7 @@ namespace DataLibrary.Repository.Users
                         $"u.{nameof(USERS.FIRSTNAME)}, " +
                         $"u.{nameof(USERS.SURNAME)}, " +
                         $"u.{nameof(USERS.PHONE_NUMBER)}, " +
+                        $"u.{nameof(USERS.PHONE_COUNTRY_CODE)}, " +
                         $"u.{nameof(USERS.IS_ADMIN)}, " +
                         $"u.{nameof(USERS.SALT)} ")
                     .From($"{nameof(USERS)} u " +
@@ -194,24 +195,35 @@ namespace DataLibrary.Repository.Users
             }
             try
             {
-                var count = 0;
-                USERS? user = null;
-                var searchingPhone = phoneNumber;
 
-                while (count <= 4)
-                {
-                    var query = new QueryBuilder<USERS>()
-                        .Select("* ")
-                        .From("USERS ")
-                        .Where("PHONE_NUMBER = @PhoneNumber AND IS_ACTIVE = true");
-                    user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = searchingPhone }, _fbTransaction);
-                    if(user != null)
-                    {
-                        break;
-                    }
-                    searchingPhone = searchingPhone.Substring(1);
-                    count++;
-                }
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .Where("PHONE_NUMBER = @PhoneNumber AND IS_ACTIVE = true");
+                USERS? user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, _fbTransaction);
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task<USERS?> GetUserByPhoneNumberAndCountryCodeAsync(string phoneNumber, string phoneCountryCode)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+
+                var query = new QueryBuilder<USERS>()
+                    .Select("* ")
+                    .From("USERS ")
+                    .Where("PHONE_NUMBER = @PhoneNumber AND PHONE_COUNTRY_CODE = @PhoneCountryCode AND IS_ACTIVE = true  ");
+                USERS? user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber, PhoneCountryCode = phoneCountryCode }, _fbTransaction);
 
                 return user;
             }

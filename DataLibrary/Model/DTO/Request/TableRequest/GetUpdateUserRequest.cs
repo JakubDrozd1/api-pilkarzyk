@@ -24,6 +24,9 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("PhoneNumber")]
         public string? PHONE_NUMBER { get; set; }
 
+        [JsonPropertyName("PhoneCountryCode")]
+        public string? PHONE_COUNTRY_CODE { get; set; }
+
         [JsonPropertyName("GroupCounter")]
         public int? GROUP_COUNTER { get; set; }
 

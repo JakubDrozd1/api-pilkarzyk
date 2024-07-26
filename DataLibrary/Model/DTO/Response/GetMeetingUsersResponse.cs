@@ -8,6 +8,7 @@ namespace DataLibrary.Model.DTO.Response
         public string? Surname { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? PhoneCountryCode { get; set; }
         public DateTime? DateMeeting { get; set; }
         public string? Place { get; set; }
         public string? Description { get; set; }

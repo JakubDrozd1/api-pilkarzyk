@@ -90,6 +90,12 @@ namespace DataLibrary.Repository.Users
                                 dynamicParameters.Add($"@{column}", phoneNumber);
                             }
                             break;
+                        case "PHONE_COUNTRY_CODE":
+                            {
+                                string phoneCountryCode = getUpdateUserRequest.PHONE_COUNTRY_CODE ?? throw new Exception("Phone Country Code is null");
+                                dynamicParameters.Add($"@{column}", phoneCountryCode);
+                            }
+                            break;
                         case "AVATAR":
                             {
                                 byte[] avatar = getUpdateUserRequest.AVATAR ?? throw new Exception("Avatar is null");

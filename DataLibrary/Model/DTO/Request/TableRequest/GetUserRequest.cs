@@ -22,6 +22,9 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("PhoneNumber")]
         public required string PHONE_NUMBER { get; set; }
 
+        [JsonPropertyName("PhoneCountryCode")]
+        public required string PHONE_COUNTRY_CODE { get; set; }
+
         [JsonPropertyName("IsAdmin")]
         public bool IS_ADMIN { get; set; }
 

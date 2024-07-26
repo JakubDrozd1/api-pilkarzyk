@@ -9,5 +9,7 @@
         public required int IDAUTHOR { get; set; }
         public DateTime? DATE_ADD { get; set; }
         public string? PHONE_NUMBER { get; set; }
+        public string? PHONE_COUNTRY_CODE { get; set; }
+
     }
 }

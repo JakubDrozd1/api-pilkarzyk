@@ -14,6 +14,7 @@ namespace DataLibrary.IRepository.Users
         Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, List<GetGroupsUsersResponse> getGroupsUsersResponse);
         Task<USERS?> GetUserByEmailAsync(string email);
         Task<USERS?> GetUserByPhoneNumberAsync(string phoneNumber);
+        Task<USERS?> GetUserByPhoneNumberAndCountryCodeAsync(string phoneNumber, string phoneCountryCode);
         Task<string?> GetSaltByUserId(int userId);
     }
 }
