@@ -19,6 +19,7 @@
         public int? MaxGiveMeTime { get; set; }
         public int? ReminderMessagesTime { get; set; }
         public DateTime? LastReminderMessagesTime { get; set; }
+        public bool? Canceled { get; set; }
 
     }
 }

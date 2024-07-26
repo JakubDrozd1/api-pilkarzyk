@@ -31,6 +31,7 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
                 $"m.{nameof(MEETINGS.LAST_REMINDER_MESSAGES_TIME)} AS LastReminderMessagesTime, " +
                 $"m.{nameof(MEETINGS.REMINDER_MESSAGES_TIME)} AS ReminderMessagesTime, " +
+                $"m.{nameof(MEETINGS.CANCELED)} AS Canceled, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
               = $"{nameof(MEETINGS)} m "  +
@@ -86,6 +87,11 @@ namespace DataLibrary.Repository.Meetings
                 {
                     WHERE += $"AND m.{nameof(MEETINGS.IS_QUEST)} = @IsQuest ";
                     dynamicParameters.Add("@IsQuest", getMeetingsRequest.IsQuest);
+                }
+                if (getMeetingsRequest.Canceled != null)
+                {
+                    WHERE += $"AND m.{nameof(MEETINGS.CANCELED)} = @Canceled ";
+                    dynamicParameters.Add("@Canceled", getMeetingsRequest.Canceled);
                 }
                 WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
 
@@ -155,6 +161,7 @@ namespace DataLibrary.Repository.Meetings
                    $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                    $"m.{nameof(MEETINGS.REMINDER_MESSAGES_TIME)} AS ReminderMessagesTime, " +
                    $"m.{nameof(MEETINGS.LAST_REMINDER_MESSAGES_TIME)} AS LastReminderMessagesTime, " +
+                   $"m.{nameof(MEETINGS.CANCELED)} AS Canceled, " +
                    $"ms.{nameof(MESSAGES.ANSWER)} AS Answer, " +
                    $"us.{nameof(USERS.ID_USER)} AS IdUser ";
 

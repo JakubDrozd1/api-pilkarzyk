@@ -226,8 +226,17 @@ namespace BLLLibrary.Service
                     Answer = "yes",
                 });
 
+
+
                 var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
-                await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
+                if (messages != null && messages.Any(message => message.Answer == "yes"))
+                {
+                    await _unitOfWork.UpdateMeetingsRepository.UpdateColumnMeetingAsync(new GetUpdateMeetingRequest(){Column = ["CANCELED"], CANCELED = true } ,meetingId);
+                }
+                else
+                {
+                    await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
+                }
                 await _unitOfWork.SaveChangesAsync();
                 await SendCancelMeetingNotificationToUserAsync(messages, meeting ?? throw new Exception("Meetings is null"));
 

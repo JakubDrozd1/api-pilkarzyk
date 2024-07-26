@@ -31,5 +31,6 @@ namespace DataLibrary.Model.DTO.Response
         public int? MaxGiveMeTime { get; set; }
         public bool? GiveMeTimeClicked { get; set; }
         public int? ReminderMessagesTime { get; set; }
+        public bool? Canceled { get; set; }
     }
 }

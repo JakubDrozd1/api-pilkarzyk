@@ -29,5 +29,8 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         public int? REMINDER_MESSAGES_TIME { get; set; }
         public required string[] Column { get; set; }
 
+        [JsonPropertyName("Canceled")]
+        public bool? CANCELED { get; set; }
+
     }
 }

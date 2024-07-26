@@ -7,5 +7,6 @@
         public int IDMEETING { get; set; }
         public int? IDTEAM { get; set; }
         public string? TeamColor { get; set; }
+        public bool? Canceled { get; set; }
     }
 }

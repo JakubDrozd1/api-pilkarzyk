@@ -114,6 +114,18 @@ namespace DataLibrary.Repository.Meetings
                                 dynamicParameters.Add($"@{column}", maxGiveMeTime);
                             }
                             break;
+                        case "REMINDER_MESSAGES_TIME":
+                            {
+                                int? reminder_messages_time = getUpdateMeetingRequest.REMINDER_MESSAGES_TIME;
+                                dynamicParameters.Add($"@{column}", reminder_messages_time);
+                            }
+                            break;
+                        case "CANCELED":
+                            {
+                                bool? canceled = getUpdateMeetingRequest.CANCELED;
+                                dynamicParameters.Add($"@{column}", canceled);
+                            }
+                            break;
                     }
 
                 }

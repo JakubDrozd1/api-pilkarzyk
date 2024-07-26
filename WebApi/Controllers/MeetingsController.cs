@@ -117,6 +117,8 @@ namespace WebApi.Controllers
                 {
                     return NotFound();
                 }
+
+
                 await _meetingsService.DeleteMeetingAsync(meetingId);
                 await _meetingsService.SaveChangesAsync();
                 return NoContent();

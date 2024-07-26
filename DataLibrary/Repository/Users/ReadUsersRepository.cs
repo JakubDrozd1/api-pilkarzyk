@@ -14,7 +14,7 @@ namespace DataLibrary.Repository.Users
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-        private string SELECT = " ID_USER, LOGIN, USER_PASSWORD, FIRSTNAME, SURNAME, EMAIL, PHONE_NUMBER, SALT, IS_ADMIN, GROUP_COUNTER ";
+        private string SELECT = " ID_USER, LOGIN, FIRSTNAME, SURNAME, EMAIL, PHONE_NUMBER, IS_ADMIN, GROUP_COUNTER ";
         public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest)
         {
 
@@ -51,7 +51,7 @@ namespace DataLibrary.Repository.Users
             try
             {
                 var query = new QueryBuilder<USERS>()
-                    .Select("* ")
+                    .Select(SELECT)
                     .From("USERS ")
                     .Where("ID_USER = @UserId AND IS_ACTIVE = true ");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { UserId = userId }, _fbTransaction);
@@ -71,7 +71,7 @@ namespace DataLibrary.Repository.Users
             try
             {
                 var query = new QueryBuilder<USERS>()
-                    .Select("* ")
+                    .Select(SELECT)
                     .From("USERS ")
                     .Where("LOGIN = @Login AND IS_ACTIVE = true ");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { Login = login }, _fbTransaction);
@@ -149,8 +149,7 @@ namespace DataLibrary.Repository.Users
                         $"u.{nameof(USERS.FIRSTNAME)}, " +
                         $"u.{nameof(USERS.SURNAME)}, " +
                         $"u.{nameof(USERS.PHONE_NUMBER)}, " +
-                        $"u.{nameof(USERS.IS_ADMIN)}, " +
-                        $"u.{nameof(USERS.SALT)} ")
+                        $"u.{nameof(USERS.IS_ADMIN)}, " )
                     .From($"{nameof(USERS)} u " +
                         $"LEFT JOIN {nameof(GROUPS_USERS)} gu ON u.{nameof(USERS.ID_USER)} = gu.{nameof(GROUPS_USERS.IDUSER)} ")
                     .Where(WHERE)
@@ -194,7 +193,7 @@ namespace DataLibrary.Repository.Users
             try
             {
                 var query = new QueryBuilder<USERS>()
-                    .Select("* ")
+                    .Select(SELECT)
                     .From("USERS ")
                     .Where("PHONE_NUMBER = @PhoneNumber AND IS_ACTIVE = true");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, _fbTransaction);
@@ -214,7 +213,7 @@ namespace DataLibrary.Repository.Users
             try
             {
                 var query = new QueryBuilder<USERS>()
-                    .Select("* ")
+                    .Select(SELECT)
                     .From("USERS ")
                     .Where("ID_USER = @IdUser AND IS_ACTIVE = true");
                 USERS? user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { IdUser = userId }, _fbTransaction);
