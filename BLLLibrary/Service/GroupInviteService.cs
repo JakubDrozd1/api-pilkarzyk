@@ -123,13 +123,7 @@ namespace BLLLibrary.Service
                         PhoneCountryCode = getGroupInviteRequest.PHONE_COUNTRY_CODE;
                     }
 
-                    USERS? user = null;
-                    user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAndCountryCodeAsync(PhoneNumber, PhoneCountryCode);
-                    if (user == null)
-                    {
-                        user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAsync(PhoneNumber) ?? throw new Exception("User with this phone number dont exist");
-
-                    }
+                    USERS user = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAndCountryCodeAsync(PhoneNumber, PhoneCountryCode) ?? throw new Exception("User with this phone number dont exist");
 
                     if (await _unitOfWork.ReadGroupsUsersRepository.GetUserWithGroup(getGroupInviteRequest.IDGROUP, user.ID_USER) != null)
                     {
