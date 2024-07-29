@@ -6,7 +6,7 @@ namespace BLLLibrary.IService
     public interface IAdsService
     {
         Task<GetAdResponse?> GetAdsAsync();
-        Task<List<GetAdResponse>> GetAllAdsAsync();
+        Task<List<GetAddWithClicksResponse>> GetAllAdsAsync();
         Task PostClickHistoryAd(PostAdHistoryRequest AdHistory);
 
     }

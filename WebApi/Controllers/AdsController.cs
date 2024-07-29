@@ -33,7 +33,7 @@ namespace WebApi.Controllers
 
 
         [HttpGet("all", Name = "GetAds")]
-        public async Task<ActionResult<List<GetAdResponse>>> GetAds()
+        public async Task<ActionResult<List<GetAddWithClicksResponse>>> GetAds()
         {
             try
             {
