@@ -14,7 +14,7 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadAdsRepository.GetAdsAsync();
         }
 
-        public async Task<List<GetAdResponse>> GetAllAdsAsync()
+        public async Task<List<GetAddWithClicksResponse>> GetAllAdsAsync()
         {
             return await _unitOfWork.ReadAdsRepository.GetAllAdsAsync();
 

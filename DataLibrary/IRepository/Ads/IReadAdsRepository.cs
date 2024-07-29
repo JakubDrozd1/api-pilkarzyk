@@ -5,7 +5,7 @@ namespace DataLibrary.IRepository.Users
     public interface IReadAdsRepository
     {
         Task<GetAdResponse?> GetAdsAsync();
-        Task<List<GetAdResponse>> GetAllAdsAsync();
+        Task<List<GetAddWithClicksResponse>> GetAllAdsAsync();
 
     }
 }

@@ -103,5 +103,11 @@ namespace DataLibrary.Helper
         {
             return query.ToString();
         }
+
+        public QueryBuilder<T> GroupBy(string groupBy)
+        {
+            query.Append($"GROUP BY {groupBy} ");
+            return this;
+        }
     }
 }
