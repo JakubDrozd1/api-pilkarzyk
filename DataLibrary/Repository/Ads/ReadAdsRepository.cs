@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Users;
-using DataLibrary.Model.DTO.Request;
-using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
-using Xamarin.Essentials;
 
 namespace DataLibrary.Repository.Ads
 {
@@ -56,6 +52,27 @@ namespace DataLibrary.Repository.Ads
                 }
 
                 return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+
+        public async Task<List<GetAdResponse>> GetAllAdsAsync()
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                var query = new QueryBuilder<GROUPS>()
+                    .Select("* ")
+                    .From("ADS ");
+
+                return (await _dbConnection.QueryAsync<GetAdResponse>(query.Build())).AsList();
             }
             catch (Exception ex)
             {
