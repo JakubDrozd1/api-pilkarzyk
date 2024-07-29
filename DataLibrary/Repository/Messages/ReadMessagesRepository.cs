@@ -21,6 +21,7 @@ namespace DataLibrary.Repository.Messages
                 $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
+                $"u.{nameof(USERS.PHONE_COUNTRY_CODE)} AS PhoneCountryCode, " +
                 $"u.{nameof(USERS.ID_USER)} AS IdUser, " +
                 $"t.{nameof(TEAMS.COLOR)} AS TeamColor, " +
                 $"m.{nameof(MEETINGS.DATE_MEETING)} AS DateMeeting, " +

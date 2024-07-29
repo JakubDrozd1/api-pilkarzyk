@@ -86,8 +86,14 @@ namespace DataLibrary.Repository.Users
                             break;
                         case "PHONE_NUMBER":
                             {
-                                int phoneNumber = getUpdateUserRequest.PHONE_NUMBER ?? throw new Exception("Phone Number is null");
+                                string phoneNumber = getUpdateUserRequest.PHONE_NUMBER ?? throw new Exception("Phone Number is null");
                                 dynamicParameters.Add($"@{column}", phoneNumber);
+                            }
+                            break;
+                        case "PHONE_COUNTRY_CODE":
+                            {
+                                string phoneCountryCode = getUpdateUserRequest.PHONE_COUNTRY_CODE ?? throw new Exception("Phone Country Code is null");
+                                dynamicParameters.Add($"@{column}", phoneCountryCode);
                             }
                             break;
                         case "AVATAR":

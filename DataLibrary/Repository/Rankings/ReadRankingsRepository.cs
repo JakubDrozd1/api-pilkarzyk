@@ -21,6 +21,7 @@ namespace DataLibrary.Repository.Rankings
                 $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin, " +
                 $"u.{nameof(USERS.EMAIL)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
+                $"u.{nameof(USERS.PHONE_COUNTRY_CODE)} AS PhoneCountryCode, " +
                 $"r.{nameof(RANKINGS.DATE_MEETING)} AS DateMeeting, " +
                 $"r.{nameof(RANKINGS.POINT)} ";
         private static readonly string FROM
