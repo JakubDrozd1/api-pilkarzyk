@@ -17,5 +17,10 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadAdsRepository.GetAdsAsync();
         }
 
+        public async Task PostClickHistoryAd(PostAdHistoryRequest AdHistory)
+        {
+            await _unitOfWork.CreateAdsRepository.AddClickToHistoryAsync(AdHistory);
+        }
+
     }
 }

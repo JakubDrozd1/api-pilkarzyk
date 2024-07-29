@@ -5,6 +5,10 @@ namespace DataLibrary.Model.DTO.Response
 {
     public class GetAdResponse
     {
+        [JsonPropertyName("id")]
+        [JsonProperty(PropertyName = "id")]
+        public required int Id { get; set; }
+
         [JsonPropertyName("content")]
         [JsonProperty(PropertyName = "content")]
         public required string Content { get; set; }

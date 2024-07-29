@@ -4,12 +4,10 @@ using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 
-namespace BLLLibrary.IService
+namespace DataLibrary.IRepository.ADS
 {
-    public interface IAdsService
+    public interface ICreateAdsRepository
     {
-        Task<GetAdResponse?> GetAdsAsync();
-        Task PostClickHistoryAd(PostAdHistoryRequest AdHistory);
-        
+        Task AddClickToHistoryAsync(PostAdHistoryRequest postAdHistoryRequest);
     }
 }

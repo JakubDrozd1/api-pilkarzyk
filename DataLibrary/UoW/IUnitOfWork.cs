@@ -1,4 +1,5 @@
-﻿using DataLibrary.IRepository.ChatMessages;
+﻿using DataLibrary.IRepository.ADS;
+using DataLibrary.IRepository.ChatMessages;
 using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
@@ -37,6 +38,7 @@ namespace DataLibrary.UoW
         ICreateDateQuestsRepository CreateDateQuestsRepository { get; }
         ICreateGuestsRepository CreateGuestsRepository { get; }
         ICreateNotificationRepository CreateNotificationRepository { get; }
+        ICreateAdsRepository CreateAdsRepository { get; }
 
         IDeleteGroupsRepository DeleteGroupsRepository { get; }
         IDeleteMeetingsRepository DeleteMeetingsRepository { get; }
