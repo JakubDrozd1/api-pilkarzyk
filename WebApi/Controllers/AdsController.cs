@@ -1,4 +1,5 @@
 ﻿using BLLLibrary.IService;
+using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,11 @@ namespace WebApi.Controllers
 {
     [Route("api/ads")]
     [ApiController]
+    [Authorize]
     public class AdsController(IAdsService adsService) : ControllerBase
     {
         private readonly IAdsService _adsService = adsService;
 
-        [Authorize]
         [HttpGet(Name = "GetAd")]
         public async Task<ActionResult<GetAdResponse>> GetAd()
         {
@@ -22,7 +23,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                if(ex.Source == "FirebirdSql.Data.FirebirdClient")
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
                 {
                     return StatusCode(500);
                 }
@@ -30,7 +31,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [Authorize]
+
         [HttpGet("all", Name = "GetAds")]
         public async Task<ActionResult<List<GetAdResponse>>> GetAds()
         {
@@ -41,6 +42,28 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost(Name = "PostAd")]
+        public async Task<ActionResult> PostClickHistoryAd(PostAdHistoryRequest AdHistory)
+        {
+            try
+            {
+                await _adsService.PostClickHistoryAd(AdHistory);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
                 return BadRequest(new { message = ex.Message });
             }
         }

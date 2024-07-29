@@ -48,7 +48,7 @@ namespace DataLibrary.Repository.Ads
                          r = rnd.Next(ads.Count);
                     }
 
-                    return new GetAdResponse { Content = ads[r].CONTENT!, Url = ads[r].URL ?? "", Color = ads[r].COLOR ?? "" };
+                    return new GetAdResponse { Id = (int)ads[r].ID_AD , Content = ads[r].CONTENT!, Url = ads[r].URL ?? "", Color = ads[r].COLOR ?? "" };
                 }
 
                 return null;

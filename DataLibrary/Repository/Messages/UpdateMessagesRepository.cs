@@ -91,6 +91,7 @@ namespace DataLibrary.Repository.Messages
             }
         }
 
+
         public async Task UpdateTeamMessageAsync(GetTeamMessageRequest getTeamMessageRequest)
         {
             if (_dbConnection.State != ConnectionState.Open)
