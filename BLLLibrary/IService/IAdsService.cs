@@ -1,4 +1,5 @@
-﻿using DataLibrary.Model.DTO.Response;
+﻿using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 
 namespace BLLLibrary.IService
 {
@@ -6,6 +7,7 @@ namespace BLLLibrary.IService
     {
         Task<GetAdResponse?> GetAdsAsync();
         Task<List<GetAdResponse>> GetAllAdsAsync();
+        Task PostClickHistoryAd(PostAdHistoryRequest AdHistory);
 
     }
 }
