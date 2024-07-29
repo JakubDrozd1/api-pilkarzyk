@@ -117,7 +117,38 @@ namespace WebApi.Controllers
                 {
                     return NotFound();
                 }
+
+
                 await _meetingsService.DeleteMeetingAsync(meetingId);
+                await _meetingsService.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                if(ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut("{meetingId}/cancel", Name = "CancelMeeting")]
+        public async Task<ActionResult> CancelMeeting(int meetingId)
+        {
+            try
+            {
+                var existingMeeting = await _meetingsService.GetMeetingByIdAsync(meetingId);
+                if (existingMeeting == null)
+                {
+                    return NotFound();
+                }
+
+
+                await _meetingsService.CancelMeetingAsync(meetingId);
                 await _meetingsService.SaveChangesAsync();
                 return NoContent();
             }

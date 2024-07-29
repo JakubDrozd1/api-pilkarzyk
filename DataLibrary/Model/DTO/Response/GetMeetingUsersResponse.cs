@@ -18,6 +18,5 @@ namespace DataLibrary.Model.DTO.Response
         public int? IdMeeting { get; set; }
         public string? Answer {  get; set; }
         public DateTime? WaitingTime { get; set; }
-
     }
 }

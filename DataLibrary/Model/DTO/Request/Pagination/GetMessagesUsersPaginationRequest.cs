@@ -20,6 +20,7 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public DateTime? WaitingTime { get; set; }
         public bool IsAvatar { get; set; }
         public string? Answer { get; set; }
+        public bool? Canceled { get; set; }
 
     }
 }

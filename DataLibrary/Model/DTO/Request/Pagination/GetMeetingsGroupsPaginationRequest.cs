@@ -21,5 +21,6 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public string? Answer { get; set; }
         public bool WithMessages {  get; set; }
         public bool? IsQuest {  get; set; }
+        public bool? Canceled {  get; set; }
     }
 }

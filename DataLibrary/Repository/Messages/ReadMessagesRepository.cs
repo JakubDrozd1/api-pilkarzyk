@@ -34,6 +34,7 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
+                $"m.{nameof(MEETINGS.CANCELED)} AS Canceled, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.IDTEAM)}, " +
@@ -88,10 +89,16 @@ namespace DataLibrary.Repository.Messages
                     WHERE += $"AND m.{nameof(MESSAGES.ANSWER)} = @Answer";
                     dynamicParameters.Add("@Answer", getMessagesUsersPaginationRequest.Answer);
                 }
+                if (getMessagesUsersPaginationRequest.Canceled is not null)
+                {
+                    WHERE += $"AND m.{nameof(MEETINGS.CANCELED)} = @Canceled ";
+                    dynamicParameters.Add("@Canceled", getMessagesUsersPaginationRequest.Canceled);
+                }
                 if (getMessagesUsersPaginationRequest.IsAvatar)
                 {
                     SELECT += $", u.{nameof(USERS.AVATAR)} ";
                 }
+
                 WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
                 WHERE += $"AND u2.{nameof(USERS.IS_ACTIVE)} = true ";
 
