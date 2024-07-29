@@ -55,10 +55,29 @@ namespace BLLLibrary.Service
             await _unitOfWork.BeginTransactionAsync();
             try
             {
+                var messageBeforUpdate = await _unitOfWork.ReadMessagesRepository.GetMessageByMeetingIdAndUserIdAsync(
+                        getMessageRequest.IDMEETING ?? throw new Exception("Meeting is null"),
+                        getMessageRequest.IDUSER ?? throw new Exception("User is null")
+                    );
                 await _unitOfWork.UpdateMessagesRepository.UpdateAnswerMessageAsync(getMessageRequest);
+                var messageAfterUpdate = await _unitOfWork.ReadMessagesRepository.GetMessageByMeetingIdAndUserIdAsync(
+                    getMessageRequest.IDMEETING ?? throw new Exception("Meeting is null"),
+                    getMessageRequest.IDUSER ?? throw new Exception("User is null")
+                );
                 var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(getMessageRequest.IDMEETING ?? throw new Exception("Meeting is null"));
                 var user = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(meeting?.IdAuthor ?? throw new Exception("User is null"));
                 var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(getMessageRequest.IDUSER ?? throw new Exception("User is null"));
+
+                if (messageBeforUpdate != null && messageAfterUpdate != null)
+                {
+                    await _unitOfWork.CreateMessagesHistoryRepository.AddMessageHistoryAsync(new GetMessageHistoryRequest()
+                    {
+                        IDMESSAGE = messageBeforUpdate.ID_MESSAGE,
+                        BEFORE_CHANGE = messageBeforUpdate.ANSWER,
+                        AFTER_CHANGE = messageAfterUpdate.ANSWER,
+                        DATE_CHANGE =  DateTime.Now,
+                    });
+                }
                 await _unitOfWork.SaveChangesAsync();
                 await SendNotificationToUserAsync(meeting, user, author, getMessageRequest);
 

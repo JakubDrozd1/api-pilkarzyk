@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using DataLibrary.Helper.ConnectionProvider;
+using DataLibrary.IRepository.ADS;
 using DataLibrary.IRepository.ChatMessages;
 using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.EmailSender;
@@ -27,6 +28,7 @@ using DataLibrary.Repository.GroupsUsers;
 using DataLibrary.Repository.Guests;
 using DataLibrary.Repository.Meetings;
 using DataLibrary.Repository.Messages;
+using DataLibrary.Repository.MessagesHistory;
 using DataLibrary.Repository.Notification;
 using DataLibrary.Repository.NotificationToken;
 using DataLibrary.Repository.Rankings;
@@ -48,6 +50,7 @@ namespace DataLibrary.UoW
         public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection, dbTransaction);
         public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection, dbTransaction);
         public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection, dbTransaction);
+        public ICreateMessagesHistoryRepository CreateMessagesHistoryRepository => new CreateMessagesHistoryRepository(dbConnection, dbTransaction);
         public ICreateRankingsRepository CreateRankingsRepository => new CreateRankingsRepository(dbConnection, dbTransaction);
         public ICreateUsersRepository CreateUsersRepository => new CreateUsersRepository(dbConnection, dbTransaction);
         public ICreateGroupsUsersRepository CreateGroupsUsersRepository => new CreateGroupsUsersRepository(dbConnection, dbTransaction);
@@ -60,6 +63,7 @@ namespace DataLibrary.UoW
         public ICreateTeamsRepository CreateTeamsRepository => new CreateTeamsRopository(dbConnection, dbTransaction);
         public ICreateGuestsRepository CreateGuestsRepository => new CreateGuestsRepository(dbConnection, dbTransaction);
         public ICreateNotificationRepository CreateNotificationRepository => new CreateNotificationRepository(dbConnection, dbTransaction);
+        public ICreateAdsRepository CreateAdsRepository => new CreateAdsRepository(dbConnection, dbTransaction);
 
 
         public IDeleteGroupsRepository DeleteGroupsRepository => new DeleteGroupsRepository(dbConnection, dbTransaction);

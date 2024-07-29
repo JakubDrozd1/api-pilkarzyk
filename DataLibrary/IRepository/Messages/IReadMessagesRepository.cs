@@ -8,5 +8,6 @@ namespace DataLibrary.IRepository.Messages
     {
         Task<List<GetMessagesUsersMeetingsResponse>> GetAllMessagesAsync(GetMessagesUsersPaginationRequest getMeetingsUsersPaginationRequest);
         Task<MESSAGES?> GetMessageByIdAsync(int messageId);
+        Task<MESSAGES?> GetMessageByMeetingIdAndUserIdAsync(int meetingId, int idUser);
     }
 }
