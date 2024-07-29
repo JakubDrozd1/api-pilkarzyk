@@ -140,6 +140,31 @@ namespace BLLLibrary.Service
             await _unitOfWork.BeginTransactionAsync();
             try
             {
+                if (getUpdateUserRequest.LOGIN!=null)
+                {
+                    USERS? userLogin = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(getUpdateUserRequest.LOGIN);
+
+                    if (userLogin != null)
+                    {
+                        throw new Exception("Acount with login already exists");
+                    }
+                }
+                if (getUpdateUserRequest.EMAIL!=null)
+                {
+                    USERS? userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getUpdateUserRequest.EMAIL);
+                    if (userEmail != null)
+                    {
+                        throw new Exception("Acount with email already exists");
+                    }
+                }
+                if (getUpdateUserRequest.PHONE_NUMBER != null)
+                {
+                    USERS? userPhone = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAsync(getUpdateUserRequest.PHONE_NUMBER ?? throw new Exception("Phone number is null"));
+                    if (userPhone != null)
+                    {
+                        throw new Exception("Acount with phone number already exists");
+                    }
+                }
                 string salt = await _unitOfWork.ReadUsersRepository.GetSaltByUserId(userId) ?? throw new Exception("Salt is null");
                 await _unitOfWork.UpdateUsersRepository.UpdateColumnUserAsync(getUpdateUserRequest, userId, salt);
                 await _unitOfWork.SaveChangesAsync();
