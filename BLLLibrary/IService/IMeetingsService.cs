@@ -17,6 +17,7 @@ namespace BLLLibrary.IService
         Task UpdateMeetingJobAsync(MEETINGS meeting);
         Task UpdateColumnMeetingAsync(GetUpdateMeetingRequest getUpdateMeetingRequest, int meetingId);
         Task DeleteMeetingAsync(int meetingId);
+        Task CancelMeetingAsync(int meetingId);
         Task<MEETINGS?> GetMeeting(GetMeetingRequest getMeetingRequest);
         Task SaveChangesAsync();
     }

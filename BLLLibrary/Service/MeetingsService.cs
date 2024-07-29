@@ -229,14 +229,35 @@ namespace BLLLibrary.Service
 
 
                 var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
-                if (messages != null && messages.Any(message => message.Answer == "yes"))
-                {
-                    await _unitOfWork.UpdateMeetingsRepository.UpdateColumnMeetingAsync(new GetUpdateMeetingRequest(){Column = ["CANCELED"], CANCELED = true } ,meetingId);
-                }
-                else
-                {
+
                     await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
-                }
+                await _unitOfWork.SaveChangesAsync();
+                await SendCancelMeetingNotificationToUserAsync(messages, meeting ?? throw new Exception("Meetings is null"));
+
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollBackTransactionAsync();
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task CancelMeetingAsync(int meetingId)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var messages = await _unitOfWork.ReadMessagesRepository.GetAllMessagesAsync(new GetMessagesUsersPaginationRequest()
+                {
+                    OnPage = -1,
+                    Page = 0,
+                    DateFrom = DateTime.Now,
+                    IdMeeting = meetingId,
+                    Answer = "yes",
+                });
+
+                var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
+                await _unitOfWork.UpdateMeetingsRepository.UpdateColumnMeetingAsync(new GetUpdateMeetingRequest() { Column = ["CANCELED"], CANCELED = true }, meetingId);
                 await _unitOfWork.SaveChangesAsync();
                 await SendCancelMeetingNotificationToUserAsync(messages, meeting ?? throw new Exception("Meetings is null"));
 

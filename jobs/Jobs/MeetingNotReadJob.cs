@@ -119,6 +119,7 @@ namespace Jobs.Jobs
                         IS_QUEST = meetingToUpdate.IsQuest,
                         MAX_GIVE_ME_TIME = meetingToUpdate.MaxGiveMeTime,
                         REMINDER_MESSAGES_TIME = meetingToUpdate.ReminderMessagesTime,
+                        CANCELED = meetingToUpdate.Canceled
                     };
 
                     await _meetingsService.UpdateMeetingJobAsync(meetingToJob);
