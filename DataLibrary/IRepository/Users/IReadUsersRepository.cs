@@ -13,7 +13,8 @@ namespace DataLibrary.IRepository.Users
         Task<USERS?> GetUserByLoginAsync(string? login);
         Task<List<USERS>> GetAllUsersWithoutGroupAsync(GetUsersWithoutGroupPaginationRequest getUsersWithoutGroupPaginationRequest, List<GetGroupsUsersResponse> getGroupsUsersResponse);
         Task<USERS?> GetUserByEmailAsync(string email);
-        Task<USERS?> GetUserByPhoneNumberAsync(int phoneNumber);
+        Task<USERS?> GetUserByPhoneNumberAsync(string phoneNumber);
+        Task<USERS?> GetUserByPhoneNumberAndCountryCodeAsync(string phoneNumber, string phoneCountryCode);
         Task<string?> GetSaltByUserId(int userId);
     }
 }

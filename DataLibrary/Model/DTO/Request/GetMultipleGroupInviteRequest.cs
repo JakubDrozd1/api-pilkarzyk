@@ -6,6 +6,6 @@
 
         public required int IdAuthor { get; set; }
 
-        public int[]? PhoneNumbers { get; set; }
+        public string[]? PhoneNumbers { get; set; }
     }
 }

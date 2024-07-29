@@ -24,6 +24,7 @@ namespace DataLibrary.UoW
         ICreateGroupsRepository CreateGroupsRepository { get; }
         ICreateMeetingsRepository CreateMeetingsRepository { get; }
         ICreateMessagesRepository CreateMessagesRepository { get; }
+        ICreateMessagesHistoryRepository CreateMessagesHistoryRepository { get; }
         ICreateRankingsRepository CreateRankingsRepository { get; }
         ICreateUsersRepository CreateUsersRepository { get; }
         ICreateGroupsUsersRepository CreateGroupsUsersRepository { get; }
