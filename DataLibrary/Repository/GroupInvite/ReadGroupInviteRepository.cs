@@ -26,6 +26,7 @@ namespace DataLibrary.Repository.GroupInvite
                 $"u1.{nameof(USERS.SURNAME)} AS SurnameAuthor, " +
                 $"u2.{nameof(USERS.FIRSTNAME)}, " +
                 $"u2.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
+                $"u2.{nameof(USERS.PHONE_COUNTRY_CODE)} AS PhoneCountryCode, " +
                 $"u2.{nameof(USERS.SURNAME)} ";
         private static readonly string FROM
               = $"{nameof(GROUP_INVITE)} gi " +

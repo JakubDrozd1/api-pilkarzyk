@@ -149,7 +149,7 @@ namespace WebApi.Controllers
                 {
                     return StatusCode(500);
                 }
-                return StatusCode(500, ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -175,7 +175,7 @@ namespace WebApi.Controllers
                 {
                     return StatusCode(500);
                 }
-                return StatusCode(500, ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -194,7 +194,7 @@ namespace WebApi.Controllers
                 {
                     return StatusCode(500);
                 }
-                return StatusCode(500, ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 

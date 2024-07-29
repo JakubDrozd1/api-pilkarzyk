@@ -25,6 +25,7 @@ namespace DataLibrary.Repository.GroupsUsers
                 $"u.{nameof(USERS.FIRSTNAME)}, " +
                 $"u.{nameof(USERS.SURNAME)}, " +
                 $"u.{nameof(USERS.PHONE_NUMBER)} AS PhoneNumber, " +
+                $"u.{nameof(USERS.PHONE_COUNTRY_CODE)} AS PhoneCountryCode, " +
                 $"u.{nameof(USERS.GROUP_COUNTER)} AS GroupCounter, " +
                 $"u.{nameof(USERS.IS_ADMIN)} AS IsAdmin ";
         private static readonly string FROM

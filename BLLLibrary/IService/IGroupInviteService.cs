@@ -8,7 +8,7 @@ namespace BLLLibrary.IService
 {
     public interface IGroupInviteService
     {
-        Task AddGroupInviteAsync(GetGroupInviteWithEmailOrPhoneRequest getGroupInviteRequest);
+        Task AddGroupInviteAsync(GetGroupInviteRequest getGroupInviteRequest);
         Task DeleteGroupInviteAsync(int groupInviteId);
         Task<List<GetGroupInviteResponse?>> GetGroupInviteByIdUserAsync(GetGroupInvitePaginationRequest getGroupInvitePaginationRequest);
         Task<GROUP_INVITE?> GetGroupInviteByIdAsync(int groupInviteId);

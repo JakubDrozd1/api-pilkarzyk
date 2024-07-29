@@ -14,7 +14,8 @@ namespace DataLibrary.Model.DTO.Response
         public string? Login { get; set; }
         public string? Firstname { get; set; }
         public string? Surname { get; set; }
-        public int? PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? PhoneCountryCode { get; set; }
         public bool? IsAdmin { get; set; }
         public int? IdUser { get; set; }
         public int? IdMeeting { get; set; }
