@@ -51,7 +51,7 @@ namespace DataLibrary.Repository.Users
             try
             {
                 var query = new QueryBuilder<USERS>()
-                    .Select(SELECT)
+                    .Select("* ")
                     .From("USERS ")
                     .Where("ID_USER = @UserId AND IS_ACTIVE = true ");
                 return await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { UserId = userId }, _fbTransaction);
