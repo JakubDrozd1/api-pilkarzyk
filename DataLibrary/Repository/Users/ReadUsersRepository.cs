@@ -14,7 +14,8 @@ namespace DataLibrary.Repository.Users
     {
         private readonly FbConnection _dbConnection = dbConnection;
         private readonly FbTransaction? _fbTransaction = fbTransaction;
-        private string SELECT = " ID_USER, LOGIN, FIRSTNAME, SURNAME, EMAIL, PHONE_NUMBER, IS_ADMIN, GROUP_COUNTER ";
+        private string SELECT = " ID_USER, LOGIN, USER_PASSWORD, FIRSTNAME, SURNAME, EMAIL, PHONE_NUMBER, SALT, IS_ADMIN, GROUP_COUNTER, PHONE_COUNTRY_CODE ";
+
         public async Task<List<USERS>> GetAllUsersAsync(GetUsersPaginationRequest getUsersPaginationRequest)
         {
 
@@ -196,7 +197,7 @@ namespace DataLibrary.Repository.Users
             {
 
                 var query = new QueryBuilder<USERS>()
-                    .Select(SELECT)
+                    .Select("* ")
                     .From("USERS ")
                     .Where("PHONE_NUMBER = @PhoneNumber AND IS_ACTIVE = true");
                 USERS? user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { PhoneNumber = phoneNumber }, _fbTransaction);
@@ -241,7 +242,7 @@ namespace DataLibrary.Repository.Users
             try
             {
                 var query = new QueryBuilder<USERS>()
-                    .Select(SELECT)
+                    .Select("* ")
                     .From("USERS ")
                     .Where("ID_USER = @IdUser AND IS_ACTIVE = true");
                 USERS? user = await _dbConnection.QuerySingleOrDefaultAsync<USERS>(query.Build(), new { IdUser = userId }, _fbTransaction);
