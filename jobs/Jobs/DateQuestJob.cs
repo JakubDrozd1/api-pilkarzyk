@@ -72,6 +72,7 @@ namespace Jobs.Jobs
                              PLACE = metting.Place,
                              QUANTITY = metting.Quantity,
                              WAITING_TIME_DECISION = metting.WaitingTimeDecision,
+                             CANCELED = metting.Canceled,
                          };
                          await _meetingsService.UpdateMeetingJobAsync(meetingToUpdate);
 
