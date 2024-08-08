@@ -34,6 +34,7 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.IS_INDEPENDENT)} AS IsIndependent, " +
                 $"m.{nameof(MEETINGS.WAITING_TIME_DECISION)} AS WaitingTimeDecision, " +
                 $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
+                $"m.{nameof(MEETINGS.REMINDER_MESSAGES_TIME)} AS ReminderMessagesTime, " +
                 $"m.{nameof(MEETINGS.CANCELED)} AS Canceled, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
