@@ -5,6 +5,6 @@ namespace DataLibrary.IRepository.Teams
     public interface IReadTeamsRepository
     {
         Task<List<TEAMS?>> GetTeamByMeetingIdAsync(int meetingId);
-
+        Task<TEAMS?> GetTeamByIdAsync(int teamId);
     }
 }

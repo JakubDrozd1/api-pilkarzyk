@@ -31,5 +31,25 @@ namespace DataLibrary.Repository.Teams
                 throw new Exception($"{ex.Message}");
             }
         }
+
+        public async Task<TEAMS?> GetTeamByIdAsync(int teamId)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                var query = new QueryBuilder<TEAMS>()
+                    .Select("* ")
+                    .From($"{nameof(TEAMS)} ")
+                    .Where("ID_TEAM = @TeamId ");
+                return (await _dbConnection.QueryAsync<TEAMS?>(query.Build(), new { TeamId = teamId }, _fbTransaction)).SingleOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
     }
 }

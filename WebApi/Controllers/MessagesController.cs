@@ -161,5 +161,24 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpPut("team-one", Name = "UpdateTeamMessageOneAsync")]
+        public async Task<ActionResult> UpdateTeamMessageOneAsync(GetTeamTableMessageOneRequest getTeamTableMessageOneRequest)
+        {
+            try
+            {
+                await _messagesService.UpdateTeamMessageOneAsync(getTeamTableMessageOneRequest);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }

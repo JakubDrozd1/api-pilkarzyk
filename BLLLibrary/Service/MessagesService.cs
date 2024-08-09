@@ -242,6 +242,51 @@ namespace BLLLibrary.Service
             }
         }
 
+        public async Task UpdateTeamMessageOneAsync(GetTeamTableMessageOneRequest getTeamTableMessageOneRequest)
+        {
+
+            if (getTeamTableMessageOneRequest.IdUser != null)
+            {
+                await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                {
+                    IDMEETING = getTeamTableMessageOneRequest.IdMeeting,
+                    IDTEAM = getTeamTableMessageOneRequest.IdTeam,
+                    IDUSER = getTeamTableMessageOneRequest.IdUser
+                });
+
+            } else
+            {
+                    var guest = await _unitOfWork.ReadGuestsRepository.GetGuestByIdAsync(getTeamTableMessageOneRequest.IdGuest ?? throw new Exception("Guest is null"));
+                    await _unitOfWork.UpdateGuestsRepository.UpdateGuestsAsync(new GUESTS()
+                    {
+                        IDMEETING = getTeamTableMessageOneRequest.IdMeeting,
+                        IDTEAM = getTeamTableMessageOneRequest.IdTeam,
+                        ID_GUEST = getTeamTableMessageOneRequest.IdGuest ?? throw new Exception("Guest is null"),
+                        NAME = guest?.NAME ?? throw new Exception("Guest is null")
+,
+                    });
+
+
+            }
+
+            var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(getTeamTableMessageOneRequest.IdMeeting);
+            var team = await _unitOfWork.ReadTeamsRepository.GetTeamByIdAsync(getTeamTableMessageOneRequest.IdMeeting);
+
+
+            if(getTeamTableMessageOneRequest.IdUser != null)
+            {
+                if (getTeamTableMessageOneRequest.IdUser != getTeamTableMessageOneRequest.IdAuthor)
+                {
+                    await SendNotificationToUserTeamAsync(getTeamTableMessageOneRequest.IdUser ?? throw new Exception("User is null"), meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team?.NAME);
+                }
+                if (meeting?.IdAuthor != getTeamTableMessageOneRequest.IdAuthor)
+                {
+                    await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), getTeamTableMessageOneRequest.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team?.NAME);
+                }
+            }
+        }
+
+
         private async Task SendNotificationToUserTeamAsync(int idUser, int idAuthor, int idMeeting, string? teamName)
         {
             FirebaseNotification notificationHub = new();
