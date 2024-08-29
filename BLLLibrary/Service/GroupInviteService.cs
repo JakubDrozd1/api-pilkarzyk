@@ -30,6 +30,7 @@ namespace BLLLibrary.Service
                 if (isEmail)
                 {
                     var userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getGroupInviteRequest.EMAIL ?? throw new Exception("Phone number is null"));
+
                     if (userEmail != null)
                     {
 
