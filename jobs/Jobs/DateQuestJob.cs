@@ -80,13 +80,13 @@ namespace Jobs.Jobs
                             var messageToChange = new GetMessageRequest {
                                 ANSWER = "yes",
                                 IDMEETING = idMetting,
-                                IDUSER = userDateQuest.IDUSER,
+                                IDUSER = userDateQuest?.IDUSER,
                             };
 
                             await _messageService.UpdateAnswerMessageAsync(messageToChange);
                          }
 
-                        FirebaseNotification notificationHub = new();
+                        FirebaseNotification notificationHub = new(_unitOfWork);
                         var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync((int)idMetting) ?? throw new Exception("Meeting is null");
                         var users = await _unitOfWork.ReadGroupsUsersRepository.GetListGroupsUserAsync(new GetUsersGroupsPaginationRequest()
                         {

@@ -7,6 +7,7 @@ namespace BLLLibrary.IService
     {
         Task AddNotificationToUserAsync(GetNotificationRequest getNotificationRequest);
         Task<NOTIFICATION?> GetAllNotificationFromUser(int userId);
+        Task<List<NOTIFICATION_MESSAGES>> GetAllNotificationMessageFromUser(int userId);
         Task UpdateColumnNotificationAsync(GetUpdateNotificationRequest getUpdateNotificationRequest, int userId);
         Task DeletaAllNotificationFromUser(int userId);
         Task SaveChangesAsync();

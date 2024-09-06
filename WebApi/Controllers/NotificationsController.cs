@@ -54,6 +54,24 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("{userId}/message", Name = "GetAllNotificationMessageFromUser")]
+        public async Task<ActionResult<List<NOTIFICATION_MESSAGES>>> GetAllNotificationMessageFromUser(int userId)
+        {
+            try
+            {
+                var notificationsMessage = await _notificationServic.GetAllNotificationMessageFromUser(userId);
+                return Ok(notificationsMessage);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpDelete("{userId}", Name = "DeletaAllNotificationFromUser")]
         public async Task<ActionResult> DeletaAllNotificationFromUser(int userId)
         {

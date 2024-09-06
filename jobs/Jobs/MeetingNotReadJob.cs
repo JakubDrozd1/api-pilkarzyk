@@ -36,7 +36,7 @@ namespace Jobs.Jobs
             var meetingsDictionary = new Dictionary<int, GetMeetingReminderResponse>();
             var meetingsToFilterDictionary = new Dictionary<int, int>();
 
-            FirebaseNotification notificationHub = new();
+            FirebaseNotification notificationHub = new(_unitOfWork);
 
             foreach (var meetingUser in meetings)
             {
