@@ -1,6 +1,8 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,12 +56,12 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet("{userId}/message", Name = "GetAllNotificationMessageFromUser")]
-        public async Task<ActionResult<List<NOTIFICATION_MESSAGES>>> GetAllNotificationMessageFromUser(int userId)
+        [HttpGet("message", Name = "GetAllNotificationMessageFromUser")]
+        public async Task<ActionResult<List<GetNotificationMessageResponse>>> GetAllNotificationMessageFromUser([FromQuery] GetNotificationMessagePaginationRequest getNotificationMessagePaginationRequest)
         {
             try
             {
-                var notificationsMessage = await _notificationServic.GetAllNotificationMessageFromUser(userId);
+                var notificationsMessage = await _notificationServic.GetAllNotificationMessageFromUser(getNotificationMessagePaginationRequest);
                 return Ok(notificationsMessage);
             }
             catch (Exception ex)

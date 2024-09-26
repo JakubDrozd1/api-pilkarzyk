@@ -9,6 +9,7 @@ using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace BLLLibrary.Service
 {
@@ -113,7 +114,7 @@ namespace BLLLibrary.Service
                 {
                     var PhoneNumber = "000000000";
                     var PhoneCountryCode = "+48";
-                    if(getGroupInviteRequest.PHONE_NUMBER == null)
+                    if (getGroupInviteRequest.PHONE_NUMBER == null)
                     {
                         throw new Exception("Phone number is null");
                     }
@@ -178,6 +179,16 @@ namespace BLLLibrary.Service
                 {
                     await notificationHub.SendGroupNotification(group, userInfo, tokens);
                 }
+                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                    new GetNotificationMessageRequest
+                    {
+                        IDUSER = userInfo?.ID_USER ?? 0,
+                        IDGROUP = group.ID_GROUP,
+                        DATE_SEND = DateTime.Now,
+                        TITLE = userInfo?.FIRSTNAME + " " + userInfo?.SURNAME + " wysłał ci zaproszenie do grupy!",
+                        MESSAGE = "Nowe zaproszenie do grupy " + group.NAME,
+                    }
+                );
             }
         }
 
@@ -193,6 +204,16 @@ namespace BLLLibrary.Service
                 {
                     await notificationHub.SendGroupAddUserNotification(group, tokens, author);
                 }
+                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                    new GetNotificationMessageRequest
+                    {
+                        IDUSER = idUser,
+                        IDGROUP = group.ID_GROUP,
+                        DATE_SEND = DateTime.Now,
+                        MESSAGE = author.FIRSTNAME + " " + author.SURNAME + " dodał cię do grupy " + group.NAME,
+                        TITLE = "Właśnie zostałeś dodany do grupy!"
+                    }
+                );
             }
         }
         private async Task AddUserToGroup(int idUser, int idGroup)
@@ -253,7 +274,7 @@ namespace BLLLibrary.Service
                 {
                     var getGroupInviteRequest = new GetGroupInviteRequest()
                     {
-                        
+
                         IDAUTHOR = getMultipleGroupInviteRequest.IdAuthor,
                         IDGROUP = getMultipleGroupInviteRequest.IdGroup,
                         PHONE_NUMBER = $"{number}"

@@ -10,6 +10,7 @@ using BLLLibrary.Service;
 using DataLibrary.Helper.Notification;
 using DataLibrary.UoW;
 using DataLibrary.Model.DTO.Request.Pagination;
+using Newtonsoft.Json.Linq;
 
 
 namespace Jobs.Jobs
@@ -109,6 +110,18 @@ namespace Jobs.Jobs
                                             await notificationHub.SendMeetingQuestEndNotification(meeting, tokens);
                                         }
                                 }
+                                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                                    new GetNotificationMessageRequest
+                                    {
+                                        IDUSER = userDetails.IDUSER,
+                                        IDGROUP = meeting.IdGroup,
+                                        IDMEETING = meeting.IdMeeting,
+                                        DATE_SEND = DateTime.Now,
+                                        MESSAGE = meeting.Place + " " + meeting.Description,
+                                        TITLE = "Ustalono Datę spotkania z ankiety dla " + meeting.Name + " "
+                                        + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm")
+                                    }
+                                );
                             }
                         }
                     }

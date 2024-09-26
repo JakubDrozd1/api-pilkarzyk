@@ -6,13 +6,21 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
     {
         [JsonPropertyName("IdUser")]
         public required int IDUSER { get; set; }
+
         [JsonPropertyName("IdGroup")]
         public int? IDGROUP { get; set; }
+
         [JsonPropertyName("IdMeeting")]
         public int? IDMEETING { get; set; }
+
         [JsonPropertyName("DateSend")]
         public required DateTime DATE_SEND { get; set; }
-        public required String MESSAGE { get; set; }
+
+        [JsonPropertyName("Message")]
+        public required string MESSAGE { get; set; }
+        
+        [JsonPropertyName("Title")]
+        public required string TITLE { get; set; }
 
     }
 }

@@ -11,7 +11,7 @@ namespace DataLibrary.Helper.Notification
     public class FirebaseNotification : IFirebaseNotification
     {
         static FirebaseApp? app;
-        private readonly IUnitOfWork _unitOfWork ;
+        private readonly IUnitOfWork _unitOfWork;
 
 
         public FirebaseNotification(IUnitOfWork unitOfWork)
@@ -68,20 +68,6 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                            new GetNotificationMessageRequest
-                            {
-                                IDUSER = token.IDUSER,
-                                IDGROUP = meeting.IdGroup,
-                                IDMEETING = meeting.IdMeeting,
-                                DATE_SEND =DateTime.Now,
-                                MESSAGE = (meeting.IsQuest != null && meeting.IsQuest == true ?
-                                "Nowa ankieta spotkania w grupie " + meeting.Name :
-                                "Nowe zaproszenie do spotkania w grupie " + meeting.Name) + " "
-                                + meeting.Place + " " + meeting.Description,
-                            }
-                        );
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -111,19 +97,6 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDGROUP = meeting.IdGroup,
-                        IDMEETING = meeting.IdMeeting,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = "Ustalono Datę spotkania z ankiety dla " + meeting.Name + " "
-                        + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
-                    }
-                );
-
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -153,19 +126,6 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDGROUP = meeting.IdGroup,
-                        IDMEETING = meeting.IdMeeting,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = "Nie zapomnij o spodkaniu w " + meeting.Place + " "
-                        + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
-                    }
-                );
-
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -195,17 +155,6 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDGROUP = group.ID_GROUP,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = user?.FIRSTNAME + " " + user?.SURNAME + " wysłał ci zaproszenie do grupy!"
-                        +  "Nowe zaproszenie do grupy " + group.NAME,
-                    }
-                );
 
                 try
                 {
@@ -259,18 +208,6 @@ namespace DataLibrary.Helper.Notification
                             Data = androidNotificationObj
                         };
 
-                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                            new GetNotificationMessageRequest
-                            {
-                                IDUSER = token.IDUSER,
-                                IDGROUP = meeting.IdGroup,
-                                IDMEETING = meeting.IdMeeting,
-                                DATE_SEND =DateTime.Now,
-                                MESSAGE = title + " "
-                                + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
-                            }
-                        );
-
                         try
                         {
                             FirebaseMessaging messaging = FirebaseMessaging.GetMessaging(app);
@@ -317,16 +254,6 @@ namespace DataLibrary.Helper.Notification
                     Data = androidNotificationObj
                 };
 
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDMEETING = (int)idMeeting,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = title + " " + body,
-                    }
-                );
-
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -350,23 +277,19 @@ namespace DataLibrary.Helper.Notification
                 string body = "";
                 if (updated.DateMeeting != meeting.DateMeeting)
                 {
-                    body += meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " => " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
+                    body += "Nowa data: " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
                 }
                 if (updated.Place != meeting.Place)
                 {
-                    body += meeting.Place + " => " + updated.Place + "\n";
+                    body += "Nowe miejsce: " + updated.Place + "\n";
                 }
                 if (updated.Quantity != meeting.Quantity)
                 {
-                    body += meeting.Quantity + " => " + updated.Quantity + "\n";
+                    body += "Nowa liczba osób: " + updated.Quantity + "\n";
                 }
                 if (updated.Description != meeting.Description)
                 {
-                    body += meeting.Description + " => " + updated.Description + "\n";
-                }
-                if (updated.WaitingTimeDecision != meeting.WaitingTimeDecision)
-                {
-                    body += "Czas na odpowiedź: " + meeting.WaitingTimeDecision + " => " + updated.WaitingTimeDecision + "\n";
+                    body += "Nowy opis: " + updated.Description + "\n";
                 }
                 var obj = new Message
                 {
@@ -378,17 +301,6 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDMEETING = (int)meeting.IdMeeting,
-                        IDGROUP = meeting.IdGroup,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = user?.FIRSTNAME + " " + user?.SURNAME + " zaaktualizował spotkanie w grupie " + meeting.Name + " " + body,
-                    }
-                );
 
                 try
                 {
@@ -434,16 +346,6 @@ namespace DataLibrary.Helper.Notification
                     Data = androidNotificationObj
                 };
 
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDMEETING = (int)idMeeting,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = title + body,
-                    }
-                );
-
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -474,15 +376,6 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDGROUP = (int)group.ID_GROUP,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = "Właśnie zostałeś dodany do grupy! " + author.FIRSTNAME + " " + author.SURNAME + " dodał cię do grupy " + group.NAME,
-                    }
-                );
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -511,19 +404,6 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
-
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = token.IDUSER,
-                        IDGROUP = (int)meeting.IdGroup,
-                        IDMEETING = meeting.IdMeeting,
-                        DATE_SEND =DateTime.Now,
-                        MESSAGE = "Organizator właśnie anulował spotkanie"
-                        + "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",
-                    }
-                );
-
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);

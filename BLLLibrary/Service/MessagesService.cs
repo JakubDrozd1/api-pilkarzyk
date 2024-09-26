@@ -6,6 +6,7 @@ using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
+using Newtonsoft.Json.Linq;
 
 namespace BLLLibrary.Service
 {
@@ -102,6 +103,32 @@ namespace BLLLibrary.Service
                 {
                     await notificationHub.SendMessageNotificationAsync(meeting, getMessageRequest, author, tokens);
                 }
+                string title = "";
+                switch (getMessageRequest.ANSWER)
+                {
+                    case "yes":
+                        {
+                            title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie zaakceptował twoje zaproszenie do spotkania!";
+                        }
+                        break;
+                    case "no":
+                        {
+                            title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie odrzucił twoje zaproszenie do spotkania!";
+                        }
+                        break;
+                }
+
+                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                    new GetNotificationMessageRequest
+                    {
+                        IDUSER = userDetails.IDUSER,
+                        IDGROUP = meeting.IdGroup,
+                        IDMEETING = meeting.IdMeeting,
+                        DATE_SEND = DateTime.Now,
+                        TITLE = title,
+                        MESSAGE = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
+                    }
+                );
             }
         }
 
@@ -299,6 +326,29 @@ namespace BLLLibrary.Service
                 {
                     await notificationHub.SendNotificationToUserTeamAsync(teamName, idMeeting, author, tokens);
                 }
+
+                string body;
+                string title;
+                if (teamName != null)
+                {
+                    title = "Zostałeś dodany do drużyny!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dodał Cię do drużyny " + teamName;
+                }
+                else
+                {
+                    title = "Zostałeś usuniety z drużyny!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie usunął Cię z drużyny i przeniósł do rezerwy";
+                }
+                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                    new GetNotificationMessageRequest
+                    {
+                        IDUSER = idUser,
+                        IDMEETING = idMeeting,
+                        DATE_SEND = DateTime.Now,
+                        TITLE = title,
+                        MESSAGE = body,
+                    }
+                );
             }
         }
 
@@ -314,6 +364,29 @@ namespace BLLLibrary.Service
                 {
                     await notificationHub.SendNotificationToAuthorTeamAsync(teamName, idMeeting, author, tokens);
                 }
+                string title;
+                string body;
+                if (teamName != null)
+                {
+                    title = "Ktoś właśnie dołączył do drużyny!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dołączył do drużyny " + teamName;
+                }
+                else
+                {
+                    title = "Ktoś właśnie opuścił drużynę!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " opuścił drużynę i przeszedł do rezerwy";
+                }
+
+                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                    new GetNotificationMessageRequest
+                    {
+                        IDUSER = idAuthor,
+                        IDMEETING = idMeeting,
+                        DATE_SEND = DateTime.Now,
+                        MESSAGE = body,
+                        TITLE = title,
+                    }
+                );
             }
         }
     }

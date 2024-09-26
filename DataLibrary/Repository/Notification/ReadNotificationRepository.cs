@@ -4,6 +4,9 @@ using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Notification;
 using FirebirdSql.Data.FirebirdClient;
+using DataLibrary.Model.DTO.Request.Pagination;
+using DataLibrary.Model.DTO.Response;
+using static Dapper.SqlMapper;
 
 namespace DataLibrary.Repository.Notification
 {
@@ -48,7 +51,7 @@ namespace DataLibrary.Repository.Notification
             }
         }
 
-        public async Task<List<NOTIFICATION_MESSAGES>> GetAllNotificationMessageFromUser(int userId)
+        public async Task<List<GetNotificationMessageResponse>> GetAllNotificationMessageFromUser(GetNotificationMessagePaginationRequest getNotificationMessagePaginationRequest)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -56,12 +59,29 @@ namespace DataLibrary.Repository.Notification
             }
             try
             {
-                var query = new QueryBuilder<List<NOTIFICATION_MESSAGES>>()
-                    .Select("* ")
-                    .From(" NOTIFICATION_MESSAGES ")
-                    .Where("IDUSER = @IdUser ");
+                DynamicParameters dynamicParameters = new();
+                string WHERE = "1=1 ";
+                if (getNotificationMessagePaginationRequest.IdUser is not null)
+                {
+                    WHERE += $"AND {nameof(NOTIFICATION_MESSAGES.IDUSER)} = @UserId ";
+                    dynamicParameters.Add("@UserId", getNotificationMessagePaginationRequest.IdUser);
+                }
+                string SELECT
+                    = $"{nameof(NOTIFICATION_MESSAGES.DATE_SEND)} AS DateSend, " +
+                $"{nameof(NOTIFICATION_MESSAGES.IDUSER)} AS IdUser, " +
+                $"{nameof(NOTIFICATION_MESSAGES.IDGROUP)} AS IdGroup, " +
+                $"{nameof(NOTIFICATION_MESSAGES.IDMEETING)} AS IdMeeting, " +
+                $"{nameof(NOTIFICATION_MESSAGES.TITLE)}, " +
+                $"{nameof(NOTIFICATION_MESSAGES.MESSAGE)} ";
 
-                return (await _dbConnection.QueryAsync<NOTIFICATION_MESSAGES>(query.Build(), new { IdUser = userId }, _fbTransaction)).ToList();
+                var query = new QueryBuilder<List<GetNotificationMessageResponse>>()
+                            .Select(SELECT)
+                            .From($"{nameof(NOTIFICATION_MESSAGES)} ")
+                            .Where(WHERE)
+                            .OrderBy(getNotificationMessagePaginationRequest)
+                            .Limit(getNotificationMessagePaginationRequest);
+
+                return (await _dbConnection.QueryAsync<GetNotificationMessageResponse>(query.Build(), dynamicParameters, _fbTransaction)).AsList();
             }
             catch (Exception ex)
             {

@@ -7,7 +7,6 @@ using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
-using Xamarin.Essentials;
 
 namespace DataLibrary.Repository.Meetings
 {
