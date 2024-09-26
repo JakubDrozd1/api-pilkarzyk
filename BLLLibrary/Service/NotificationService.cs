@@ -35,6 +35,11 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(userId);
         }
 
+        public async Task<List<NOTIFICATION_MESSAGES>> GetAllNotificationMessageFromUser(int userId)
+        {
+            return await _unitOfWork.ReadNotificationRepository.GetAllNotificationMessageFromUser(userId);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _unitOfWork.SaveChangesAsync();

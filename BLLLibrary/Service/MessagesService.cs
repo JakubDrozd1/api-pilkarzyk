@@ -91,7 +91,7 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserAsync(GetMeetingGroupsResponse meeting, USERS? user, USERS? author, GetMessageRequest getMessageRequest)
         {
-            FirebaseNotification notificationHub = new();
+            FirebaseNotification notificationHub = new(_unitOfWork);
             var idUser = user?.ID_USER ?? throw new Exception("User is null");
             var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
@@ -289,7 +289,7 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserTeamAsync(int idUser, int idAuthor, int idMeeting, string? teamName)
         {
-            FirebaseNotification notificationHub = new();
+            FirebaseNotification notificationHub = new(_unitOfWork);
             var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
             var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(idAuthor);
@@ -304,7 +304,7 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToAuthorTeamAsync(int idUser, int idAuthor, int idMeeting, string? teamName)
         {
-            FirebaseNotification notificationHub = new();
+            FirebaseNotification notificationHub = new(_unitOfWork);
             var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
             var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(idAuthor);

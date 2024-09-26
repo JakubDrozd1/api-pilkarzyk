@@ -47,5 +47,26 @@ namespace DataLibrary.Repository.Notification
                 throw new Exception($"{ex.Message}");
             }
         }
+
+        public async Task<List<NOTIFICATION_MESSAGES>> GetAllNotificationMessageFromUser(int userId)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                var query = new QueryBuilder<List<NOTIFICATION_MESSAGES>>()
+                    .Select("* ")
+                    .From(" NOTIFICATION_MESSAGES ")
+                    .Where("IDUSER = @IdUser ");
+
+                return (await _dbConnection.QueryAsync<NOTIFICATION_MESSAGES>(query.Build(), new { IdUser = userId }, _fbTransaction)).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
     }
 }

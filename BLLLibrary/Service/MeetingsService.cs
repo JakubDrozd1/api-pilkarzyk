@@ -118,7 +118,7 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserAsync(int idMeeting, List<GetGroupsUsersResponse> users, int? idAuthor)
         {
-            FirebaseNotification notificationHub = new();
+            FirebaseNotification notificationHub = new(_unitOfWork);
             var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(idMeeting) ?? throw new Exception("Meeting is null");
             foreach (var user in users)
             {
@@ -135,6 +135,7 @@ namespace BLLLibrary.Service
                             {
                                 await notificationHub.SendMeetingNotification(meeting, tokens);
                             }
+                           
                         }
                     }
                 }
@@ -192,7 +193,7 @@ namespace BLLLibrary.Service
 
         private async Task SendUpdateNotificationToUserAsync(GetMeetingGroupsResponse updated, GetMeetingGroupsResponse meeting, List<GetGroupsUsersResponse> users)
         {
-            FirebaseNotification notificationHub = new();
+            FirebaseNotification notificationHub = new(_unitOfWork);
 
             foreach (var user in users)
             {
@@ -271,7 +272,7 @@ namespace BLLLibrary.Service
 
         private async Task SendCancelMeetingNotificationToUserAsync(List<GetMessagesUsersMeetingsResponse> messages, GetMeetingGroupsResponse meeting)
         {
-            FirebaseNotification notificationHub = new();
+            FirebaseNotification notificationHub = new(_unitOfWork);
 
             foreach (var user in messages)
             {
