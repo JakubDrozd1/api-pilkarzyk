@@ -6,6 +6,7 @@ using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
+using DataLibrary.IRepository.GroupsLink;
 using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Guests;
 using DataLibrary.IRepository.Meetings;
@@ -24,6 +25,7 @@ using DataLibrary.Repository.DateQuests;
 using DataLibrary.Repository.EmailSender;
 using DataLibrary.Repository.GroupInvite;
 using DataLibrary.Repository.Groups;
+using DataLibrary.Repository.GroupsLink;
 using DataLibrary.Repository.GroupsUsers;
 using DataLibrary.Repository.Guests;
 using DataLibrary.Repository.Meetings;
@@ -48,6 +50,8 @@ namespace DataLibrary.UoW
 
         public ICreateDateQuestsRepository CreateDateQuestsRepository => new CreateDateQuestsRepository(dbConnection, dbTransaction);
         public ICreateGroupsRepository CreateGroupsRepository => new CreateGroupsRepository(dbConnection, dbTransaction);
+
+        public IReadGroupsUsersLinkRepository ReadGroupLinkRepository => new ReadGroupsUsersLinkRepository(dbConnection, dbTransaction);
         public ICreateMeetingsRepository CreateMeetingsRepository => new CreateMeetingsRepository(dbConnection, dbTransaction);
         public ICreateMessagesRepository CreateMessagesRepository => new CreateMessagesRepository(dbConnection, dbTransaction);
         public ICreateMessagesHistoryRepository CreateMessagesHistoryRepository => new CreateMessagesHistoryRepository(dbConnection, dbTransaction);
@@ -112,6 +116,12 @@ namespace DataLibrary.UoW
         public IUpdateNotificationRepository UpdateNotificationRepository => new UpdateNotificationRepository(dbConnection, dbTransaction);
 
         public IToggleDateQuestsRepository ToggleDateQuestsRepository => new ToggleDateQuestsRepository(dbConnection, dbTransaction);
+
+        public IReadGroupsUsersLinkRepository ReadGroupsUsersLinkRepository => new ReadGroupsUsersLinkRepository(dbConnection, dbTransaction);
+
+        public ICreateGroupsUsersLinkRepository CreateGroupsUsersLinkRepository => new CreateGroupsUsersLinkRepository(dbConnection, dbTransaction);
+
+        public IDeleteGroupsUsersLinkRepository DeleteGroupsUsersLinkRepository => new DeleteGroupsUsersLinkRepository(dbConnection, dbTransaction);
 
         public async Task SaveChangesAsync()
         {
