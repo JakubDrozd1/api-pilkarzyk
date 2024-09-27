@@ -1,7 +1,6 @@
 ﻿using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
-using DataLibrary.UoW;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
@@ -11,14 +10,10 @@ namespace DataLibrary.Helper.Notification
     public class FirebaseNotification : IFirebaseNotification
     {
         static FirebaseApp? app;
-        private readonly IUnitOfWork _unitOfWork;
 
-
-        public FirebaseNotification(IUnitOfWork unitOfWork)
+        public FirebaseNotification()
         {
             ReadFireBaseAdminSdk();
-            _unitOfWork = unitOfWork;
-
         }
 
         private static void ReadFireBaseAdminSdk()

@@ -87,7 +87,7 @@ namespace Jobs.Jobs
                             await _messageService.UpdateAnswerMessageAsync(messageToChange);
                          }
 
-                        FirebaseNotification notificationHub = new(_unitOfWork);
+                        FirebaseNotification notificationHub = new();
                         var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync((int)idMetting) ?? throw new Exception("Meeting is null");
                         var users = await _unitOfWork.ReadGroupsUsersRepository.GetListGroupsUserAsync(new GetUsersGroupsPaginationRequest()
                         {
