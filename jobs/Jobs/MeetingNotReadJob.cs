@@ -6,8 +6,6 @@ using DataLibrary.Model.DTO.Response;
 using DataLibrary.Entities;
 using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request.TableRequest;
-using Quartz.Util;
-using Newtonsoft.Json.Linq;
 
 
 namespace Jobs.Jobs

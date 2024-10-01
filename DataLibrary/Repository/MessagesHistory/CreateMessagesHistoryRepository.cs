@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Dapper;
 using DataLibrary.Helper;
-using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.MessagesHistory;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using FirebirdSql.Data.FirebirdClient;
 

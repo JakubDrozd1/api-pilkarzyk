@@ -5,7 +5,7 @@ using DataLibrary.Helper;
 using DataLibrary.IRepository.DateQuest;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.DateQuests
+namespace DataLibrary.Repository.DateQuestionnaires
 {
     public class DeleteDateQuestsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IDeleteDateQuestsRepository
     {

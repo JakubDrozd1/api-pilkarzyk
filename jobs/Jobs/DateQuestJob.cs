@@ -1,16 +1,11 @@
 ﻿using BLLLibrary.IService;
-using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.Helper;
 using DataLibrary.Model.DTO.Request.TableRequest;
-using DataLibrary.Model.DTO.Request;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using BLLLibrary.Service;
 using DataLibrary.Helper.Notification;
 using DataLibrary.UoW;
 using DataLibrary.Model.DTO.Request.Pagination;
-using Newtonsoft.Json.Linq;
 
 
 namespace Jobs.Jobs

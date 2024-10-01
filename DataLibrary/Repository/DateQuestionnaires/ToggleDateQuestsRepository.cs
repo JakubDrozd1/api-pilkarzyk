@@ -6,7 +6,7 @@ using DataLibrary.IRepository.DateQuest;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.DateQuests
+namespace DataLibrary.Repository.DateQuestionnaires
 {
     public class ToggleDateQuestsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IToggleDateQuestsRepository
     {
@@ -30,7 +30,7 @@ namespace DataLibrary.Repository.DateQuests
 
                 var UserDateQuest = await _dbConnection.QueryFirstOrDefaultAsync<USERS_DATE_QUESTS>(
                      query.Build(),
-                     new { IdUser = toggledateQuest.IdUser, IdQuest = dateQuestId },
+                     new { toggledateQuest.IdUser, IdQuest = dateQuestId },
                      _fbTransaction
                  );
 
@@ -41,16 +41,16 @@ namespace DataLibrary.Repository.DateQuests
 
                 var Meeting = await _dbConnection.QueryFirstOrDefaultAsync<MEETINGS>(
                      queryMeatting.Build(),
-                     new { IdMeeting = toggledateQuest.IdMeeting },
+                     new { toggledateQuest.IdMeeting },
                      _fbTransaction
                  );
 
-                if (Meeting == null ||  Meeting.DATE_QUEST_END <= DateTime.Now)
+                if (Meeting == null || Meeting.DATE_QUEST_END <= DateTime.Now)
                 {
                     throw new Exception("Questionnaire is ended");
                 }
 
-                if ( UserDateQuest != null )
+                if (UserDateQuest != null)
                 {
                     var deleteBuilder = new QueryBuilder<USERS_DATE_QUESTS>()
                        .Delete("USERS_DATE_QUESTS ")
@@ -58,7 +58,7 @@ namespace DataLibrary.Repository.DateQuests
                     string deleteQuery = deleteBuilder.Build();
                     await _dbConnection.ExecuteAsync(
                         deleteQuery,
-                        new { IdUser = toggledateQuest.IdUser, IdQuest = dateQuestId },
+                        new { toggledateQuest.IdUser, IdQuest = dateQuestId },
                          _fbTransaction
                      );
                 }

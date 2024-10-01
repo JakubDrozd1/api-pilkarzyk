@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using DataLibrary.Helper.ConnectionProvider;
+using DataLibrary.IRepository.Ads;
 using DataLibrary.IRepository.ADS;
 using DataLibrary.IRepository.ChatMessages;
 using DataLibrary.IRepository.DateQuest;
@@ -11,6 +12,7 @@ using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Guests;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.MessagesHistory;
 using DataLibrary.IRepository.Notification;
 using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
