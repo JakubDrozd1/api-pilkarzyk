@@ -7,7 +7,7 @@
         public int IDUSER { get; set; }
         public int? IDGROUP { get; set; }
         public int? IDMEETING { get; set; }
-        public string? MESSAGE { get; set; }
+        public string? BODY { get; set; }
         public string? TITLE { get; set; }
     }
 }

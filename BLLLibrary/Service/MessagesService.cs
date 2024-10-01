@@ -128,7 +128,7 @@ namespace BLLLibrary.Service
                             IDMEETING = meeting.IdMeeting,
                             DATE_SEND = DateTime.Now,
                             TITLE = title,
-                            MESSAGE = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
+                            BODY = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
                         }
                     );
                     }
@@ -351,7 +351,7 @@ namespace BLLLibrary.Service
                         IDMEETING = idMeeting,
                         DATE_SEND = DateTime.Now,
                         TITLE = title,
-                        MESSAGE = body,
+                        BODY = body,
                     }
                 );
             }
@@ -388,7 +388,7 @@ namespace BLLLibrary.Service
                         IDUSER = idAuthor,
                         IDMEETING = idMeeting,
                         DATE_SEND = DateTime.Now,
-                        MESSAGE = body,
+                        BODY = body,
                         TITLE = title,
                     }
                 );

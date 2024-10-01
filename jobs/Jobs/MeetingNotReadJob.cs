@@ -96,8 +96,8 @@ namespace Jobs.Jobs
                                 IDGROUP = meetingUser.IdGroup,
                                 IDMEETING = meetingUser.IdMeeting,
                                 DATE_SEND = DateTime.Now,
-                                TITLE = "Nie zapomnij o spodkaniu w " + meetingUser.Place,
-                                MESSAGE = meetingUser.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meetingUser.Place + " " + meetingUser.Description,
+                                TITLE = "Nie zapomnij o spotkaniu w " + meetingUser.Place,
+                                BODY = meetingUser.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meetingUser.Place + " " + meetingUser.Description,
                             }
                         );
                     }

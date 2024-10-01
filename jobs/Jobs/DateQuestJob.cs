@@ -113,7 +113,7 @@ namespace Jobs.Jobs
                                         IDGROUP = meeting.IdGroup,
                                         IDMEETING = meeting.IdMeeting,
                                         DATE_SEND = DateTime.Now,
-                                        MESSAGE = meeting.Place + " " + meeting.Description,
+                                        BODY = meeting.Place + " " + meeting.Description,
                                         TITLE = "Ustalono Datę spotkania z ankiety dla " + meeting.Name + " "
                                         + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm")
                                     }

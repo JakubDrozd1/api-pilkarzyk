@@ -145,7 +145,7 @@ namespace BLLLibrary.Service
                             IDGROUP = meeting.IdGroup,
                             IDMEETING = meeting.IdMeeting,
                             DATE_SEND = DateTime.Now,
-                            MESSAGE = meeting.Place + " " + meeting.Description,
+                            BODY = meeting.Place + " " + meeting.Description,
                             TITLE = (meeting.IsQuest != null && meeting.IsQuest == true ?
                         "Nowa ankieta spotkania w grupie " + meeting.Name :
                         "Nowe zaproszenie do spotkania w grupie " + meeting.Name)
@@ -246,7 +246,7 @@ namespace BLLLibrary.Service
                                IDGROUP = meeting.IdGroup,
                                DATE_SEND = DateTime.Now,
                                TITLE = author?.FIRSTNAME + " " + author?.SURNAME + " zaaktualizował spotkanie w grupie " + meeting.Name,
-                               MESSAGE = body,
+                               BODY = body,
                            }
                        );
                     }
@@ -335,7 +335,7 @@ namespace BLLLibrary.Service
                                 IDMEETING = meeting.IdMeeting,
                                 DATE_SEND = DateTime.Now,
                                 TITLE = "Organizator właśnie anulował spotkanie",
-                                MESSAGE = "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",
+                                BODY = "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",
                             }
                         );
                     }

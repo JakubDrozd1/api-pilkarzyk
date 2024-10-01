@@ -72,7 +72,7 @@ namespace DataLibrary.Repository.Notification
                 $"{nameof(NOTIFICATION_MESSAGES.IDGROUP)} AS IdGroup, " +
                 $"{nameof(NOTIFICATION_MESSAGES.IDMEETING)} AS IdMeeting, " +
                 $"{nameof(NOTIFICATION_MESSAGES.TITLE)}, " +
-                $"{nameof(NOTIFICATION_MESSAGES.MESSAGE)} ";
+                $"{nameof(NOTIFICATION_MESSAGES.BODY)} ";
 
                 var query = new QueryBuilder<List<GetNotificationMessageResponse>>()
                             .Select(SELECT)

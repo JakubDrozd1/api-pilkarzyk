@@ -186,7 +186,7 @@ namespace BLLLibrary.Service
                         IDGROUP = group.ID_GROUP,
                         DATE_SEND = DateTime.Now,
                         TITLE = userInfo?.FIRSTNAME + " " + userInfo?.SURNAME + " wysłał ci zaproszenie do grupy!",
-                        MESSAGE = "Nowe zaproszenie do grupy " + group.NAME,
+                        BODY = "Nowe zaproszenie do grupy " + group.NAME,
                     }
                 );
             }
@@ -210,7 +210,7 @@ namespace BLLLibrary.Service
                         IDUSER = idUser,
                         IDGROUP = group.ID_GROUP,
                         DATE_SEND = DateTime.Now,
-                        MESSAGE = author.FIRSTNAME + " " + author.SURNAME + " dodał cię do grupy " + group.NAME,
+                        BODY = author.FIRSTNAME + " " + author.SURNAME + " dodał cię do grupy " + group.NAME,
                         TITLE = "Właśnie zostałeś dodany do grupy!"
                     }
                 );

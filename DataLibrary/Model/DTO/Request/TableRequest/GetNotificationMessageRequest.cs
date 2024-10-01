@@ -16,8 +16,8 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("DateSend")]
         public required DateTime DATE_SEND { get; set; }
 
-        [JsonPropertyName("Message")]
-        public required string MESSAGE { get; set; }
+        [JsonPropertyName("Body")]
+        public required string BODY { get; set; }
         
         [JsonPropertyName("Title")]
         public required string TITLE { get; set; }
