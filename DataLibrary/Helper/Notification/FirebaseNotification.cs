@@ -87,7 +87,7 @@ namespace DataLibrary.Helper.Notification
                     Token = token.TOKEN,
                     Notification = new FirebaseAdmin.Messaging.Notification
                     {
-                        Title = "Ustalono Datę spotkania z ankiety dla " + meeting.Name,
+                        Title = "Ustalono datę spotkania z ankiety dla " + meeting.Name,
                         Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
                     },
                     Data = androidNotificationObj
@@ -116,7 +116,7 @@ namespace DataLibrary.Helper.Notification
                     Token = token.TOKEN,
                     Notification = new FirebaseAdmin.Messaging.Notification
                     {
-                        Title = "Nie zapomnij o spodkaniu w " + meeting.Place,
+                        Title = "Nie zapomnij o spotkaniu w " + meeting.Place,
                         Body = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description
                     },
                     Data = androidNotificationObj
