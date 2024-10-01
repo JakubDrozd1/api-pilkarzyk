@@ -6,7 +6,6 @@ using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.UoW;
-using Newtonsoft.Json.Linq;
 
 namespace BLLLibrary.Service
 {
@@ -117,19 +116,22 @@ namespace BLLLibrary.Service
                         }
                         break;
                 }
-                if (getMessageRequest.IDUSER != meeting.IdAuthor)
+                if (!String.IsNullOrEmpty(title))
                 {
-                    await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
+                    if (getMessageRequest.IDUSER != meeting.IdAuthor)
                     {
-                        IDUSER = idUser,
-                        IDGROUP = meeting.IdGroup,
-                        IDMEETING = meeting.IdMeeting,
-                        DATE_SEND = DateTime.Now,
-                        TITLE = title,
-                        MESSAGE = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
+                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                        new GetNotificationMessageRequest
+                        {
+                            IDUSER = idUser,
+                            IDGROUP = meeting.IdGroup,
+                            IDMEETING = meeting.IdMeeting,
+                            DATE_SEND = DateTime.Now,
+                            TITLE = title,
+                            MESSAGE = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
+                        }
+                    );
                     }
-                );
                 }
             }
         }
@@ -300,7 +302,7 @@ namespace BLLLibrary.Service
             }
 
             var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(getTeamTableMessageOneRequest.IdMeeting);
-            var team = await _unitOfWork.ReadTeamsRepository.GetTeamByIdAsync(getTeamTableMessageOneRequest.IdMeeting);
+            var team = await _unitOfWork.ReadTeamsRepository.GetTeamByIdAsync(getTeamTableMessageOneRequest.IdTeam ?? throw new Exception("Team is null"));
 
 
             if (getTeamTableMessageOneRequest.IdUser != null)

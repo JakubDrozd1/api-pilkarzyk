@@ -1,7 +1,4 @@
-﻿using DataLibrary.Entities;
-using DataLibrary.Model.DTO.Response;
-
-namespace DataLibrary.Model.DTO.Request
+﻿namespace DataLibrary.Model.DTO.Request
 {
     public class GetTeamTableMessageOneRequest
     {

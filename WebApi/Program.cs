@@ -104,11 +104,9 @@ builder.Services
     });
 builder.Services.AddSignalR();
 
-
 builder.Services.Configure<JobSettings>(builder.Configuration.GetSection("JobSetting"));
 
 builder.Services.RegisterBackgroundServices(builder.Configuration.GetSection("JobSetting").Get<JobSettings>() ?? new JobSettings());
-
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

@@ -1,5 +1,6 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +47,6 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{teamId}", Name = "UpdateTeam")]
-
         public async Task<ActionResult> UpdateTeam(int teamId, GetTeamRequest getTeamRequest)
         {
             try
@@ -57,7 +57,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                if(ex.Source == "FirebirdSql.Data.FirebirdClient")
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
                 {
                     return StatusCode(500);
                 }
@@ -65,8 +65,6 @@ namespace WebApi.Controllers
             }
         }
 
-
-        [Authorize]
         [HttpDelete("{teamId}", Name = "DeleteTeam")]
         public async Task<ActionResult> DeleteTeam(int teamId)
         {
@@ -85,5 +83,24 @@ namespace WebApi.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPut("bulkUpdate", Name = "BulkUpdateTeamsMeeting")]
+        public async Task<ActionResult> BulkUpdateTeamsMeeting(GetUpdateBulkTeamRequest getUpdateBulkTeamRequest)
+        {
+            try
+            {
+                await _teamsService.BulkUpdateTeamsMeeting(getUpdateBulkTeamRequest);
+                return Ok(getUpdateBulkTeamRequest);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }

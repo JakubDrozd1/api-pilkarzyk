@@ -1,4 +1,5 @@
 ﻿using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.TableRequest;
 
 namespace BLLLibrary.IService
@@ -9,6 +10,7 @@ namespace BLLLibrary.IService
         Task AddTeamsAsync(GetTeamRequest getTeamRequest);
         Task UpdateTeamAsync(int teamId, GetTeamRequest getTeamRequest);
         Task DeleteTeamAsync(int teamId);
+        Task BulkUpdateTeamsMeeting(GetUpdateBulkTeamRequest getUpdateBulkTeamRequest);
         Task SaveChangesAsync();
 
     }
