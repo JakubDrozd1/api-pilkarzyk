@@ -23,7 +23,7 @@ using DataLibrary.IRepository.Users;
 using DataLibrary.IRepository.UsersMeetings;
 using DataLibrary.Repository.Ads;
 using DataLibrary.Repository.ChatMessages;
-using DataLibrary.Repository.DateQuests;
+using DataLibrary.Repository.DateQuestionnaires;
 using DataLibrary.Repository.EmailSender;
 using DataLibrary.Repository.GroupInvite;
 using DataLibrary.Repository.Groups;
