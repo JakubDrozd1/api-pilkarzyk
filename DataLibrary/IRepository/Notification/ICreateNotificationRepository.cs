@@ -5,6 +5,7 @@ namespace DataLibrary.IRepository.Notification
     public interface ICreateNotificationRepository
     {
         Task AddNotificationToUserAsync(GetNotificationRequest getNotificationRequest);
+        Task AddNotificationMessageToUserAsync(GetNotificationMessageRequest getNotificationRequest);
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿using DataLibrary.Model.DTO.Response;
 
-namespace DataLibrary.IRepository.Users
+namespace DataLibrary.IRepository.Ads
 {
     public interface IReadAdsRepository
     {

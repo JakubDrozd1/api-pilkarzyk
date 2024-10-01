@@ -1,6 +1,8 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
+using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,6 +56,24 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("message", Name = "GetAllNotificationMessageFromUser")]
+        public async Task<ActionResult<List<GetNotificationMessageResponse>>> GetAllNotificationMessageFromUser([FromQuery] GetNotificationMessagePaginationRequest getNotificationMessagePaginationRequest)
+        {
+            try
+            {
+                var notificationsMessage = await _notificationServic.GetAllNotificationMessageFromUser(getNotificationMessagePaginationRequest);
+                return Ok(notificationsMessage);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
+                {
+                    return StatusCode(500);
+                }
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpDelete("{userId}", Name = "DeletaAllNotificationFromUser")]
         public async Task<ActionResult> DeletaAllNotificationFromUser(int userId)
         {
@@ -65,11 +85,11 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                if(ex.Source == "FirebirdSql.Data.FirebirdClient")
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
                 {
                     return StatusCode(500);
                 }
-                return StatusCode(500, ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -84,11 +104,11 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                if(ex.Source == "FirebirdSql.Data.FirebirdClient")
+                if (ex.Source == "FirebirdSql.Data.FirebirdClient")
                 {
                     return StatusCode(500);
                 }
-                return StatusCode(500, ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

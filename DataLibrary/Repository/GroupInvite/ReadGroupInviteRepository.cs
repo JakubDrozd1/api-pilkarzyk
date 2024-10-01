@@ -16,6 +16,7 @@ namespace DataLibrary.Repository.GroupInvite
         private readonly FbTransaction? _fbTransaction = fbTransaction;
         private static readonly string SELECT
               = $"g.{nameof(GROUPS.NAME)}, " +
+                $"g.{nameof(GROUPS.DESCRIPTION)} AS GroupDescription, " +
                 $"gi.{nameof(GROUP_INVITE.IDUSER)}, " +
                 $"gi.{nameof(GROUP_INVITE.IDAUTHOR)}, " +
                 $"gi.{nameof(GROUP_INVITE.IDGROUP)}, " +

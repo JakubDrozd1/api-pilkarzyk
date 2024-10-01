@@ -78,7 +78,7 @@ namespace BLLLibrary.Service
                         await _unitOfWork.CreateTeamsRepository.AddTeamsAsync(team);
                     }
                 }
-                if((bool)getUsersMeetingsRequest.Meeting.IS_QUEST! && getUsersMeetingsRequest.DateQuest?.Length > 0)
+                if ((bool)getUsersMeetingsRequest.Meeting.IS_QUEST! && getUsersMeetingsRequest.DateQuest?.Length > 0)
                 {
                     foreach (var dateQuest in getUsersMeetingsRequest.DateQuest)
                     {
@@ -87,7 +87,7 @@ namespace BLLLibrary.Service
                     }
                 }
                 await _unitOfWork.SaveChangesAsync();
-                await SendNotificationToUserAsync(meetingAddedId , users, getUsersMeetingsRequest.Message.IDUSER);
+                await SendNotificationToUserAsync(meetingAddedId, users, getUsersMeetingsRequest.Message.IDUSER);
                 return meetingAddedId;
             }
             catch (Exception ex)
@@ -135,8 +135,22 @@ namespace BLLLibrary.Service
                             {
                                 await notificationHub.SendMeetingNotification(meeting, tokens);
                             }
+
                         }
                     }
+                    await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                        new GetNotificationMessageRequest
+                        {
+                            IDUSER = user.IdUser ?? 0,
+                            IDGROUP = meeting.IdGroup,
+                            IDMEETING = meeting.IdMeeting,
+                            DATE_SEND = DateTime.Now,
+                            MESSAGE = meeting.Place + " " + meeting.Description,
+                            TITLE = (meeting.IsQuest != null && meeting.IsQuest == true ?
+                        "Nowa ankieta spotkania w grupie " + meeting.Name :
+                        "Nowe zaproszenie do spotkania w grupie " + meeting.Name)
+                        }
+                );
                 }
             }
         }
@@ -207,6 +221,34 @@ namespace BLLLibrary.Service
                         {
                             await notificationHub.SendUpdateMeetingNotification(updated, meeting, author, tokens);
                         }
+                        string body = "";
+                        if (updated.DateMeeting != meeting.DateMeeting)
+                        {
+                            body += "Nowa data: " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
+                        }
+                        if (updated.Place != meeting.Place)
+                        {
+                            body += "Nowe miejsce: " + updated.Place + "\n";
+                        }
+                        if (updated.Quantity != meeting.Quantity)
+                        {
+                            body += "Nowa liczba osób: " + updated.Quantity + "\n";
+                        }
+                        if (updated.Description != meeting.Description)
+                        {
+                            body += "Nowy opis: " + updated.Description + "\n";
+                        }
+                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                           new GetNotificationMessageRequest
+                           {
+                               IDUSER = user.IdUser ?? throw new Exception("User is null"),
+                               IDMEETING = meeting.IdMeeting,
+                               IDGROUP = meeting.IdGroup,
+                               DATE_SEND = DateTime.Now,
+                               TITLE = author?.FIRSTNAME + " " + author?.SURNAME + " zaaktualizował spotkanie w grupie " + meeting.Name,
+                               MESSAGE = body,
+                           }
+                       );
                     }
                 }
             }
@@ -230,7 +272,7 @@ namespace BLLLibrary.Service
 
                 var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
 
-                    await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
+                await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
                 await _unitOfWork.SaveChangesAsync();
                 await SendCancelMeetingNotificationToUserAsync(messages, meeting ?? throw new Exception("Meetings is null"));
 
@@ -285,6 +327,17 @@ namespace BLLLibrary.Service
                         {
                             await notificationHub.SendCancelMeetingNotificationToUser(messages, meeting, tokens);
                         }
+                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                            new GetNotificationMessageRequest
+                            {
+                                IDUSER = user.IdUser ?? throw new Exception("User is null"),
+                                IDGROUP = meeting.IdGroup,
+                                IDMEETING = meeting.IdMeeting,
+                                DATE_SEND = DateTime.Now,
+                                TITLE = "Organizator właśnie anulował spotkanie",
+                                MESSAGE = "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",
+                            }
+                        );
                     }
                 }
             }

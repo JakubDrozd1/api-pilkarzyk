@@ -145,7 +145,7 @@ namespace BLLLibrary.Service
                 {
                     USERS? userLogin = await _unitOfWork.ReadUsersRepository.GetUserByLoginAsync(getUpdateUserRequest.LOGIN);
 
-                    if (userLogin != null)
+                    if (userLogin != null && userLogin.ID_USER != userId)
                     {
                         throw new Exception("Acount with login already exists");
                     }
@@ -153,15 +153,15 @@ namespace BLLLibrary.Service
                 if (getUpdateUserRequest.EMAIL!=null)
                 {
                     USERS? userEmail = await _unitOfWork.ReadUsersRepository.GetUserByEmailAsync(getUpdateUserRequest.EMAIL);
-                    if (userEmail != null)
+                    if (userEmail != null && userEmail.ID_USER != userId)
                     {
                         throw new Exception("Acount with email already exists");
                     }
                 }
-                if (getUpdateUserRequest.PHONE_NUMBER != null)
+                if (getUpdateUserRequest.PHONE_NUMBER != null )
                 {
                     USERS? userPhone = await _unitOfWork.ReadUsersRepository.GetUserByPhoneNumberAndCountryCodeAsync(getUpdateUserRequest.PHONE_NUMBER ?? throw new Exception("Phone number is null"), getUpdateUserRequest.PHONE_COUNTRY_CODE ?? throw new Exception("Phone Country Code is null"));
-                    if (userPhone != null)
+                    if (userPhone != null && userPhone.ID_USER != userId)
                     {
                         throw new Exception("Acount with phone number already exists");
                     }

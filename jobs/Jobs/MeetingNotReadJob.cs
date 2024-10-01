@@ -5,6 +5,7 @@ using DataLibrary.UoW;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.Entities;
 using DataLibrary.Helper.Notification;
+using DataLibrary.Model.DTO.Request.TableRequest;
 
 
 namespace Jobs.Jobs
@@ -77,7 +78,7 @@ namespace Jobs.Jobs
                                     userDetails.TIME_SILENT_START < userDetails.TIME_SILENT_END &&
                                     (userDetails.TIME_SILENT_START >= actualTime ||
                                     userDetails.TIME_SILENT_END <= actualTime)
-                                ) || 
+                                ) ||
                                 userDetails.TIME_SILENT_START == userDetails.TIME_SILENT_END
                             ))
                         {
@@ -88,6 +89,17 @@ namespace Jobs.Jobs
                                 await notificationHub.SendMeetingReminderNotification(meetingUser, tokens);
                             }
                         }
+                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                            new GetNotificationMessageRequest
+                            {
+                                IDUSER = meetingUser.IdUser ?? 0,
+                                IDGROUP = meetingUser.IdGroup,
+                                IDMEETING = meetingUser.IdMeeting,
+                                DATE_SEND = DateTime.Now,
+                                TITLE = "Nie zapomnij o spodkaniu w " + meetingUser.Place,
+                                MESSAGE = meetingUser.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meetingUser.Place + " " + meetingUser.Description,
+                            }
+                        );
                     }
                     meetingsDictionary[(int)meetingUser.IdMeeting] = meetingUser;
                 }

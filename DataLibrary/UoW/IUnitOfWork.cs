@@ -1,13 +1,16 @@
-﻿using DataLibrary.IRepository.ADS;
+﻿using DataLibrary.IRepository.Ads;
+using DataLibrary.IRepository.ADS;
 using DataLibrary.IRepository.ChatMessages;
 using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.EmailSender;
 using DataLibrary.IRepository.GroupInvite;
 using DataLibrary.IRepository.Groups;
+using DataLibrary.IRepository.GroupsLink;
 using DataLibrary.IRepository.GroupsUsers;
 using DataLibrary.IRepository.Guests;
 using DataLibrary.IRepository.Meetings;
 using DataLibrary.IRepository.Messages;
+using DataLibrary.IRepository.MessagesHistory;
 using DataLibrary.IRepository.Notification;
 using DataLibrary.IRepository.NotificationToken;
 using DataLibrary.IRepository.Rankings;
@@ -22,6 +25,7 @@ namespace DataLibrary.UoW
     public interface IUnitOfWork : IDisposable
     {
         ICreateGroupsRepository CreateGroupsRepository { get; }
+        ICreateGroupsUsersLinkRepository CreateGroupsUsersLinkRepository { get; }
         ICreateMeetingsRepository CreateMeetingsRepository { get; }
         ICreateMessagesRepository CreateMessagesRepository { get; }
         ICreateMessagesHistoryRepository CreateMessagesHistoryRepository { get; }
@@ -52,8 +56,10 @@ namespace DataLibrary.UoW
         IDeleteDateQuestsRepository DeleteDateQuestsRepository { get; }
         IDeleteGuestsRepository DeleteGuestsRepository { get; }
         IDeleteNotificationRepository DeleteNotificationRepository { get; }
+        IDeleteGroupsUsersLinkRepository DeleteGroupsUsersLinkRepository { get; }
 
         IReadGroupsRepository ReadGroupsRepository { get; }
+        IReadGroupsUsersLinkRepository ReadGroupsUsersLinkRepository { get; }
         IReadMeetingsRepository ReadMeetingsRepository { get; }
         IReadMessagesRepository ReadMessagesRepository { get; }
         IReadRankingsRepository ReadRankingsRepository { get; }

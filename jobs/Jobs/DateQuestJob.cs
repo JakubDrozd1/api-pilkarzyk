@@ -1,12 +1,8 @@
 ﻿using BLLLibrary.IService;
-using Dapper;
 using DataLibrary.Entities;
-using DataLibrary.Helper;
 using DataLibrary.Model.DTO.Request.TableRequest;
-using DataLibrary.Model.DTO.Request;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using BLLLibrary.Service;
 using DataLibrary.Helper.Notification;
 using DataLibrary.UoW;
 using DataLibrary.Model.DTO.Request.Pagination;
@@ -81,7 +77,7 @@ namespace Jobs.Jobs
                             var messageToChange = new GetMessageRequest {
                                 ANSWER = "yes",
                                 IDMEETING = idMetting,
-                                IDUSER = userDateQuest.IDUSER,
+                                IDUSER = userDateQuest?.IDUSER,
                             };
 
                             await _messageService.UpdateAnswerMessageAsync(messageToChange);
@@ -110,6 +106,18 @@ namespace Jobs.Jobs
                                             await notificationHub.SendMeetingQuestEndNotification(meeting, tokens);
                                         }
                                 }
+                                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                                    new GetNotificationMessageRequest
+                                    {
+                                        IDUSER = userDetails.IDUSER,
+                                        IDGROUP = meeting.IdGroup,
+                                        IDMEETING = meeting.IdMeeting,
+                                        DATE_SEND = DateTime.Now,
+                                        MESSAGE = meeting.Place + " " + meeting.Description,
+                                        TITLE = "Ustalono Datę spotkania z ankiety dla " + meeting.Name + " "
+                                        + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm")
+                                    }
+                                );
                             }
                         }
                     }

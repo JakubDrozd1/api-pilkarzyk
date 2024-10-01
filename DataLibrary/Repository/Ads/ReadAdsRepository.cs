@@ -2,7 +2,7 @@
 using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
-using DataLibrary.IRepository.Users;
+using DataLibrary.IRepository.Ads;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 

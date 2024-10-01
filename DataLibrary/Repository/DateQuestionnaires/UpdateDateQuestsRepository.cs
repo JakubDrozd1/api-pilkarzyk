@@ -6,7 +6,7 @@ using DataLibrary.IRepository.DateQuest;
 using DataLibrary.IRepository.Groups;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.DateQuests
+namespace DataLibrary.Repository.DateQuestionnaires
 {
     public class UpdateDateQuestsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IUpdateDateQuestsRepository
     {

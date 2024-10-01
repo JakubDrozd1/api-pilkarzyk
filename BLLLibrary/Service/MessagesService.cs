@@ -75,7 +75,7 @@ namespace BLLLibrary.Service
                         IDMESSAGE = messageBeforUpdate.ID_MESSAGE,
                         BEFORE_CHANGE = messageBeforUpdate.ANSWER,
                         AFTER_CHANGE = messageAfterUpdate.ANSWER,
-                        DATE_CHANGE =  DateTime.Now,
+                        DATE_CHANGE = DateTime.Now,
                     });
                 }
                 await _unitOfWork.SaveChangesAsync();
@@ -101,6 +101,37 @@ namespace BLLLibrary.Service
                 if (userDetails.MEETING_ORGANIZER_NOTIFICATION)
                 {
                     await notificationHub.SendMessageNotificationAsync(meeting, getMessageRequest, author, tokens);
+                }
+                string title = "";
+                switch (getMessageRequest.ANSWER)
+                {
+                    case "yes":
+                        {
+                            title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie zaakceptował twoje zaproszenie do spotkania!";
+                        }
+                        break;
+                    case "no":
+                        {
+                            title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie odrzucił twoje zaproszenie do spotkania!";
+                        }
+                        break;
+                }
+                if (!String.IsNullOrEmpty(title))
+                {
+                    if (getMessageRequest.IDUSER != meeting.IdAuthor)
+                    {
+                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                        new GetNotificationMessageRequest
+                        {
+                            IDUSER = idUser,
+                            IDGROUP = meeting.IdGroup,
+                            IDMEETING = meeting.IdMeeting,
+                            DATE_SEND = DateTime.Now,
+                            TITLE = title,
+                            MESSAGE = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
+                        }
+                    );
+                    }
                 }
             }
         }
@@ -242,6 +273,52 @@ namespace BLLLibrary.Service
             }
         }
 
+        public async Task UpdateTeamMessageOneAsync(GetTeamTableMessageOneRequest getTeamTableMessageOneRequest)
+        {
+
+            if (getTeamTableMessageOneRequest.IdUser != null)
+            {
+                await _unitOfWork.UpdateMessagesRepository.UpdateTeamMessageAsync(new GetTeamMessageRequest()
+                {
+                    IDMEETING = getTeamTableMessageOneRequest.IdMeeting,
+                    IDTEAM = getTeamTableMessageOneRequest.IdTeam,
+                    IDUSER = getTeamTableMessageOneRequest.IdUser
+                });
+
+            }
+            else
+            {
+                var guest = await _unitOfWork.ReadGuestsRepository.GetGuestByIdAsync(getTeamTableMessageOneRequest.IdGuest ?? throw new Exception("Guest is null"));
+                await _unitOfWork.UpdateGuestsRepository.UpdateGuestsAsync(new GUESTS()
+                {
+                    IDMEETING = getTeamTableMessageOneRequest.IdMeeting,
+                    IDTEAM = getTeamTableMessageOneRequest.IdTeam,
+                    ID_GUEST = getTeamTableMessageOneRequest.IdGuest ?? throw new Exception("Guest is null"),
+                    NAME = guest?.NAME ?? throw new Exception("Guest is null")
+,
+                });
+
+
+            }
+
+            var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(getTeamTableMessageOneRequest.IdMeeting);
+            var team = await _unitOfWork.ReadTeamsRepository.GetTeamByIdAsync(getTeamTableMessageOneRequest.IdTeam ?? throw new Exception("Team is null"));
+
+
+            if (getTeamTableMessageOneRequest.IdUser != null)
+            {
+                if (getTeamTableMessageOneRequest.IdUser != getTeamTableMessageOneRequest.IdAuthor)
+                {
+                    await SendNotificationToUserTeamAsync(getTeamTableMessageOneRequest.IdUser ?? throw new Exception("User is null"), meeting?.IdAuthor ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team?.NAME);
+                }
+                if (meeting?.IdAuthor != getTeamTableMessageOneRequest.IdAuthor)
+                {
+                    await SendNotificationToAuthorTeamAsync(meeting?.IdAuthor ?? throw new Exception("User is null"), getTeamTableMessageOneRequest.IdUser ?? throw new Exception("User is null"), meeting?.IdMeeting ?? throw new Exception("Meeting is null"), team?.NAME);
+                }
+            }
+        }
+
+
         private async Task SendNotificationToUserTeamAsync(int idUser, int idAuthor, int idMeeting, string? teamName)
         {
             FirebaseNotification notificationHub = new();
@@ -254,6 +331,29 @@ namespace BLLLibrary.Service
                 {
                     await notificationHub.SendNotificationToUserTeamAsync(teamName, idMeeting, author, tokens);
                 }
+
+                string body;
+                string title;
+                if (teamName != null)
+                {
+                    title = "Zostałeś dodany do drużyny!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dodał Cię do drużyny " + teamName;
+                }
+                else
+                {
+                    title = "Zostałeś usuniety z drużyny!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie usunął Cię z drużyny i przeniósł do rezerwy";
+                }
+                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                    new GetNotificationMessageRequest
+                    {
+                        IDUSER = idUser,
+                        IDMEETING = idMeeting,
+                        DATE_SEND = DateTime.Now,
+                        TITLE = title,
+                        MESSAGE = body,
+                    }
+                );
             }
         }
 
@@ -269,6 +369,29 @@ namespace BLLLibrary.Service
                 {
                     await notificationHub.SendNotificationToAuthorTeamAsync(teamName, idMeeting, author, tokens);
                 }
+                string title;
+                string body;
+                if (teamName != null)
+                {
+                    title = "Ktoś właśnie dołączył do drużyny!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dołączył do drużyny " + teamName;
+                }
+                else
+                {
+                    title = "Ktoś właśnie opuścił drużynę!";
+                    body = author?.FIRSTNAME + " " + author?.SURNAME + " opuścił drużynę i przeszedł do rezerwy";
+                }
+
+                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                    new GetNotificationMessageRequest
+                    {
+                        IDUSER = idAuthor,
+                        IDMEETING = idMeeting,
+                        DATE_SEND = DateTime.Now,
+                        MESSAGE = body,
+                        TITLE = title,
+                    }
+                );
             }
         }
     }

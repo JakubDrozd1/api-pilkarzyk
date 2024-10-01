@@ -150,6 +150,7 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
+
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -201,6 +202,7 @@ namespace DataLibrary.Helper.Notification
                             },
                             Data = androidNotificationObj
                         };
+
                         try
                         {
                             FirebaseMessaging messaging = FirebaseMessaging.GetMessaging(app);
@@ -246,6 +248,7 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
+
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -269,23 +272,19 @@ namespace DataLibrary.Helper.Notification
                 string body = "";
                 if (updated.DateMeeting != meeting.DateMeeting)
                 {
-                    body += meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " => " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
+                    body += "Nowa data: " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
                 }
                 if (updated.Place != meeting.Place)
                 {
-                    body += meeting.Place + " => " + updated.Place + "\n";
+                    body += "Nowe miejsce: " + updated.Place + "\n";
                 }
                 if (updated.Quantity != meeting.Quantity)
                 {
-                    body += meeting.Quantity + " => " + updated.Quantity + "\n";
+                    body += "Nowa liczba osób: " + updated.Quantity + "\n";
                 }
                 if (updated.Description != meeting.Description)
                 {
-                    body += meeting.Description + " => " + updated.Description + "\n";
-                }
-                if (updated.WaitingTimeDecision != meeting.WaitingTimeDecision)
-                {
-                    body += "Czas na odpowiedź: " + meeting.WaitingTimeDecision + " => " + updated.WaitingTimeDecision + "\n";
+                    body += "Nowy opis: " + updated.Description + "\n";
                 }
                 var obj = new Message
                 {
@@ -297,6 +296,7 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
+
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);
@@ -340,6 +340,7 @@ namespace DataLibrary.Helper.Notification
                     },
                     Data = androidNotificationObj
                 };
+
                 try
                 {
                     await FirebaseMessaging.DefaultInstance.SendAsync(obj);

@@ -6,7 +6,7 @@ using DataLibrary.IRepository.DateQuest;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 
-namespace DataLibrary.Repository.DateQuests
+namespace DataLibrary.Repository.DateQuestionnaires
 {
     public class ReadDateQuestsRepository(FbConnection dbConnection, FbTransaction? fbTransaction) : IReadDateQuestsRepository
     {
@@ -94,7 +94,7 @@ namespace DataLibrary.Repository.DateQuests
                     .From($"{nameof(DATE_QUESTS)} dq " +
                           $"LEFT JOIN {nameof(USERS_DATE_QUESTS)} udq ON dq.{nameof(DATE_QUESTS.ID_DATE_QUEST)} = udq.{nameof(USERS_DATE_QUESTS.IDDATE_QUESTS)}")
                     .Where("IDMEETING = @MeetingId ");
-                var dateQuests = (_dbConnection.Query<DATE_QUESTS, USERS_DATE_QUESTS, DATE_QUESTS>(query.Build(), (dateQuest, userDateQuest) =>
+                var dateQuests = _dbConnection.Query<DATE_QUESTS, USERS_DATE_QUESTS, DATE_QUESTS>(query.Build(), (dateQuest, userDateQuest) =>
                     {
                         if (userDateQuest != null)
                         {
@@ -105,7 +105,7 @@ namespace DataLibrary.Repository.DateQuests
                     new { MeetingId = meetingId },
                     _fbTransaction,
                     splitOn: "IDUSER"
-                    ))
+                    )
                 .AsList();
 
                 var result = dateQuests.GroupBy(dateQuest => dateQuest.ID_DATE_QUEST).Select(dateQuest =>

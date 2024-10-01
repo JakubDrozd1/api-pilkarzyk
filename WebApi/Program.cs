@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Net.Http.Headers;
 using DataLibrary.Helper.ConnectionProvider;
-using WebApi.Controllers;
 using JobsConfig.Configurations;
 using Jobs;
 
@@ -18,6 +17,7 @@ builder.Services.AddSingleton<IConnectionProvider, ConnectionProvider>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IGroupsService, GroupsService>();
+builder.Services.AddScoped<IGroupsUsersLinkService, GroupsUsersLinkService>();
 builder.Services.AddScoped<IMeetingsService, MeetingsService>();
 builder.Services.AddScoped<IMessagesService, MessagesService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
@@ -104,11 +104,9 @@ builder.Services
     });
 builder.Services.AddSignalR();
 
-
 builder.Services.Configure<JobSettings>(builder.Configuration.GetSection("JobSetting"));
 
 builder.Services.RegisterBackgroundServices(builder.Configuration.GetSection("JobSetting").Get<JobSettings>() ?? new JobSettings());
-
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

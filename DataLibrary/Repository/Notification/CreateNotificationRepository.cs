@@ -30,5 +30,24 @@ namespace DataLibrary.Repository.Notification
                 throw new Exception($"{ex.Message}");
             }
         }
+
+        public async Task AddNotificationMessageToUserAsync(GetNotificationMessageRequest getNotificationRequest)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+            try
+            {
+                var insertBuilder = new QueryBuilder<GetNotificationMessageRequest>()
+                    .Insert("NOTIFICATION_MESSAGES ", getNotificationRequest);
+                string insertQuery = insertBuilder.Build();
+                await _dbConnection.ExecuteAsync(insertQuery, getNotificationRequest, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
     }
 }

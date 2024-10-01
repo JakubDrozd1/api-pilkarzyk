@@ -1,6 +1,6 @@
 ﻿using DataLibrary.Model.DTO.Request.TableRequest;
 
-namespace DataLibrary.IRepository.Messages
+namespace DataLibrary.IRepository.MessagesHistory
 {
     public interface ICreateMessagesHistoryRepository
     {
