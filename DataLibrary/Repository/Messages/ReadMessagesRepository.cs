@@ -36,7 +36,11 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.MAX_GIVE_ME_TIME)} AS MaxGiveMeTime, " +
                 $"m.{nameof(MEETINGS.REMINDER_MESSAGES_TIME)} AS ReminderMessagesTime, " +
                 $"m.{nameof(MEETINGS.CANCELED)} AS Canceled, " +
+                $"m.{nameof(MEETINGS.DATE_QUEST_END)} AS DateQuestEnd, " +
+                $"m.{nameof(MEETINGS.IS_QUEST)} AS IsQuest, " +
+                $"m.{nameof(MEETINGS.DATE_QUEST_OPEN)} AS DateQuestOpen, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
+                $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.IDTEAM)}, " +
                 $"msg.{nameof(MESSAGES.ANSWER)}, " +
@@ -103,7 +107,7 @@ namespace DataLibrary.Repository.Messages
                 WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
                 WHERE += $"AND u2.{nameof(USERS.IS_ACTIVE)} = true ";
 
-                var query = new QueryBuilder<MESSAGES>()
+                var query = new QueryBuilder<GetMessagesUsersMeetingsResponse>()
                     .Select(SELECT)
                     .From(FROM)
                     .Where(WHERE)

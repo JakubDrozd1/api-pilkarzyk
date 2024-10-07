@@ -267,15 +267,10 @@ namespace BLLLibrary.Service
                     IdMeeting = meetingId,
                     Answer = "yes",
                 });
-
-
-
                 var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(meetingId);
-
                 await _unitOfWork.DeleteMeetingsRepository.DeleteMeetingAsync(meetingId);
                 await _unitOfWork.SaveChangesAsync();
                 await SendCancelMeetingNotificationToUserAsync(messages, meeting ?? throw new Exception("Meetings is null"));
-
             }
             catch (Exception ex)
             {
@@ -332,7 +327,6 @@ namespace BLLLibrary.Service
                             {
                                 IDUSER = user.IdUser ?? throw new Exception("User is null"),
                                 IDGROUP = meeting.IdGroup,
-                                IDMEETING = meeting.IdMeeting,
                                 DATE_SEND = DateTime.Now,
                                 TITLE = "Organizator właśnie anulował spotkanie",
                                 BODY = "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",

@@ -47,8 +47,8 @@ namespace Jobs.Jobs
                     var dateQuests =  await _dateQuestsService.GetDateQuestByMeetingIdAsync((int)idMetting);
                     
                     var selectedDate = dateQuests
-                        .OrderByDescending((dateQuest) => dateQuest.USERS_DATE_QUESTS.Count)
-                        .ThenBy((dateQuest) => dateQuest.DATE_MEETING)
+                        .OrderByDescending((dateQuest) => dateQuest.Users.Count)
+                        .ThenBy((dateQuest) => dateQuest.DateMeeting)
                         .FirstOrDefault();
 
                      if (selectedDate != null)
@@ -60,7 +60,7 @@ namespace Jobs.Jobs
                              DATE_QUEST_END = null,
                              DATE_QUEST_OPEN = false,
                              IS_QUEST = false,
-                             DATE_MEETING = selectedDate.DATE_MEETING,
+                             DATE_MEETING = selectedDate.DateMeeting,
                              DESCRIPTION = metting.Description,
                              IDAUTHOR = metting.IdAuthor,
                              IDGROUP = metting.IdGroup,
@@ -72,12 +72,12 @@ namespace Jobs.Jobs
                          };
                          await _meetingsService.UpdateMeetingJobAsync(meetingToUpdate);
 
-                         foreach (var userDateQuest in selectedDate.USERS_DATE_QUESTS)
+                         foreach (var userDateQuest in selectedDate.Users)
                          {
                             var messageToChange = new GetMessageRequest {
                                 ANSWER = "yes",
                                 IDMEETING = idMetting,
-                                IDUSER = userDateQuest?.IDUSER,
+                                IDUSER = userDateQuest.IdUser,
                             };
 
                             await _messageService.UpdateAnswerMessageAsync(messageToChange);

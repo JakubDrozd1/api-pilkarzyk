@@ -32,5 +32,11 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("Canceled")]
         public bool? CANCELED { get; set; }
 
+        [JsonPropertyName("DateQuestEnd")]
+        public DateTime? DATE_QUEST_END { get; set; }
+
+        [JsonPropertyName("DateQuestOpen")]
+        public bool? DATE_QUEST_OPEN { get; set; }
+
     }
 }

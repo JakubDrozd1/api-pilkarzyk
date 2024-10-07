@@ -33,5 +33,8 @@ namespace DataLibrary.Model.DTO.Response
         public bool? GiveMeTimeClicked { get; set; }
         public int? ReminderMessagesTime { get; set; }
         public bool? Canceled { get; set; }
+        public bool? IsQuest { get; set; }
+        public bool? DateQuestOpen { get; set; }
+        public DateTime? DateQuestEnd { get; set; }
     }
 }

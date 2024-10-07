@@ -10,7 +10,7 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<List<DATE_QUESTS>> GetDateQuestByMeetingIdAsync(int meetingId)
+        public async Task<List<GetDateQuestsResponse>> GetDateQuestByMeetingIdAsync(int meetingId)
         {
             return  await _unitOfWork.ReadDateQuestsRepository.GetDateQuestsByMeetingIdAsync(meetingId);
         }
@@ -24,8 +24,6 @@ namespace BLLLibrary.Service
         {
             await _unitOfWork.ToggleDateQuestsRepository.ToggleDateQuests(dateQuestId, toggleDateQuestRequest);
         }
-
-
 
         public async Task UpdateDateQuestAsync(int dateQuestionaryId, GetDateQuestRequest getDateQuestionaryRequest)
         {

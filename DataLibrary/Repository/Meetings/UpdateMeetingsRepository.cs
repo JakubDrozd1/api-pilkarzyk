@@ -37,7 +37,7 @@ namespace DataLibrary.Repository.Meetings
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
-                 _dbConnection.Open();
+                _dbConnection.Open();
             }
             try
             {
@@ -126,6 +126,19 @@ namespace DataLibrary.Repository.Meetings
                                 dynamicParameters.Add($"@{column}", canceled);
                             }
                             break;
+                        case "DATE_QUEST_END":
+                            {
+                                DateTime? dateQuestEnd = getUpdateMeetingRequest.DATE_QUEST_END;
+                                dynamicParameters.Add($"@{column}", dateQuestEnd);
+                            }
+                            break;
+                        case "DATE_QUEST_OPEN":
+                            {
+                                bool? dateQuestOpen = getUpdateMeetingRequest.DATE_QUEST_OPEN;
+                                dynamicParameters.Add($"@{column}", dateQuestOpen);
+                            }
+                            break;
+
                     }
 
                 }

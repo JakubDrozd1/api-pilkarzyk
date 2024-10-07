@@ -33,7 +33,7 @@ namespace DataLibrary.Repository.DateQuestionnaires
             }
         }
 
-        public async Task<List<DATE_QUESTS>> GetDateQuestsByMeetingIdAsync(int meetingId)
+        public async Task<List<GetDateQuestsResponse>> GetDateQuestsByMeetingIdAsync(int meetingId)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -42,90 +42,57 @@ namespace DataLibrary.Repository.DateQuestionnaires
             try
             {
                 var query = new QueryBuilder<GetDateQuestsResponse>()
-                    .Select("dq.ID_DATE_QUEST ,dq.DATE_MEETING, dq.IDMEETING, dq.DATE_MEETING, udq.IDDATE_QUESTS, udq.IDUSER ")
+                    .Select("dq.DATE_MEETING AS DateMeeting, " +
+                            "dq.ID_DATE_QUEST AS IdDateQuest, " +
+                            "u.ID_USER AS IdUser, " +
+                            "u.AVATAR, " +
+                            "u.LOGIN, " +
+                            "u.FIRSTNAME, " +
+                            "u.SURNAME, " +
+                            "u.EMAIL ")
                     .From($"{nameof(DATE_QUESTS)} dq " +
-                          $"LEFT JOIN {nameof(USERS_DATE_QUESTS)} udq ON dq.{nameof(DATE_QUESTS.ID_DATE_QUEST)} = udq.{nameof(USERS_DATE_QUESTS.IDDATE_QUESTS)}")
-                    .Where("IDMEETING = @MeetingId ");
+                          $"LEFT JOIN {nameof(USERS_DATE_QUESTS)} udq ON dq.{nameof(DATE_QUESTS.ID_DATE_QUEST)} = udq.{nameof(USERS_DATE_QUESTS.IDDATE_QUESTS)} " +
+                          $"LEFT JOIN {nameof(USERS)} u ON udq.{nameof(USERS_DATE_QUESTS.IDUSER)} = u.ID_USER ")
+                    .Where("dq.IDMEETING = @MeetingId");
 
-                var dateQuests = (await _dbConnection.QueryAsync<DATE_QUESTS, USERS_DATE_QUESTS, DATE_QUESTS>(query.Build(), (dateQuest, userDateQuest) =>
-                {
-                    if (userDateQuest != null)
-                    {
-                        dateQuest.USERS_DATE_QUESTS.Add(userDateQuest);
-                    }
-                    return dateQuest;
-                },
-                    new { MeetingId = meetingId },
-                    _fbTransaction,
-                    splitOn: "IDUSER"
-                    ))
-                    .AsList();
+                var dateQuestsDictionary = new Dictionary<(DateTime DateMeeting, int IdDateQuest), GetDateQuestsResponse>();
 
-                var result = dateQuests.GroupBy(dateQuest => dateQuest.ID_DATE_QUEST).Select(dateQuest =>
-                {
-                    var grupedDateQuest = dateQuest.First();
-                    grupedDateQuest.USERS_DATE_QUESTS = dateQuest
-                    .Where(userDateQuests => userDateQuests.USERS_DATE_QUESTS.SingleOrDefault() != null)
-                    .Select(userDateQuests => userDateQuests.USERS_DATE_QUESTS.SingleOrDefault())
-                    .ToList()!;
-
-                    return grupedDateQuest;
-                }).ToList();
-
-                return result;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"{ex.Message}");
-            }
-        }
-
-        public List<DATE_QUESTS> GetDateQuestByMeetingId(int meetingId)
-        {
-            if (_dbConnection.State != ConnectionState.Open)
-            {
-                _dbConnection.OpenAsync();
-            }
-            try
-            {
-                var query = new QueryBuilder<GetDateQuestsResponse>()
-                    .Select("dq.ID_DATE_QUEST ,dq.DATE_MEETING, dq.IDMEETING, dq.DATE_MEETING, udq.IDDATE_QUESTS, udq.IDUSER ")
-                    .From($"{nameof(DATE_QUESTS)} dq " +
-                          $"LEFT JOIN {nameof(USERS_DATE_QUESTS)} udq ON dq.{nameof(DATE_QUESTS.ID_DATE_QUEST)} = udq.{nameof(USERS_DATE_QUESTS.IDDATE_QUESTS)}")
-                    .Where("IDMEETING = @MeetingId ");
-                var dateQuests = _dbConnection.Query<DATE_QUESTS, USERS_DATE_QUESTS, DATE_QUESTS>(query.Build(), (dateQuest, userDateQuest) =>
-                    {
-                        if (userDateQuest != null)
+                var result = await _dbConnection.QueryAsync<GetDateQuestsResponse, GetArrayUsersResponse, GetDateQuestsResponse>(
+                    query.Build(),
+                        (dateQuest, user) =>
                         {
-                            dateQuest.USERS_DATE_QUESTS.Add(userDateQuest);
-                        }
-                        return dateQuest;
-                    },
-                    new { MeetingId = meetingId },
-                    _fbTransaction,
-                    splitOn: "IDUSER"
-                    )
-                .AsList();
+                            var key = (dateQuest.DateMeeting, dateQuest.IdDateQuest);
 
-                var result = dateQuests.GroupBy(dateQuest => dateQuest.ID_DATE_QUEST).Select(dateQuest =>
-                {
-                    var grupedDateQuest = dateQuest.First();
-                    grupedDateQuest.USERS_DATE_QUESTS = dateQuest
-                    .Where(userDateQuests => userDateQuests.USERS_DATE_QUESTS.SingleOrDefault() != null)
-                    .Select(userDateQuests => userDateQuests.USERS_DATE_QUESTS.SingleOrDefault())
-                    .ToList();
+                            if (!dateQuestsDictionary.TryGetValue(key, out var existingDateQuest))
+                            {
+                                existingDateQuest = new GetDateQuestsResponse
+                                {
+                                    DateMeeting = dateQuest.DateMeeting,
+                                    IdDateQuest = dateQuest.IdDateQuest,
+                                    Users = new List<GetArrayUsersResponse>()
+                                };
+                                dateQuestsDictionary.Add(key, existingDateQuest);
+                            }
+                            if (user != null)
+                            {
+                                existingDateQuest.Users.Add(user);
+                            }
 
-                    return grupedDateQuest;
-                }).ToList();
+                            return existingDateQuest;
+                        },
+                        new { MeetingId = meetingId },
+                        _fbTransaction,
+                        splitOn: "IdUser"
+                );
 
-                return result;
+                return dateQuestsDictionary.Values.ToList();
             }
             catch (Exception ex)
             {
                 throw new Exception($"{ex.Message}");
             }
         }
+
 
     }
 }

@@ -33,7 +33,7 @@ namespace DataLibrary.Repository.Meetings
                 $"m.{nameof(MEETINGS.CANCELED)} AS Canceled, " +
                 $"m.{nameof(MEETINGS.QUANTITY)} ";
         private string FROM
-              = $"{nameof(MEETINGS)} m "  +
+              = $"{nameof(MEETINGS)} m " +
                 $"JOIN {nameof(GROUPS)} g ON m.{nameof(MEETINGS.IDGROUP)} = g.{nameof(GROUPS.ID_GROUP)} " +
                 $"JOIN {nameof(USERS)} u ON m.{nameof(MEETINGS.IDAUTHOR)} = u.{nameof(USERS.ID_USER)} ";
 
@@ -69,13 +69,30 @@ namespace DataLibrary.Repository.Meetings
                 }
                 if (getMeetingsRequest.DateFrom is not null)
                 {
-                    WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} >= @DateFrom ";
-                    dynamicParameters.Add("@DateFrom", getMeetingsRequest.DateFrom);
+                    if (getMeetingsRequest.IsQuest ?? false)
+                    {
+                        WHERE += $"AND m.{nameof(MEETINGS.DATE_QUEST_END)} >= @DateFrom ";
+                        dynamicParameters.Add("@DateFrom", getMeetingsRequest.DateFrom);
+                    }
+                    else
+                    {
+                        WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} >= @DateFrom ";
+                        dynamicParameters.Add("@DateFrom", getMeetingsRequest.DateFrom);
+                    }
+
                 }
                 if (getMeetingsRequest.DateTo is not null)
                 {
-                    WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
-                    dynamicParameters.Add("@DateTo", getMeetingsRequest.DateTo);
+                    if (getMeetingsRequest.IsQuest ?? false)
+                    {
+                        WHERE += $"AND m.{nameof(MEETINGS.DATE_QUEST_END)} <= @DateTo ";
+                        dynamicParameters.Add("@DateTo", getMeetingsRequest.DateTo);
+                    }
+                    else
+                    {
+                        WHERE += $"AND m.{nameof(MEETINGS.DATE_MEETING)} <= @DateTo ";
+                        dynamicParameters.Add("@DateTo", getMeetingsRequest.DateTo);
+                    }
                 }
                 if (getMeetingsRequest.WithMessages)
                 {

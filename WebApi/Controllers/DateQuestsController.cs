@@ -1,6 +1,6 @@
 ﻿using BLLLibrary.IService;
-using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +9,12 @@ namespace WebApi.Controllers
     [Route("api/date-quest")]
     [ApiController]
     [Authorize]
-    public class DateQuestController(IDateQuestsService dateQuestsService) : ControllerBase
+    public class DateQuestsController(IDateQuestsService dateQuestsService) : ControllerBase
     {
         private readonly IDateQuestsService _dateQuestsService = dateQuestsService;
 
         [HttpGet("{meetingId}", Name = "GetAllDateQuestFromMeeting")]
-        public async Task<ActionResult<List<DATE_QUESTS>>> GetAllDateQuestFromMeeting(int meetingId)
+        public async Task<ActionResult<List<GetDateQuestsResponse>>> GetAllDateQuestFromMeeting(int meetingId)
         {
             try
             {
