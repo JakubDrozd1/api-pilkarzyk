@@ -78,6 +78,7 @@ namespace Jobs.Jobs
                                 ANSWER = "yes",
                                 IDMEETING = idMetting,
                                 IDUSER = userDateQuest.IdUser,
+                                DATE_RESPONSE = userDateQuest.DateSelection
                             };
 
                             await _messageService.UpdateAnswerMessageAsync(messageToChange);

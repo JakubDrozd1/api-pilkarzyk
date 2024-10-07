@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
@@ -43,11 +42,12 @@ namespace DataLibrary.Repository.Messages
             try
             {
 
-                var updateColumn = new List<string>();
-
-                updateColumn.Add("ANSWER");
-                updateColumn.Add("WAITING_TIME");
-                updateColumn.Add("DATE_RESPONSE");
+                var updateColumn = new List<string>
+                {
+                    "ANSWER",
+                    "WAITING_TIME",
+                    "DATE_RESPONSE"
+                };
 
                 if (getMessageRequest.ANSWER == "wait")
                 {
@@ -65,7 +65,7 @@ namespace DataLibrary.Repository.Messages
                         .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
                     var messages = await _dbConnection.QuerySingleOrDefaultAsync<MESSAGES>(query.Build(), dynamicParametersMeeting, _fbTransaction);
 
-                    if(messages != null && messages.GIVE_ME_A_TIME_CLICKED == true)
+                    if (messages != null && messages.GIVE_ME_A_TIME_CLICKED == true)
                     {
                         throw new Exception("User can not get give a time.");
                     }
@@ -74,14 +74,14 @@ namespace DataLibrary.Repository.Messages
                 DynamicParameters dynamicParameters = new();
                 DateTime currentDateTime = DateTime.Now;
                 var updateBuilder = new QueryBuilder<GetMessageRequest>()
-                    .UpdateColumns("MESSAGES", updateColumn.ToArray())
+                    .UpdateColumns("MESSAGES", [.. updateColumn])
                     .Where("IDUSER = @UserId AND IDMEETING = @MeetingId");
                 string updateQuery = updateBuilder.Build();
                 dynamicParameters.Add("@UserId", getMessageRequest.IDUSER);
                 dynamicParameters.Add("@MeetingId", getMessageRequest.IDMEETING);
                 dynamicParameters.Add("@ANSWER", getMessageRequest.ANSWER);
                 dynamicParameters.Add("@WAITING_TIME", getMessageRequest.WAITING_TIME);
-                dynamicParameters.Add("@DATE_RESPONSE", currentDateTime);
+                dynamicParameters.Add("@DATE_RESPONSE", getMessageRequest.DATE_RESPONSE ?? currentDateTime);
                 dynamicParameters.Add("@GIVE_ME_A_TIME_CLICKED", getMessageRequest.ANSWER == "wait");
                 await _dbConnection.ExecuteAsync(updateQuery, dynamicParameters, _fbTransaction);
             }

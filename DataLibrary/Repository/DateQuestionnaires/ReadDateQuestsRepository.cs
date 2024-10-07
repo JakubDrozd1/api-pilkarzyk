@@ -44,6 +44,7 @@ namespace DataLibrary.Repository.DateQuestionnaires
                 var query = new QueryBuilder<GetDateQuestsResponse>()
                     .Select("dq.DATE_MEETING AS DateMeeting, " +
                             "dq.ID_DATE_QUEST AS IdDateQuest, " +
+                            "udq.DATE_SELECTION AS DateSelection, " +
                             "u.ID_USER AS IdUser, " +
                             "u.AVATAR, " +
                             "u.LOGIN, " +
@@ -61,6 +62,8 @@ namespace DataLibrary.Repository.DateQuestionnaires
                     query.Build(),
                         (dateQuest, user) =>
                         {
+
+
                             var key = (dateQuest.DateMeeting, dateQuest.IdDateQuest);
 
                             if (!dateQuestsDictionary.TryGetValue(key, out var existingDateQuest))
@@ -69,7 +72,7 @@ namespace DataLibrary.Repository.DateQuestionnaires
                                 {
                                     DateMeeting = dateQuest.DateMeeting,
                                     IdDateQuest = dateQuest.IdDateQuest,
-                                    Users = new List<GetArrayUsersResponse>()
+                                    Users = []
                                 };
                                 dateQuestsDictionary.Add(key, existingDateQuest);
                             }
@@ -82,10 +85,10 @@ namespace DataLibrary.Repository.DateQuestionnaires
                         },
                         new { MeetingId = meetingId },
                         _fbTransaction,
-                        splitOn: "IdUser"
+                        splitOn: "DateSelection"
                 );
 
-                return dateQuestsDictionary.Values.ToList();
+                return [.. dateQuestsDictionary.Values];
             }
             catch (Exception ex)
             {
