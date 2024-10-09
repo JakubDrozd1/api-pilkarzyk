@@ -41,12 +41,11 @@ namespace DataLibrary.Repository.Messages
                 $"m.{nameof(MEETINGS.DATE_QUEST_OPEN)} AS DateQuestOpen, " +
                 $"msg.{nameof(MESSAGES.DATE_ADD)} AS DateAdd, " +
                 $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
-                $"msg.{nameof(MESSAGES.WAITING_TIME)} AS WaitingTime, " +
                 $"msg.{nameof(MESSAGES.IDTEAM)}, " +
                 $"msg.{nameof(MESSAGES.ANSWER)}, " +
                 $"msg.{nameof(MESSAGES.GIVE_ME_A_TIME_CLICKED)} AS GiveMeTimeClicked, " +
                 $"msg.{nameof(MESSAGES.ID_MESSAGE)} AS IdMessage ";
-        private static readonly string FROM
+        private string FROM
               = $"{nameof(MESSAGES)} msg " +
                 $"JOIN {nameof(MEETINGS)} m ON msg.{nameof(MESSAGES.IDMEETING)} = m.{nameof(MEETINGS.ID_MEETING)} " +
                 $"JOIN {nameof(USERS)} u ON msg.{nameof(MESSAGES.IDUSER)} = u.{nameof(USERS.ID_USER)} " +
@@ -62,7 +61,7 @@ namespace DataLibrary.Repository.Messages
             try
             {
                 DynamicParameters dynamicParameters = new();
-                string WHERE = "1=1";
+                string WHERE = "1=1 ";
 
                 if (getMessagesUsersPaginationRequest.IdMeeting is not null)
                 {
@@ -102,6 +101,14 @@ namespace DataLibrary.Repository.Messages
                 if (getMessagesUsersPaginationRequest.IsAvatar)
                 {
                     SELECT += $", u.{nameof(USERS.AVATAR)} ";
+                }
+
+                if (getMessagesUsersPaginationRequest.IdGroup is not null)
+                {
+                    
+                    WHERE += $"AND g.{nameof(GROUPS.ID_GROUP)} = @IdGroup ";
+                    dynamicParameters.Add("@IdGroup", getMessagesUsersPaginationRequest.IdGroup);
+                    FROM += $"JOIN {nameof(GROUPS)} g ON g.{nameof(GROUPS.ID_GROUP)} = m.{nameof(MEETINGS.IDGROUP)} ";
                 }
 
                 WHERE += $"AND u.{nameof(USERS.IS_ACTIVE)} = true ";
