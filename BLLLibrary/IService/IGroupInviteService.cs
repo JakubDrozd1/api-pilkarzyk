@@ -11,7 +11,7 @@ namespace BLLLibrary.IService
         Task AddGroupInviteAsync(GetGroupInviteRequest getGroupInviteRequest);
         Task DeleteGroupInviteAsync(int groupInviteId);
         Task<List<GetGroupInviteResponse?>> GetGroupInviteByIdUserAsync(GetGroupInvitePaginationRequest getGroupInvitePaginationRequest);
-        Task<GROUP_INVITE?> GetGroupInviteByIdAsync(int groupInviteId);
+        Task<GROUP_INVITE?> GetGroupInviteByIdAsync(string groupInviteId);
         Task AddMultipleGroupInviteAsync(GetMultipleGroupInviteRequest getMultipleGroupInviteRequest);
         Task SaveChangesAsync();
 

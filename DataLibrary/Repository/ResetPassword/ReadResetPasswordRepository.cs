@@ -1,10 +1,12 @@
 ﻿
 
 using System.Data;
+using System.Text;
 using Dapper;
 using DataLibrary.Entities;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.ResetPassword;
+using DataLibrary.Model.DTO.Request.EmailRequest;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
@@ -58,7 +60,7 @@ namespace DataLibrary.Repository.ResetPassword
             }
         }
 
-        public async Task<GetResetPasswordResponse?> GetResetPasswordByIdAsync(int passwordResetId)
+        public async Task<GetResetPasswordResponse?> GetResetPasswordByIdAsync(string passwordResetId)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -66,11 +68,14 @@ namespace DataLibrary.Repository.ResetPassword
             }
             try
             {
+                byte[] decodedBytes = Convert.FromBase64String(passwordResetId);
+                string decodedString = Encoding.UTF8.GetString(decodedBytes);
+                var passwordResetDecodeId = int.Parse(decodedString);
                 var query = new QueryBuilder<GetResetPasswordResponse>()
                     .Select(SELECT)
                     .From(FROM)
                     .Where("rp.ID_RESET_PASSWORD = @ResetPasswordId ");
-                return await _dbConnection.QuerySingleOrDefaultAsync<GetResetPasswordResponse>(query.Build(), new { ResetPasswordId = passwordResetId }, _fbTransaction);
+                return await _dbConnection.QuerySingleOrDefaultAsync<GetResetPasswordResponse>(query.Build(), new { ResetPasswordId = passwordResetDecodeId }, _fbTransaction);
             }
             catch (Exception ex)
             {

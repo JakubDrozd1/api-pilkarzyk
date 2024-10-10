@@ -48,9 +48,17 @@ namespace BLLLibrary.Service
             return await _unitOfWork.ReadResetPasswordRepository.GetLastAdded(userId);
         }
 
-        public async Task<GetResetPasswordResponse?> GetResetPasswordByIdAsync(int passwordResetId)
+        public async Task<GetResetPasswordResponse?> GetResetPasswordByIdAsync(string passwordResetId)
         {
-            return await _unitOfWork.ReadResetPasswordRepository.GetResetPasswordByIdAsync(passwordResetId);
+            var passwordReset = await _unitOfWork.ReadResetPasswordRepository.GetResetPasswordByIdAsync(passwordResetId);
+            if (DateTime.Now > passwordReset?.DateAdd.AddMinutes(10))
+            {
+                throw new Exception("Time is out");
+            }
+            else
+            {
+                return passwordReset;
+            }
         }
     }
 }

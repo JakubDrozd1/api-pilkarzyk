@@ -39,7 +39,8 @@ namespace DataLibrary.Helper.Email
                 {
                     mail.To.Add(MailboxAddress.Parse(getEmailInvitationGroupRequest.To));
                     var body = new BodyBuilder();
-                    string encodedGroupId = Convert.ToBase64String(BitConverter.GetBytes(getEmailInvitationGroupRequest.IdGroupInvite));
+                    byte[] idBytes = Encoding.UTF8.GetBytes(getEmailInvitationGroupRequest.IdGroupInvite.ToString());
+                    string encodedGroupId = Convert.ToBase64String(idBytes);
                     string link = _configuration["Angular"] + "/register/" + encodedGroupId;
                     string invateSubject = $"Zaproszenie do grupy {getEmailInvitationGroupRequest.GroupName}";
                     string bodySubject = $"<h1>Hej!</h1>" +
@@ -67,7 +68,8 @@ namespace DataLibrary.Helper.Email
                 {
                     mail.To.Add(MailboxAddress.Parse(getEmailResetPassword.To));
                     var body = new BodyBuilder();
-                    string encodedResetPasswordId = Convert.ToBase64String(BitConverter.GetBytes(getEmailResetPassword.IdResetPassword));
+                    byte[] idBytes = Encoding.UTF8.GetBytes(getEmailResetPassword.IdResetPassword.ToString());
+                    string encodedResetPasswordId = Convert.ToBase64String(idBytes);
                     string link = _configuration["Angular"] + "/recovery/" + encodedResetPasswordId;
                     string invateSubject = $"Przypomnienie hasła";
                     string bodySubject = $"<h1>Hej!</h1>" +

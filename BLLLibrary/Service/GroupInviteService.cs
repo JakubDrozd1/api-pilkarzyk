@@ -261,9 +261,17 @@ namespace BLLLibrary.Service
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<GROUP_INVITE?> GetGroupInviteByIdAsync(int groupInviteId)
+        public async Task<GROUP_INVITE?> GetGroupInviteByIdAsync(string groupInviteId)
         {
-            return await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdAsync(groupInviteId);
+            var groupInvite = await _unitOfWork.ReadGroupInviteRepository.GetGroupInviteByIdAsync(groupInviteId);
+            if (DateTime.Now > groupInvite?.DATE_ADD?.AddHours(24))
+            {
+                throw new Exception("Time is out");
+            }
+            else
+            {
+                return groupInvite;
+            }
         }
 
         public async Task AddMultipleGroupInviteAsync(GetMultipleGroupInviteRequest getMultipleGroupInviteRequest)

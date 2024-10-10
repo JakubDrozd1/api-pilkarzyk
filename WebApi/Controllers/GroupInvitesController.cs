@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
         [AllowAnonymous]
         [HttpGet("{groupInviteId}", Name = "GetGroupInviteById")]
-        public async Task<ActionResult<GROUP_INVITE>> GetGroupInviteById(int groupInviteId)
+        public async Task<ActionResult<GROUP_INVITE>> GetGroupInviteById(string groupInviteId)
         {
             try
             {

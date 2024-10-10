@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Data.Common;
 using Dapper;
 using DataLibrary.Helper;
 using DataLibrary.IRepository.Meetings;

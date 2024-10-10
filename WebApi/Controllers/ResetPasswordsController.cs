@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{resetPasswordId}", Name = "GetResetPasswordById")]
-        public async Task<ActionResult<GetResetPasswordResponse>> GetResetPasswordById(int resetPasswordId)
+        public async Task<ActionResult<GetResetPasswordResponse>> GetResetPasswordById(string resetPasswordId)
         {
             try
             {

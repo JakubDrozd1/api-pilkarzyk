@@ -7,6 +7,7 @@ using DataLibrary.Model.DTO.Response;
 using FirebirdSql.Data.FirebirdClient;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
+using System.Text;
 
 namespace DataLibrary.Repository.GroupInvite
 {
@@ -138,7 +139,7 @@ namespace DataLibrary.Repository.GroupInvite
             }
         }
 
-        public async Task<GROUP_INVITE?> GetGroupInviteByIdAsync(int groupInviteId)
+        public async Task<GROUP_INVITE?> GetGroupInviteByIdAsync(string groupInviteId)
         {
             if (_dbConnection.State != ConnectionState.Open)
             {
@@ -146,11 +147,14 @@ namespace DataLibrary.Repository.GroupInvite
             }
             try
             {
+                byte[] decodedBytes = Convert.FromBase64String(groupInviteId);
+                string decodedString = Encoding.UTF8.GetString(decodedBytes);
+                var groupInviteDecodeId = int.Parse(decodedString);
                 var query = new QueryBuilder<GROUP_INVITE>()
                     .Select("* ")
                     .From($"{nameof(GROUP_INVITE)} ")
                     .Where("ID_GROUP_INVITE = @GroupInviteId ");
-                return await _dbConnection.QuerySingleOrDefaultAsync<GROUP_INVITE>(query.Build(), new { GroupInviteId = groupInviteId }, _fbTransaction);
+                return await _dbConnection.QuerySingleOrDefaultAsync<GROUP_INVITE>(query.Build(), new { GroupInviteId = groupInviteDecodeId }, _fbTransaction);
             }
             catch (Exception ex)
             {

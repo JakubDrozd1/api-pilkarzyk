@@ -8,7 +8,7 @@ namespace DataLibrary.IRepository.GroupInvite
     public interface IReadGroupInviteRepository
     {
         Task<List<GetGroupInviteResponse?>> GetGroupInviteByIdUserAsync(GetGroupInvitePaginationRequest getGroupInvitePaginationRequest);
-        Task<GROUP_INVITE?> GetGroupInviteByIdAsync(int groupInviteId);
+        Task<GROUP_INVITE?> GetGroupInviteByIdAsync(string groupInviteId);
         Task<GROUP_INVITE?> GetLastAddedInvite(GetGroupInviteRequest getGroupInviteRequest);
     }
 }
