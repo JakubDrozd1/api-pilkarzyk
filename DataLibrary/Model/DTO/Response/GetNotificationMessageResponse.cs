@@ -6,7 +6,11 @@
         public int IdUser { get; set; }
         public int? IdGroup { get; set; }
         public int? IdMeeting { get; set; }
+        public int? IdNotificationMessage { get; set; }
         public string? Body { get; set; }
         public string? Title { get; set; }
+        public bool Sended { get; set; }
+        public bool Repeat { get; set; }
+        public int NotificationType { get; set; }
     }
 }

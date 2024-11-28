@@ -1,7 +1,6 @@
 ﻿using BLLLibrary.IService;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using DataLibrary.UoW;
 using DataLibrary.Model.DTO.Response;
 using DataLibrary.Entities;
 using DataLibrary.Helper.Notification;
@@ -15,16 +14,21 @@ namespace Jobs.Jobs
     {
         private readonly ILogger<MeetingNotReadJob> _logger;
         private readonly IMeetingsService _meetingsService;
-        IUnitOfWork _unitOfWork;
+        private readonly INotificationService _notificationService;
+        private readonly INotificationTokenService _notificationTokenService;
+
 
         public MeetingNotReadJob(
             ILogger<MeetingNotReadJob> logger,
             IMeetingsService meetingsService,
-            IUnitOfWork unitOfWork)
+            INotificationService notificationService,
+            INotificationTokenService notificationTokenService
+            )
         {
             _logger = logger;
             _meetingsService = meetingsService;
-            _unitOfWork = unitOfWork;
+            _notificationService = notificationService;
+            _notificationTokenService = notificationTokenService;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -48,61 +52,70 @@ namespace Jobs.Jobs
                     meetingsToFilterDictionary[(int)meetingUser.IdMeeting] += 1;
                 }
             }
-
-            foreach (var meetingUser in meetings)
+            try
             {
-                if (
-                    meetingUser != null &&
-                    meetingUser.Answer != "yes" &&
-                    meetingUser.IdMeeting != null &&
-                    (!meetingsToFilterDictionary.ContainsKey((int)meetingUser.IdMeeting) || meetingsToFilterDictionary[(int)meetingUser.IdMeeting] < meetingUser.Quantity) &&
-                    meetingUser.LastReminderMessagesTime != null &&
-                    meetingUser.ReminderMessagesTime != null &&
-                    ((DateTime)meetingUser.LastReminderMessagesTime).AddMinutes((int)meetingUser.ReminderMessagesTime) <= DateTime.Now &&
-                    meetingUser.WaitingTimeDecision != null &&
-                    meetingUser.DateMeeting != null &&
-                    ((DateTime)meetingUser.DateMeeting).AddMinutes(-(int)meetingUser.WaitingTimeDecision) >= DateTime.Now
-                    )
+                foreach (var meetingUser in meetings)
                 {
-                    NOTIFICATION? userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(meetingUser.IdUser ?? 0);
-                    if (userDetails != null)
+                    if (
+                        meetingUser != null &&
+                        meetingUser.Answer != "yes" &&
+                        meetingUser.IdMeeting != null &&
+                        (!meetingsToFilterDictionary.ContainsKey((int)meetingUser.IdMeeting) || meetingsToFilterDictionary[(int)meetingUser.IdMeeting] < meetingUser.Quantity) &&
+                        meetingUser.LastReminderMessagesTime != null &&
+                        meetingUser.ReminderMessagesTime != null &&
+                        ((DateTime)meetingUser.LastReminderMessagesTime).AddMinutes((int)meetingUser.ReminderMessagesTime) <= DateTime.Now &&
+                        meetingUser.WaitingTimeDecision != null &&
+                        meetingUser.DateMeeting != null &&
+                        ((DateTime)meetingUser.DateMeeting).AddMinutes(-(int)meetingUser.WaitingTimeDecision) >= DateTime.Now
+                        )
                     {
-                        var actualTime = (DateTime.Now).TimeOfDay;
-                        if (userDetails.MEETING_REMINDER_NOTIFICATION && (
-                                (
-                                    userDetails.TIME_SILENT_START > userDetails.TIME_SILENT_END &&
-                                    (userDetails.TIME_SILENT_START >= actualTime &&
-                                    userDetails.TIME_SILENT_END <= actualTime)
-                                ) ||
-                                (
-                                    userDetails.TIME_SILENT_START < userDetails.TIME_SILENT_END &&
-                                    (userDetails.TIME_SILENT_START >= actualTime ||
-                                    userDetails.TIME_SILENT_END <= actualTime)
-                                ) ||
-                                userDetails.TIME_SILENT_START == userDetails.TIME_SILENT_END
-                            ))
+                        NOTIFICATION? userDetails = await _notificationService.GetAllNotificationFromUser(meetingUser.IdUser ?? 0);
+                        if (userDetails != null)
                         {
-                            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(meetingUser.IdUser ?? throw new Exception("User is null"));
-
-                            if (tokens != null)
+                            var actualTime = (DateTime.Now).TimeOfDay;
+                            if (userDetails.MEETING_REMINDER_NOTIFICATION && (
+                                    (
+                                        userDetails.TIME_SILENT_START > userDetails.TIME_SILENT_END &&
+                                        (userDetails.TIME_SILENT_START >= actualTime &&
+                                        userDetails.TIME_SILENT_END <= actualTime)
+                                    ) ||
+                                    (
+                                        userDetails.TIME_SILENT_START < userDetails.TIME_SILENT_END &&
+                                        (userDetails.TIME_SILENT_START >= actualTime ||
+                                        userDetails.TIME_SILENT_END <= actualTime)
+                                    ) ||
+                                    userDetails.TIME_SILENT_START == userDetails.TIME_SILENT_END
+                                ))
                             {
-                                await notificationHub.SendMeetingReminderNotification(meetingUser, tokens);
+                                var tokens = await _notificationTokenService.GetAllTokensFromUser(meetingUser.IdUser ?? throw new Exception("User is null"));
+                                var title = "Nie zapomnij o spotkaniu w " + meetingUser.Place;
+                                var body = meetingUser.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meetingUser.Place + " " + meetingUser.Description;
+                                if (tokens != null)
+                                {
+                                    await notificationHub.SendMeetingNotification(tokens, title, body, meetingUser.IdMeeting ?? 0);
+                                }
+                                await _notificationService.AddNotificationMessageToUserAsync(
+                                    new GetNotificationMessageRequest
+                                    {
+                                        IDUSER = meetingUser.IdUser ?? 0,
+                                        IDGROUP = meetingUser.IdGroup,
+                                        IDMEETING = meetingUser.IdMeeting,
+                                        DATE_SEND = DateTime.Now,
+                                        TITLE = title,
+                                        BODY = body,
+                                        SENDED = true,
+                                        REPEAT = true,
+                                        NOTIFICATION_TYPE = 1
+                                    }
+                                );
                             }
                         }
-                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                            new GetNotificationMessageRequest
-                            {
-                                IDUSER = meetingUser.IdUser ?? 0,
-                                IDGROUP = meetingUser.IdGroup,
-                                IDMEETING = meetingUser.IdMeeting,
-                                DATE_SEND = DateTime.Now,
-                                TITLE = "Nie zapomnij o spotkaniu w " + meetingUser.Place,
-                                BODY = meetingUser.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meetingUser.Place + " " + meetingUser.Description,
-                            }
-                        );
+                        meetingsDictionary[meetingUser.IdMeeting ?? throw new Exception()] = meetingUser;
                     }
-                    meetingsDictionary[(int)meetingUser.IdMeeting] = meetingUser;
                 }
+            }
+            catch (Exception)
+            {
             }
 
             foreach (var meeting in meetingsDictionary)
@@ -133,7 +146,6 @@ namespace Jobs.Jobs
 
                     await _meetingsService.UpdateMeetingJobAsync(meetingToJob);
                 }
-
             }
         }
     }

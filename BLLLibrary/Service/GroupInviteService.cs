@@ -168,54 +168,53 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserAsync(GROUPS group, int idAuthor, int idUser)
         {
-            FirebaseNotification notificationHub = new();
-
-            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
             var userInfo = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(idAuthor);
-            if (tokens != null && userDetails != null)
+            if (userDetails != null)
             {
                 if (userDetails.GROUP_INV_NOTIFICATION)
                 {
-                    await notificationHub.SendGroupNotification(group, userInfo, tokens);
+                    await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                         new GetNotificationMessageRequest
+                         {
+                             IDUSER = userInfo?.ID_USER ?? 0,
+                             IDGROUP = group.ID_GROUP,
+                             DATE_SEND = DateTime.Now,
+                             TITLE = userInfo?.FIRSTNAME + " " + userInfo?.SURNAME + " wysłał ci zaproszenie do grupy!",
+                             BODY = "Nowe zaproszenie do grupy " + group.NAME,
+                             SENDED = false,
+                             REPEAT = false,
+                             NOTIFICATION_TYPE = 2
+                         }
+                     );
                 }
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = userInfo?.ID_USER ?? 0,
-                        IDGROUP = group.ID_GROUP,
-                        DATE_SEND = DateTime.Now,
-                        TITLE = userInfo?.FIRSTNAME + " " + userInfo?.SURNAME + " wysłał ci zaproszenie do grupy!",
-                        BODY = "Nowe zaproszenie do grupy " + group.NAME,
-                    }
-                );
             }
         }
 
         private async Task SendNotificationAddUserToGroupAsync(GROUPS group, int idUser, USERS author)
         {
-            FirebaseNotification notificationHub = new();
-
-            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
-            if (tokens != null && userDetails != null)
+            if (userDetails != null)
             {
                 if (userDetails.GROUP_ADD_NOTIFICATION)
                 {
-                    await notificationHub.SendGroupAddUserNotification(group, tokens, author);
+                    await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                        new GetNotificationMessageRequest
+                        {
+                            IDUSER = idUser,
+                            IDGROUP = group.ID_GROUP,
+                            DATE_SEND = DateTime.Now,
+                            BODY = author.FIRSTNAME + " " + author.SURNAME + " dodał cię do grupy " + group.NAME,
+                            TITLE = "Właśnie zostałeś dodany do grupy!",
+                            SENDED = false,
+                            REPEAT = false,
+                            NOTIFICATION_TYPE = 4
+                        }
+                    );
                 }
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
-                    {
-                        IDUSER = idUser,
-                        IDGROUP = group.ID_GROUP,
-                        DATE_SEND = DateTime.Now,
-                        BODY = author.FIRSTNAME + " " + author.SURNAME + " dodał cię do grupy " + group.NAME,
-                        TITLE = "Właśnie zostałeś dodany do grupy!"
-                    }
-                );
             }
         }
+
         private async Task AddUserToGroup(int idUser, int idGroup)
         {
             await _unitOfWork.CreateGroupsUsersRepository.AddUserToGroupAsync(new GetUserGroupRequest()

@@ -11,6 +11,11 @@ namespace BLLLibrary.Service
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
+        public async Task AddNotificationMessageToUserAsync(GetNotificationMessageRequest getNotificationRequest)
+        {
+            await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(getNotificationRequest);
+        }
+
         public async Task AddNotificationToUserAsync(GetNotificationRequest getNotificationRequest)
         {
             await _unitOfWork.BeginTransactionAsync();
@@ -50,6 +55,11 @@ namespace BLLLibrary.Service
         public async Task UpdateColumnNotificationAsync(GetUpdateNotificationRequest getUpdateNotificationRequest, int userId)
         {
             await _unitOfWork.UpdateNotificationRepository.UpdateColumnNotificationAsync(getUpdateNotificationRequest, userId);
+        }
+
+        public async Task UpdateColumnNotificationMessageAsync(GetUpdateNotificationMessageRequest getUpdateNotificationMessageRequest, int notificationMessageId)
+        {
+            await _unitOfWork.UpdateNotificationRepository.UpdateColumnNotificationMessageAsync(getUpdateNotificationMessageRequest, notificationMessageId);
         }
     }
 }

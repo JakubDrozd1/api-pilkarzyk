@@ -22,5 +22,14 @@ namespace DataLibrary.Model.DTO.Request.TableRequest
         [JsonPropertyName("Title")]
         public required string TITLE { get; set; }
 
+        [JsonPropertyName("Sended")]
+        public required bool SENDED { get; set; }
+
+        [JsonPropertyName("Repeat")]
+        public required bool REPEAT { get; set; }
+
+        [JsonPropertyName("NotificationType")]
+        public required int NOTIFICATION_TYPE { get; set; }
+
     }
 }

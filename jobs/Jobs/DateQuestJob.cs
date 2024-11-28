@@ -3,8 +3,6 @@ using DataLibrary.Entities;
 using DataLibrary.Model.DTO.Request.TableRequest;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using DataLibrary.Helper.Notification;
-using DataLibrary.UoW;
 using DataLibrary.Model.DTO.Request.Pagination;
 
 
@@ -17,20 +15,24 @@ namespace Jobs.Jobs
         private readonly IMeetingsService _meetingsService;
         private readonly IDateQuestsService _dateQuestsService;
         private readonly IMessagesService _messageService;
-        IUnitOfWork _unitOfWork;
+        private readonly IGroupsUsersService _groupsUsersService;
+        private readonly INotificationService _notificationService;
 
         public DateQuestJob(
             ILogger<DateQuestJob> logger,
             IMeetingsService meetingsService,
             IDateQuestsService dateQuestsService,
             IMessagesService messagesService,
-            IUnitOfWork unitOfWork)
+            IGroupsUsersService groupsUsersService,
+            INotificationService notificationService
+            )
         {
             _logger = logger;
             _meetingsService = meetingsService;
             _dateQuestsService = dateQuestsService;
             _messageService = messagesService;
-            _unitOfWork = unitOfWork;
+            _groupsUsersService = groupsUsersService;
+            _notificationService = notificationService;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -38,43 +40,44 @@ namespace Jobs.Jobs
 
             var mettings = await _meetingsService.GetAllMeetingsWithQuestAsync();
 
-            foreach(var metting in mettings) 
+            foreach (var metting in mettings)
             {
                 var idMetting = metting.IdMeeting;
 
                 if (idMetting != null)
                 {
-                    var dateQuests =  await _dateQuestsService.GetDateQuestByMeetingIdAsync((int)idMetting);
-                    
+                    var dateQuests = await _dateQuestsService.GetDateQuestByMeetingIdAsync((int)idMetting);
+
                     var selectedDate = dateQuests
                         .OrderByDescending((dateQuest) => dateQuest.Users.Count)
                         .ThenBy((dateQuest) => dateQuest.DateMeeting)
                         .FirstOrDefault();
 
-                     if (selectedDate != null)
-                     {
+                    if (selectedDate != null)
+                    {
 
-                         MEETINGS meetingToUpdate = new()
-                         {
-                             ID_MEETING = idMetting,
-                             DATE_QUEST_END = null,
-                             DATE_QUEST_OPEN = false,
-                             IS_QUEST = false,
-                             DATE_MEETING = selectedDate.DateMeeting,
-                             DESCRIPTION = metting.Description,
-                             IDAUTHOR = metting.IdAuthor,
-                             IDGROUP = metting.IdGroup,
-                             IS_INDEPENDENT = metting.IsIndependent,
-                             PLACE = metting.Place,
-                             QUANTITY = metting.Quantity,
-                             WAITING_TIME_DECISION = metting.WaitingTimeDecision,
-                             CANCELED = metting.Canceled,
-                         };
-                         await _meetingsService.UpdateMeetingJobAsync(meetingToUpdate);
+                        MEETINGS meetingToUpdate = new()
+                        {
+                            ID_MEETING = idMetting,
+                            DATE_QUEST_END = null,
+                            DATE_QUEST_OPEN = false,
+                            IS_QUEST = false,
+                            DATE_MEETING = selectedDate.DateMeeting,
+                            DESCRIPTION = metting.Description,
+                            IDAUTHOR = metting.IdAuthor,
+                            IDGROUP = metting.IdGroup,
+                            IS_INDEPENDENT = metting.IsIndependent,
+                            PLACE = metting.Place,
+                            QUANTITY = metting.Quantity,
+                            WAITING_TIME_DECISION = metting.WaitingTimeDecision,
+                            CANCELED = metting.Canceled,
+                        };
+                        await _meetingsService.UpdateMeetingJobAsync(meetingToUpdate);
 
-                         foreach (var userDateQuest in selectedDate.Users)
-                         {
-                            var messageToChange = new GetMessageRequest {
+                        foreach (var userDateQuest in selectedDate.Users)
+                        {
+                            var messageToChange = new GetMessageRequest
+                            {
                                 ANSWER = "yes",
                                 IDMEETING = idMetting,
                                 IDUSER = userDateQuest.IdUser,
@@ -82,11 +85,9 @@ namespace Jobs.Jobs
                             };
 
                             await _messageService.UpdateAnswerMessageAsync(messageToChange);
-                         }
-
-                        FirebaseNotification notificationHub = new();
-                        var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync((int)idMetting) ?? throw new Exception("Meeting is null");
-                        var users = await _unitOfWork.ReadGroupsUsersRepository.GetListGroupsUserAsync(new GetUsersGroupsPaginationRequest()
+                        }
+                        var meeting = await _meetingsService.GetMeetingByIdAsync((int)idMetting) ?? throw new Exception("Meeting is null");
+                        var users = await _groupsUsersService.GetListGroupsUserAsync(new GetUsersGroupsPaginationRequest()
                         {
                             Page = 0,
                             OnPage = -1,
@@ -95,37 +96,32 @@ namespace Jobs.Jobs
                         });
                         foreach (var user in users)
                         {
-                            NOTIFICATION? userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(user.IdUser ?? 0);
+                            NOTIFICATION? userDetails = await _notificationService.GetAllNotificationFromUser(user.IdUser ?? 0);
                             if (userDetails != null)
                             {
                                 if (userDetails.MEETING_NOTIFICATION)
                                 {
-                                        var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
-
-                                        if (tokens != null)
+                                    await _notificationService.AddNotificationMessageToUserAsync(
+                                        new GetNotificationMessageRequest
                                         {
-                                            await notificationHub.SendMeetingQuestEndNotification(meeting, tokens);
+                                            IDUSER = userDetails.IDUSER,
+                                            IDGROUP = meeting.IdGroup,
+                                            IDMEETING = meeting.IdMeeting,
+                                            DATE_SEND = DateTime.Now,
+                                            BODY = meeting.Place + " " + meeting.Description,
+                                            TITLE = "Ustalono Datę spotkania z ankiety dla " + meeting.Name + " "
+                                            + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm"),
+                                            SENDED = false,
+                                            REPEAT = false,
+                                            NOTIFICATION_TYPE = 1
                                         }
+                                        );
                                 }
-                                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                                    new GetNotificationMessageRequest
-                                    {
-                                        IDUSER = userDetails.IDUSER,
-                                        IDGROUP = meeting.IdGroup,
-                                        IDMEETING = meeting.IdMeeting,
-                                        DATE_SEND = DateTime.Now,
-                                        BODY = meeting.Place + " " + meeting.Description,
-                                        TITLE = "Ustalono Datę spotkania z ankiety dla " + meeting.Name + " "
-                                        + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm")
-                                    }
-                                );
                             }
                         }
                     }
                 }
             }
-
-
         }
     }
 }

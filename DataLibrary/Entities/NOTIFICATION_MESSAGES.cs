@@ -9,5 +9,8 @@
         public int? IDMEETING { get; set; }
         public string? BODY { get; set; }
         public string? TITLE { get; set; }
+        public bool SENDED { get; set; }
+        public bool REPEAT { get; set; }
+        public required int NOTIFICATION_TYPE { get; set; }
     }
 }

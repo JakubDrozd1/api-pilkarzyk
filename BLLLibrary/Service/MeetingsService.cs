@@ -1,6 +1,5 @@
 ﻿using BLLLibrary.IService;
 using DataLibrary.Entities;
-using DataLibrary.Helper.Notification;
 using DataLibrary.Model.DTO.Request;
 using DataLibrary.Model.DTO.Request.Pagination;
 using DataLibrary.Model.DTO.Request.TableRequest;
@@ -118,7 +117,6 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserAsync(int idMeeting, List<GetGroupsUsersResponse> users, int? idAuthor)
         {
-            FirebaseNotification notificationHub = new();
             var meeting = await _unitOfWork.ReadMeetingsRepository.GetMeetingByIdAsync(idMeeting) ?? throw new Exception("Meeting is null");
             foreach (var user in users)
             {
@@ -129,28 +127,24 @@ namespace BLLLibrary.Service
                     {
                         if (user.IdUser != idAuthor)
                         {
-                            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
-
-                            if (tokens != null)
-                            {
-                                await notificationHub.SendMeetingNotification(meeting, tokens);
-                            }
-
+                            await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                                new GetNotificationMessageRequest
+                                {
+                                    IDUSER = user.IdUser ?? 0,
+                                    IDGROUP = meeting.IdGroup,
+                                    IDMEETING = meeting.IdMeeting,
+                                    DATE_SEND = DateTime.Now,
+                                    BODY = meeting.Place + " " + meeting.Description,
+                                    TITLE = (meeting.IsQuest != null && meeting.IsQuest == true ?
+                                "Nowa ankieta spotkania w grupie " + meeting.Name :
+                                "Nowe zaproszenie do spotkania w grupie " + meeting.Name),
+                                    SENDED = false,
+                                    REPEAT = false,
+                                    NOTIFICATION_TYPE = (meeting.IsQuest != null && meeting.IsQuest == true) ? 1 : 2
+                                }
+                            );
                         }
                     }
-                    await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                        new GetNotificationMessageRequest
-                        {
-                            IDUSER = user.IdUser ?? 0,
-                            IDGROUP = meeting.IdGroup,
-                            IDMEETING = meeting.IdMeeting,
-                            DATE_SEND = DateTime.Now,
-                            BODY = meeting.Place + " " + meeting.Description,
-                            TITLE = (meeting.IsQuest != null && meeting.IsQuest == true ?
-                        "Nowa ankieta spotkania w grupie " + meeting.Name :
-                        "Nowe zaproszenie do spotkania w grupie " + meeting.Name)
-                        }
-                );
                 }
             }
         }
@@ -206,49 +200,49 @@ namespace BLLLibrary.Service
 
         private async Task SendUpdateNotificationToUserAsync(GetMeetingGroupsResponse updated, GetMeetingGroupsResponse meeting, List<GetGroupsUsersResponse> users)
         {
-            FirebaseNotification notificationHub = new();
 
             foreach (var user in users)
             {
                 if (user.IdUser != meeting.IdAuthor)
                 {
-                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
                     var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(user.IdUser ?? throw new Exception("User is null"));
                     var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(meeting.IdAuthor ?? throw new Exception("User is null"));
-                    if (tokens != null && userDetails != null)
+                    if (userDetails != null)
                     {
                         if (userDetails.UPDATE_MEETING_NOTIFICATION)
                         {
-                            await notificationHub.SendUpdateMeetingNotification(updated, meeting, author, tokens);
+                            string body = "";
+                            if (updated.DateMeeting != meeting.DateMeeting)
+                            {
+                                body += "Nowa data: " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
+                            }
+                            if (updated.Place != meeting.Place)
+                            {
+                                body += "Nowe miejsce: " + updated.Place + "\n";
+                            }
+                            if (updated.Quantity != meeting.Quantity)
+                            {
+                                body += "Nowa liczba osób: " + updated.Quantity + "\n";
+                            }
+                            if (updated.Description != meeting.Description)
+                            {
+                                body += "Nowy opis: " + updated.Description + "\n";
+                            }
+                            await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                               new GetNotificationMessageRequest
+                               {
+                                   IDUSER = user.IdUser ?? throw new Exception("User is null"),
+                                   IDMEETING = meeting.IdMeeting,
+                                   IDGROUP = meeting.IdGroup,
+                                   DATE_SEND = DateTime.Now,
+                                   TITLE = author?.FIRSTNAME + " " + author?.SURNAME + " zaaktualizował spotkanie w grupie " + meeting.Name,
+                                   BODY = body,
+                                   REPEAT = false,
+                                   SENDED = false,
+                                   NOTIFICATION_TYPE = 1
+                               }
+                           );
                         }
-                        string body = "";
-                        if (updated.DateMeeting != meeting.DateMeeting)
-                        {
-                            body += "Nowa data: " + updated.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + "\n";
-                        }
-                        if (updated.Place != meeting.Place)
-                        {
-                            body += "Nowe miejsce: " + updated.Place + "\n";
-                        }
-                        if (updated.Quantity != meeting.Quantity)
-                        {
-                            body += "Nowa liczba osób: " + updated.Quantity + "\n";
-                        }
-                        if (updated.Description != meeting.Description)
-                        {
-                            body += "Nowy opis: " + updated.Description + "\n";
-                        }
-                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                           new GetNotificationMessageRequest
-                           {
-                               IDUSER = user.IdUser ?? throw new Exception("User is null"),
-                               IDMEETING = meeting.IdMeeting,
-                               IDGROUP = meeting.IdGroup,
-                               DATE_SEND = DateTime.Now,
-                               TITLE = author?.FIRSTNAME + " " + author?.SURNAME + " zaaktualizował spotkanie w grupie " + meeting.Name,
-                               BODY = body,
-                           }
-                       );
                     }
                 }
             }
@@ -308,30 +302,29 @@ namespace BLLLibrary.Service
 
         private async Task SendCancelMeetingNotificationToUserAsync(List<GetMessagesUsersMeetingsResponse> messages, GetMeetingGroupsResponse meeting)
         {
-            FirebaseNotification notificationHub = new();
-
             foreach (var user in messages)
             {
                 if (user.IdUser != meeting.IdAuthor)
                 {
-                    var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(user.IdUser ?? throw new Exception("User is null"));
                     var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(user.IdUser ?? throw new Exception("User is null"));
-                    if (tokens != null && userDetails != null)
+                    if (userDetails != null)
                     {
                         if (userDetails.MEETING_CANCEL_NOTIFICATION)
                         {
-                            await notificationHub.SendCancelMeetingNotificationToUser(messages, meeting, tokens);
+                            await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                                new GetNotificationMessageRequest
+                                {
+                                    IDUSER = user.IdUser ?? throw new Exception("User is null"),
+                                    IDGROUP = meeting.IdGroup,
+                                    DATE_SEND = DateTime.Now,
+                                    TITLE = "Organizator właśnie anulował spotkanie",
+                                    BODY = "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",
+                                    NOTIFICATION_TYPE = 4,
+                                    REPEAT = false,
+                                    SENDED = false,
+                                }
+                            );
                         }
-                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                            new GetNotificationMessageRequest
-                            {
-                                IDUSER = user.IdUser ?? throw new Exception("User is null"),
-                                IDGROUP = meeting.IdGroup,
-                                DATE_SEND = DateTime.Now,
-                                TITLE = "Organizator właśnie anulował spotkanie",
-                                BODY = "Spotkanie: " + meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " w grupie " + meeting.Name + " zostało anulowane.",
-                            }
-                        );
                     }
                 }
             }

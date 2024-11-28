@@ -5,6 +5,7 @@ namespace DataLibrary.IRepository.Notification
     public interface IUpdateNotificationRepository
     {
         Task UpdateColumnNotificationAsync(GetUpdateNotificationRequest getUpdateNotificationRequest, int userId);
+        Task UpdateColumnNotificationMessageAsync(GetUpdateNotificationMessageRequest getUpdateNotificationMessageRequest, int notificationMessageId);
 
     }
 }

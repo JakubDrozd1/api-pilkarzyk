@@ -66,12 +66,31 @@ namespace DataLibrary.Repository.Notification
                     WHERE += $"AND {nameof(NOTIFICATION_MESSAGES.IDUSER)} = @UserId ";
                     dynamicParameters.Add("@UserId", getNotificationMessagePaginationRequest.IdUser);
                 }
+                if (getNotificationMessagePaginationRequest.Sended is not null)
+                {
+                    WHERE += $"AND {nameof(NOTIFICATION_MESSAGES.SENDED)} = @Sended ";
+                    dynamicParameters.Add("@Sended", getNotificationMessagePaginationRequest.Sended);
+                }
+                if (getNotificationMessagePaginationRequest.Repeat is not null)
+                {
+                    WHERE += $"AND {nameof(NOTIFICATION_MESSAGES.REPEAT)} = @Repeat ";
+                    dynamicParameters.Add("@Repeat", getNotificationMessagePaginationRequest.Repeat);
+                }
+                if (getNotificationMessagePaginationRequest.NotificationType is not null)
+                {
+                    WHERE += $"AND {nameof(NOTIFICATION_MESSAGES.NOTIFICATION_TYPE)} = @NotificationType ";
+                    dynamicParameters.Add("@NotificationType", getNotificationMessagePaginationRequest.NotificationType);
+                }
                 string SELECT
                     = $"{nameof(NOTIFICATION_MESSAGES.DATE_SEND)} AS DateSend, " +
                 $"{nameof(NOTIFICATION_MESSAGES.IDUSER)} AS IdUser, " +
                 $"{nameof(NOTIFICATION_MESSAGES.IDGROUP)} AS IdGroup, " +
                 $"{nameof(NOTIFICATION_MESSAGES.IDMEETING)} AS IdMeeting, " +
                 $"{nameof(NOTIFICATION_MESSAGES.TITLE)}, " +
+                $"{nameof(NOTIFICATION_MESSAGES.SENDED)}, " +
+                $"{nameof(NOTIFICATION_MESSAGES.REPEAT)}, " +
+                $"{nameof(NOTIFICATION_MESSAGES.NOTIFICATION_TYPE)} AS NotificationType, " +
+                $"{nameof(NOTIFICATION_MESSAGES.ID_NOTIFICATION_MESSAGES)} AS IdNotificationMessage, " +
                 $"{nameof(NOTIFICATION_MESSAGES.BODY)} ";
 
                 var query = new QueryBuilder<List<GetNotificationMessageResponse>>()

@@ -91,46 +91,46 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserAsync(GetMeetingGroupsResponse meeting, USERS? user, USERS? author, GetMessageRequest getMessageRequest)
         {
-            FirebaseNotification notificationHub = new();
             var idUser = user?.ID_USER ?? throw new Exception("User is null");
-            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
 
-            if (tokens != null && userDetails != null)
+            if (userDetails != null)
             {
                 if (userDetails.MEETING_ORGANIZER_NOTIFICATION)
                 {
-                    await notificationHub.SendMessageNotificationAsync(meeting, getMessageRequest, author, tokens);
-                }
-                string title = "";
-                switch (getMessageRequest.ANSWER)
-                {
-                    case "yes":
-                        {
-                            title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie zaakceptował twoje zaproszenie do spotkania!";
-                        }
-                        break;
-                    case "no":
-                        {
-                            title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie odrzucił twoje zaproszenie do spotkania!";
-                        }
-                        break;
-                }
-                if (!String.IsNullOrEmpty(title))
-                {
-                    if (getMessageRequest.IDUSER != meeting.IdAuthor)
+                    string title = "";
+                    switch (getMessageRequest.ANSWER)
                     {
-                        await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                        new GetNotificationMessageRequest
+                        case "yes":
+                            {
+                                title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie zaakceptował twoje zaproszenie do spotkania!";
+                            }
+                            break;
+                        case "no":
+                            {
+                                title = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie odrzucił twoje zaproszenie do spotkania!";
+                            }
+                            break;
+                    }
+                    if (!String.IsNullOrEmpty(title))
+                    {
+                        if (getMessageRequest.IDUSER != meeting.IdAuthor)
                         {
-                            IDUSER = idUser,
-                            IDGROUP = meeting.IdGroup,
-                            IDMEETING = meeting.IdMeeting,
-                            DATE_SEND = DateTime.Now,
-                            TITLE = title,
-                            BODY = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
+                            await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                            new GetNotificationMessageRequest
+                            {
+                                IDUSER = idUser,
+                                IDGROUP = meeting.IdGroup,
+                                IDMEETING = meeting.IdMeeting,
+                                DATE_SEND = DateTime.Now,
+                                TITLE = title,
+                                BODY = meeting.DateMeeting?.ToString("dd-MM-yyyy HH:mm") + " " + meeting.Place + " " + meeting.Description,
+                                SENDED = false,
+                                REPEAT = false,
+                                NOTIFICATION_TYPE = 1
+                            }
+                        );
                         }
-                    );
                     }
                 }
             }
@@ -321,77 +321,77 @@ namespace BLLLibrary.Service
 
         private async Task SendNotificationToUserTeamAsync(int idUser, int idAuthor, int idMeeting, string? teamName)
         {
-            FirebaseNotification notificationHub = new();
-            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
             var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(idAuthor);
-            if (tokens != null && userDetails != null)
+            if (userDetails != null)
             {
                 if (userDetails.TEAM_NOTIFICATION)
                 {
-                    await notificationHub.SendNotificationToUserTeamAsync(teamName, idMeeting, author, tokens);
-                }
-
-                string body;
-                string title;
-                if (teamName != null)
-                {
-                    title = "Zostałeś dodany do drużyny!";
-                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dodał Cię do drużyny " + teamName;
-                }
-                else
-                {
-                    title = "Zostałeś usuniety z drużyny!";
-                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie usunął Cię z drużyny i przeniósł do rezerwy";
-                }
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
+                    string body;
+                    string title;
+                    if (teamName != null)
                     {
-                        IDUSER = idUser,
-                        IDMEETING = idMeeting,
-                        DATE_SEND = DateTime.Now,
-                        TITLE = title,
-                        BODY = body,
+                        title = "Zostałeś dodany do drużyny!";
+                        body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dodał Cię do drużyny " + teamName;
                     }
-                );
+                    else
+                    {
+                        title = "Zostałeś usuniety z drużyny!";
+                        body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie usunął Cię z drużyny i przeniósł do rezerwy";
+                    }
+                    await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                        new GetNotificationMessageRequest
+                        {
+                            IDUSER = idUser,
+                            IDMEETING = idMeeting,
+                            DATE_SEND = DateTime.Now,
+                            TITLE = title,
+                            BODY = body,
+                            SENDED = false,
+                            REPEAT = false,
+                            NOTIFICATION_TYPE = 3
+                        }
+                    );
+                }
             }
         }
 
         private async Task SendNotificationToAuthorTeamAsync(int idUser, int idAuthor, int idMeeting, string? teamName)
         {
-            FirebaseNotification notificationHub = new();
-            var tokens = await _unitOfWork.ReadNotificationTokenRepository.GetAllTokensFromUser(idUser);
             var userDetails = await _unitOfWork.ReadNotificationRepository.GetAllNotificationFromUser(idUser);
             var author = await _unitOfWork.ReadUsersRepository.GetUserByIdAsync(idAuthor);
-            if (tokens != null && userDetails != null)
+            if (userDetails != null)
             {
                 if (userDetails.TEAM_ORGANIZER_NOTIFICATION)
                 {
-                    await notificationHub.SendNotificationToAuthorTeamAsync(teamName, idMeeting, author, tokens);
-                }
-                string title;
-                string body;
-                if (teamName != null)
-                {
-                    title = "Ktoś właśnie dołączył do drużyny!";
-                    body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dołączył do drużyny " + teamName;
-                }
-                else
-                {
-                    title = "Ktoś właśnie opuścił drużynę!";
-                    body = author?.FIRSTNAME + " " + author?.SURNAME + " opuścił drużynę i przeszedł do rezerwy";
-                }
-
-                await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
-                    new GetNotificationMessageRequest
+                    string title;
+                    string body;
+                    if (teamName != null)
                     {
-                        IDUSER = idAuthor,
-                        IDMEETING = idMeeting,
-                        DATE_SEND = DateTime.Now,
-                        BODY = body,
-                        TITLE = title,
+                        title = "Ktoś właśnie dołączył do drużyny!";
+                        body = author?.FIRSTNAME + " " + author?.SURNAME + " właśnie dołączył do drużyny " + teamName;
                     }
-                );
+                    else
+                    {
+                        title = "Ktoś właśnie opuścił drużynę!";
+                        body = author?.FIRSTNAME + " " + author?.SURNAME + " opuścił drużynę i przeszedł do rezerwy";
+                    }
+
+                    await _unitOfWork.CreateNotificationRepository.AddNotificationMessageToUserAsync(
+                        new GetNotificationMessageRequest
+                        {
+                            IDUSER = idAuthor,
+                            IDMEETING = idMeeting,
+                            DATE_SEND = DateTime.Now,
+                            BODY = body,
+                            TITLE = title,
+                            SENDED = false,
+                            REPEAT = false,
+                            NOTIFICATION_TYPE = 3
+
+                        }
+                    );
+                }
             }
         }
     }

@@ -23,7 +23,7 @@ namespace DataLibrary.Repository.Notification
             {
                 DynamicParameters dynamicParameters = new();
                 var updateBuilder = new QueryBuilder<GetUpdateNotificationRequest>()
-                    .UpdateColumns($"{nameof(USERS)}", getUpdateNotificationRequest.Column)
+                    .UpdateColumns($"{nameof(NOTIFICATION)}", getUpdateNotificationRequest.Column)
                     .Where("IDUSER = @UserId");
                 string updateQuery = updateBuilder.Build();
                 dynamicParameters.Add("@UserId", userId);
@@ -82,6 +82,44 @@ namespace DataLibrary.Repository.Notification
                             break;
                     }
 
+                }
+                await _dbConnection.ExecuteAsync(updateQuery, dynamicParameters, _fbTransaction);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+
+        public async Task UpdateColumnNotificationMessageAsync(GetUpdateNotificationMessageRequest getUpdateNotificationMessageRequest, int notificationMessageId)
+        {
+            if (_dbConnection.State != ConnectionState.Open)
+            {
+                await _dbConnection.OpenAsync();
+            }
+
+            if (notificationMessageId == 0) throw new Exception();
+
+            try
+            {
+                DynamicParameters dynamicParameters = new();
+                var updateBuilder = new QueryBuilder<GetUpdateNotificationMessageRequest>()
+                    .UpdateColumns($"{nameof(NOTIFICATION_MESSAGES)}", getUpdateNotificationMessageRequest.Column)
+                    .Where($"{nameof(NOTIFICATION_MESSAGES.ID_NOTIFICATION_MESSAGES)} = @NotificationMessageId");
+                string updateQuery = updateBuilder.Build();
+                dynamicParameters.Add("@NotificationMessageId", notificationMessageId);
+
+                foreach (string column in getUpdateNotificationMessageRequest.Column)
+                {
+                    switch (column)
+                    {
+                        case "SENDED":
+                            {
+                                bool sended = getUpdateNotificationMessageRequest.SENDED;
+                                dynamicParameters.Add($"@{column}", sended);
+                            }
+                            break;
+                    }
                 }
                 await _dbConnection.ExecuteAsync(updateQuery, dynamicParameters, _fbTransaction);
             }

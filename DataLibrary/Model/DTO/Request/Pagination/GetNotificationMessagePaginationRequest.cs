@@ -14,6 +14,9 @@ namespace DataLibrary.Model.DTO.Request.Pagination
         public string? SortColumn { get; set; }
         public string? SortMode { get; set; }
         public int? IdUser { get; set; }
+        public bool? Sended { get; set; }
+        public bool? Repeat { get; set; }
+        public int? NotificationType { get; set; }
 
     }
 }

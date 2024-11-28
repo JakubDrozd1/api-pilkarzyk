@@ -1,5 +1,4 @@
 ﻿using BLLLibrary.IService;
-using DataLibrary.Helper.Email;
 using DataLibrary.Model.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

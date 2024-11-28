@@ -12,6 +12,8 @@ namespace BLLLibrary.IService
         Task<List<GetNotificationMessageResponse>> GetAllNotificationMessageFromUser(GetNotificationMessagePaginationRequest getNotificationMessagePaginationRequest);
         Task UpdateColumnNotificationAsync(GetUpdateNotificationRequest getUpdateNotificationRequest, int userId);
         Task DeletaAllNotificationFromUser(int userId);
+        Task UpdateColumnNotificationMessageAsync(GetUpdateNotificationMessageRequest getUpdateNotificationMessageRequest, int notificationMessageId);
+        Task AddNotificationMessageToUserAsync(GetNotificationMessageRequest getNotificationRequest);
         Task SaveChangesAsync();
     }
 }
